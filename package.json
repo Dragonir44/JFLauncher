@@ -1,5 +1,5 @@
 {
-  "name": "launcher",
+  "name": "jflauncher",
   "version": "1.0.0",
   "description": "Lanceur Minecraft de base",
   "main": "index.js",
@@ -9,11 +9,13 @@
     "buildM": "electron-builder build -m",
     "buildL": "electron-builder build -l"
   },
-  "author": "SlashDev",
+  "author": "Dragonir",
   "license": "MIT",
   "devDependencies": {
+    "@electron/packager": "^18.0.0",
     "electron": "^27.0.4",
-    "electron-builder": "^24.6.4"
+    "electron-builder": "^24.6.4",
+    "electron-winstaller": "^5.2.1"
   },
   "dependencies": {
     "axios": "^0.19.2",
