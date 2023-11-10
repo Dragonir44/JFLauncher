@@ -1,7 +1,9 @@
 // Importation des modules
 const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
-const { Client, Authenticator } = require("minecraft-launcher-core");
+const { Client } = require("minecraft-launcher-core");
+const {Auth} = require('msmc')
+const store = require("store");
 
 // Variables globales
 let mainWindow;
@@ -9,11 +11,10 @@ let mainWindow;
 // Création de la fenêtre principale
 function createWindow() {
   mainWindow = new BrowserWindow({
-    title: "Lanceur MC",
+    title: "JFLauncher",
     icon: path.join(__dirname, "/asset/logo.png"),
     width: 800,
     height: 600,
-    frame: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -22,7 +23,8 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL(path.join(__dirname, "index.html"));
+  mainWindow.webContents.openDevTools()
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
 }
 
 // Quand l'application est chargée, afficher la fenêtre
@@ -40,12 +42,61 @@ app.on("window-all-closed", function () {
 });
 
 // Quand un utilisateur tente de se connecter
-ipcMain.on("login", (evt, data) => {
-  Authenticator.getAuth(data.user, data.pass)
-    .then((e) => {
-      mainWindow.loadURL(path.join(__dirname, "app.html"));
-    })
-    .catch(() => {
-      evt.sender.send("err", "Erreur de connexion");
-    });
+ipcMain.on("login", async (evt, data) => {
+  const authManager = new Auth("select_account")
+  const xboxManager = await authManager.launch("raw")
+  const token = await xboxManager.getMinecraft();
+
+  store.set("token", JSON.stringify(token));
+  console.log(store.get("token"));
+
+  const launcher = new Client();
+
+  let opts = {
+    // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+    authorization: token.mclc(),
+    root: "./.minecraft",
+    clientPackage : "https://nas.team-project.fr/api/public/dl/UAaqG7G1/Perso/JFbeta-1.4.zip",
+    removePackage: true,
+    forge: "./.minecraft/forge.jar",
+    version: {
+      number: "1.20.1",
+      type: "release"
+    },
+    memory: {
+      max: "11G",
+      min: "4G"
+    }
+  };
+  console.log("Starting!");
+  // launcher.launch(opts);
+
+  launcher.on('debug', (e) => console.log(e));
+  launcher.on('data', (e) => console.log(e));
 });
+
+ipcMain.on("loginToken", async (evt, data) => {
+  const launcher = new Client();
+
+  let opts = {
+    // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+    authorization: token.mclc(),
+    root: "./.minecraft",
+    clientPackage : "https://nas.team-project.fr/api/public/dl/UAaqG7G1/Perso/JFbeta-1.4.zip",
+    removePackage: true,
+    forge: "./.minecraft/forge.jar",
+    version: {
+      number: "1.20.1",
+      type: "release"
+    },
+    memory: {
+      max: "11G",
+      min: "4G"
+    }
+  };
+  console.log("Starting via token!");
+  launcher.launch(opts);
+
+  launcher.on('debug', (e) => console.log(e));
+  launcher.on('data', (e) => console.log(e));
+})
