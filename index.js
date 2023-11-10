@@ -24,7 +24,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 }
 
@@ -62,7 +62,7 @@ ipcMain.on("loginToken", async (evt, data) => {
 
 ipcMain.on('launch', (evt, data) => {
   const launcher = new Client();
-  console.log(data.ram)
+  console.log("allocated ram",data.ram)
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),
@@ -79,12 +79,11 @@ ipcMain.on('launch', (evt, data) => {
       min:'1G'
     }
   };
-  console.log("Starting via token!");
-  // launcher.launch(opts);
+  launcher.launch(opts);
 
   launcher.on('debug', (e) => console.log(e));
   launcher.on('data', (e) => console.log(e));
   // launcher.on('progress', (e) => console.log(e));
-  launcher.on('close', (e) => console.log(e));
+  // launcher.on('close', (e) => console.log(e));
   // launcher.on('download-status', (e) => console.log(e));
 })
