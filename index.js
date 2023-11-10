@@ -7,12 +7,13 @@ const store = require("store");
 
 // Variables globales
 let mainWindow;
+let token;
 
 // Création de la fenêtre principale
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "JFLauncher",
-    icon: path.join(__dirname, "/asset/logo.png"),
+    icon: path.join(__dirname, "/asset/logo.ico"),
     width: 800,
     height: 600,
     webPreferences: {
@@ -45,13 +46,23 @@ app.on("window-all-closed", function () {
 ipcMain.on("login", async (evt, data) => {
   const authManager = new Auth("select_account")
   const xboxManager = await authManager.launch("raw")
-  const token = await xboxManager.getMinecraft();
+  token = await xboxManager.getMinecraft();
 
   store.set("token", JSON.stringify(token));
-  console.log(store.get("token"));
 
+  mainWindow.loadURL(path.join(__dirname, "app.html"));
+});
+
+ipcMain.on("loginToken", async (evt, data) => {
+  const authManager = new Auth(data.parent.mstocken)
+  const xboxManager = await authManager.refresh()
+  token = await xboxManager.getMinecraft();
+  mainWindow.loadURL(path.join(__dirname, "app.html"));
+})
+
+ipcMain.on('launch', (evt, data) => {
   const launcher = new Client();
-
+  console.log(data.ram)
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),
@@ -64,39 +75,16 @@ ipcMain.on("login", async (evt, data) => {
       type: "release"
     },
     memory: {
-      max: "11G",
-      min: "4G"
+      max: `${data.ram}G`,
+      min:'1G'
     }
   };
-  console.log("Starting!");
+  console.log("Starting via token!");
   // launcher.launch(opts);
 
   launcher.on('debug', (e) => console.log(e));
   launcher.on('data', (e) => console.log(e));
-});
-
-ipcMain.on("loginToken", async (evt, data) => {
-  const launcher = new Client();
-
-  let opts = {
-    // Simply call this function to convert the msmc minecraft object into a mclc authorization object
-    authorization: token.mclc(),
-    root: "./.minecraft",
-    clientPackage : "https://nas.team-project.fr/api/public/dl/UAaqG7G1/Perso/JFbeta-1.4.zip",
-    removePackage: true,
-    forge: "./.minecraft/forge.jar",
-    version: {
-      number: "1.20.1",
-      type: "release"
-    },
-    memory: {
-      max: "11G",
-      min: "4G"
-    }
-  };
-  console.log("Starting via token!");
-  launcher.launch(opts);
-
-  launcher.on('debug', (e) => console.log(e));
-  launcher.on('data', (e) => console.log(e));
+  // launcher.on('progress', (e) => console.log(e));
+  launcher.on('close', (e) => console.log(e));
+  // launcher.on('download-status', (e) => console.log(e));
 })
