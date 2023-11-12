@@ -3,11 +3,12 @@ const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const { Client } = require("minecraft-launcher-core");
 const {Auth} = require('msmc')
-const store = require("store");
+const Store = require("electron-store");
 
 // Variables globales
 let mainWindow;
 let token;
+const store = new Store();
 
 // Création de la fenêtre principale
 function createWindow() {
@@ -48,14 +49,15 @@ ipcMain.on("login", async (evt, data) => {
   const xboxManager = await authManager.launch("raw")
   token = await xboxManager.getMinecraft();
 
-  store.set("token", JSON.stringify(token));
+  store.set("userDetails", JSON.stringify(xboxManager));
 
   mainWindow.loadURL(path.join(__dirname, "app.html"));
 });
 
 ipcMain.on("loginToken", async (evt, data) => {
-  const authManager = new Auth(data.parent.mstocken)
-  const xboxManager = await authManager.refresh()
+  console.log("loginToken",data)
+  const authManager = new Auth("select_account")
+  const xboxManager = await authManager.refresh(data.msToken.refresh_token)
   token = await xboxManager.getMinecraft();
   mainWindow.loadURL(path.join(__dirname, "app.html"));
 })
