@@ -1,6 +1,7 @@
 // Importation des modules
 const ipc = window.ipc
 const localStorage = window.localStorage
+const store = new window.Store()
 
 // Variables globales
 let playbtn = document.getElementById("play");
@@ -13,9 +14,9 @@ playbtn.addEventListener("click", () => {
   ipc.send("login", {})
 });
 
-if (store.get("token")) {
+if (store.get("userDetails")) {
     playbtn.disabled = true;
-    ipc.send("loginToken", JSON.parse(store.get("token")));
+    ipc.send("loginToken", JSON.parse(store.get("userDetails")));
 }
 
 // Récéption de l'event erreur
