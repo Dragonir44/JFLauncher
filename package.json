@@ -25,6 +25,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
+    "electron-store": "^8.1.0",
     "minecraft-launcher-core": "^3.14.1",
     "msmc": "^4.1.0",
     "store": "^2.0.12"
@@ -32,8 +33,10 @@
   "build": {
     "appId": "fr.dragonir.jflauncher",
     "icon": "asset/logo.ico",
-    "win" : {
-      "publish": ["github"]
+    "win": {
+      "publish": [
+        "github"
+      ]
     }
   }
 }
