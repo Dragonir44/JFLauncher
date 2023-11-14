@@ -1,20 +1,34 @@
-# mclc-example-launcher
+# my-app
 
-Il s'agit d'une base de launcher, incomplète, afin de vous permettre de vous concentrer sur la logique du launcher au lieu du design.
-Evitez de retirer les lignes de code si vous n'avez pas vu entièrement la série.
+An Electron application with React and TypeScript
 
-## Installation
+## Recommended IDE Setup
 
-Ouvrez votre ligne de commande et écrivez ces commandes.
+- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-```batch
-git clone https://github.com/SlashDevv/mclc-example-launcher/
-cd mclc-example-launcher
-npm install
-npm run start
+## Project Setup
+
+### Install
+
+```bash
+$ npm install
 ```
 
-## Sources
-- iziModal
-- Bottom Dialog (app.html)
-- Colorlib Login Page (index.html)
+### Development
+
+```bash
+$ npm run dev
+```
+
+### Build
+
+```bash
+# For windows
+$ npm run build:win
+
+# For macOS
+$ npm run build:mac
+
+# For Linux
+$ npm run build:linux
+```

@@ -1,42 +1,56 @@
 {
   "name": "jflauncher",
-  "version": "1.0.0",
-  "description": "Lanceur Minecraft de base",
-  "main": "index.js",
+  "displayName": "JFLauncher",
+  "version": "0.0.1",
+  "description": "An Electron application with React and TypeScript",
+  "main": "./out/main/index.js",
+  "author": "Dragonir44",
+  "homepage": "https://www.electronjs.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Dragonir44/JFLauncher.git"
+    "url": "https://github.com/dragonir44/jflauncher"
   },
   "scripts": {
-    "start": "electron .",
-    "buildW": "electron-builder build -w",
-    "buildM": "electron-builder build -m",
-    "buildL": "electron-builder build -l",
-    "release": "electron-builder build --publish=always"
-  },
-  "author": "Dragonir",
-  "license": "MIT",
-  "devDependencies": {
-    "@electron/packager": "^18.0.0",
-    "electron": "^27.0.4",
-    "electron-builder": "^24.6.4",
-    "electron-winstaller": "^5.2.1"
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:win": "npm run build && electron-builder --win --config",
+    "build:mac": "electron-vite build && electron-builder --mac --config",
+    "build:linux": "electron-vite build && electron-builder --linux --config"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "custom-electron-titlebar": "^4.2.7",
+    "@electron-toolkit/preload": "^2.0.0",
+    "@electron-toolkit/utils": "^2.0.0",
     "electron-store": "^8.1.0",
-    "minecraft-launcher-core": "^3.14.1",
-    "msmc": "^4.1.0",
-    "store": "^2.0.12"
+    "electron-updater": "^6.1.1",
+    "minecraft-launcher-core": "^3.17.3",
+    "msmc": "^4.1.0"
   },
-  "build": {
-    "appId": "fr.dragonir.jflauncher",
-    "icon": "asset/logo.ico",
-    "win": {
-      "publish": [
-        "github"
-      ]
-    }
+  "devDependencies": {
+    "@electron-toolkit/eslint-config-prettier": "^1.0.1",
+    "@electron-toolkit/eslint-config-ts": "^1.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "@types/node": "^18.17.5",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.4",
+    "electron": "^25.6.0",
+    "electron-builder": "^24.6.3",
+    "electron-vite": "^1.0.27",
+    "eslint": "^8.47.0",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9"
   }
 }
