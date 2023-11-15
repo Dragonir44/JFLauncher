@@ -50,16 +50,22 @@ ipcMain.on("login", async (evt, data) => {
   token = await xboxManager.getMinecraft();
 
   store.set("userDetails", JSON.stringify(xboxManager));
+  store.set("token", JSON.stringify(token));
 
   mainWindow.loadURL(path.join(__dirname, "app.html"));
 });
 
 ipcMain.on("loginToken", async (evt, data) => {
-  console.log("loginToken",data)
   const authManager = new Auth("select_account")
   const xboxManager = await authManager.refresh(data.msToken.refresh_token)
   token = await xboxManager.getMinecraft();
+  store.set("token", JSON.stringify(token));
   mainWindow.loadURL(path.join(__dirname, "app.html"));
+  mainWindow.webContents.send("userDetails", token);
+})
+
+ipcMain.on("getDetails", (evt, data) => {
+  evt.returnValue = store.get("token");
 })
 
 ipcMain.on('launch', (evt, data) => {
