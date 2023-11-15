@@ -17,7 +17,7 @@ function createWindow() {
     icon: path.join(__dirname, "/assets/logo.ico"),
     width: 800,
     height: 600,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -95,11 +95,27 @@ ipcMain.on('launch', (evt, data) => {
   };
   launcher.launch(opts);
 
-  launcher.on('debug', (e) => console.log(e));
-  launcher.on('data', (e) => console.log(e));
-  // launcher.on('progress', (e) => console.log(e));
-  // launcher.on('close', (e) => console.log(e));
-  // launcher.on('download-status', (e) => console.log(e));
+  // launcher.on('debug', (e) => console.log('debug',e));
+  launcher.on('data', (e) => {
+    if(e.match(/.*EARLYDISPLAY.*/)) {
+      mainWindow.hide()
+    }
+  });
+
+  launcher.on('progress', (e) => {
+    console.log("progress", e.type, Math.round(e.task/e.total*100) + '%')
+    mainWindow.webContents.send("progress", {type: e.type, progress: Math.round(e.task/e.total*100)});
+  });
+
+  launcher.on('download-status', (e) => {
+    console.log('download-status', e.type, Math.round(e.current/e.total*100) + '%')
+    mainWindow.webContents.send("progress", {type: e.type, progress: Math.round(e.current/e.total*100)});
+  });
+
+  launcher.on('close', (e) => {
+    mainWindow.show()
+    mainWindow.webContents.send("closed", '');
+  });
 })
 
 ipcMain.on('deco', (evt, data) => {
