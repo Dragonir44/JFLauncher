@@ -29,16 +29,8 @@
         </div>
         <div class="modal-body">
           <b>Mémoire vive :</b>
-          <select id="ram">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </select>
+          <input type="range" min="1" value="1" id="ram" />
+          <span id="ramValue">1</span>
           GO
           <hr />
           <button id="deco">Déconnexion</button>
@@ -56,7 +48,8 @@
     <script>
       // Importation des modules
       const ipc = window.ipc
-      const custombar = window.electronCustomTitleBar
+      const store = new window.Store()
+      const os = window.os
 
       // Variables globales
       let pseudo = document.getElementById("pseudo");
@@ -64,6 +57,16 @@
       let deco = document.getElementById("deco");
       let playbtn = document.getElementById("playbtn");
       let ram = document.getElementById("ram");
+      let maxRam = os.totalmem() / 1024 / 1024 / 1024;
+      let ramValue = document.getElementById("ramValue");
+
+      ram.max = maxRam;
+      ram.value = store.get("ram") || 1;
+      ramValue.innerHTML = ram.value;
+      ram.addEventListener("input", () => {
+        document.getElementById("ramValue").innerHTML = ram.value;
+        store.set("ram", ram.value);
+      }) 
 
       // Modal
       var modal = document.getElementById("myModal");
