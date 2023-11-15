@@ -31,3 +31,14 @@ Simply download the latest release from the [releases page](https://github.com/D
 2. Click the "New Issue" button
 3. Fill out the form
 4. Submit the issue
+
+## TODO
+
+- [] Add a way to change the channel of the modpack
+- [] Change the way the modpack is downloaded
+- [] Change the way the modpack is installed
+- [] Change the style of the launcher
+- [] Add a way to manage skins
+- [] Add news panel
+- [] Add a way to change the language of the launcher
+- [] Add a ping check to the server
