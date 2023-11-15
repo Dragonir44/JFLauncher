@@ -34,11 +34,14 @@ Simply download the latest release from the [releases page](https://github.com/D
 
 ## TODO
 
-- [] Add a way to change the channel of the modpack
-- [] Change the way the modpack is downloaded
-- [] Change the way the modpack is installed
-- [] Change the style of the launcher
-- [] Add a way to manage skins
-- [] Add news panel
-- [] Add a way to change the language of the launcher
-- [] Add a ping check to the server
+- [ ] Add a way to change the channel of the modpack
+- [ ] Change the way the modpack is downloaded
+- [ ] Change the way the modpack is installed
+- [ ] Change the style of the launcher
+- [ ] Add a way to manage skins
+- [ ] Add news panel
+- [ ] Add a way to change the language of the launcher
+- [ ] Add a ping check to the server
+- [x] Add a progress bar
+- [x] Hide window when game launched
+- [x] Show window when game closed
