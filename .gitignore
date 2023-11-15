@@ -1,5 +1,6 @@
-.minecraft/
+mc/**
 node_modules/
 package-lock.json
 dist/
 electron-builder.env
+cert/
