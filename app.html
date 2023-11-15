@@ -59,6 +59,11 @@
       let ram = document.getElementById("ram");
       let maxRam = os.totalmem() / 1024 / 1024 / 1024;
       let ramValue = document.getElementById("ramValue");
+      let userDetails = JSON.parse(ipc.sendSync('getDetails', ''))
+
+      // Affichage des informations
+      pseudo.innerHTML = userDetails.profile.name;
+      skin.src = `https://minotar.net/avatar/${userDetails.profile.name}/100.png`;
 
       ram.max = maxRam;
       ram.value = store.get("ram") || 1;
