@@ -27,6 +27,7 @@
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
     "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.4",
     "minecraft-launcher-core": "^3.14.1",
     "msmc": "^4.1.0",
     "store": "^2.0.12"
