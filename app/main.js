@@ -43,3 +43,7 @@ window.onclick = function (event) {
 playbtn.onclick = () => {
   ipc.send("launch", {ram: ram.value});
 };
+
+deco.onclick = () => {
+  ipc.send("deco", "");
+}
