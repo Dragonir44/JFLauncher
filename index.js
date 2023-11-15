@@ -3,19 +3,21 @@ const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const { Client } = require("minecraft-launcher-core");
 const {Auth} = require('msmc')
-const store = require("store");
+const Store = require("electron-store");
 
 // Variables globales
 let mainWindow;
 let token;
+const store = new Store();
 
 // Création de la fenêtre principale
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "JFLauncher",
-    icon: path.join(__dirname, "/asset/logo.ico"),
+    icon: path.join(__dirname, "/assets/logo.ico"),
     width: 800,
     height: 600,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -48,21 +50,27 @@ ipcMain.on("login", async (evt, data) => {
   const xboxManager = await authManager.launch("raw")
   token = await xboxManager.getMinecraft();
 
+  store.set("userDetails", JSON.stringify(xboxManager));
   store.set("token", JSON.stringify(token));
 
   mainWindow.loadURL(path.join(__dirname, "app.html"));
 });
 
 ipcMain.on("loginToken", async (evt, data) => {
-  const authManager = new Auth(data.parent.mstocken)
-  const xboxManager = await authManager.refresh()
+  const authManager = new Auth("select_account")
+  const xboxManager = await authManager.refresh(data.msToken.refresh_token)
   token = await xboxManager.getMinecraft();
+  store.set("token", JSON.stringify(token));
   mainWindow.loadURL(path.join(__dirname, "app.html"));
+  mainWindow.webContents.send("userDetails", token);
+})
+
+ipcMain.on("getDetails", (evt, data) => {
+  evt.returnValue = store.get("token");
 })
 
 ipcMain.on('launch', (evt, data) => {
   const launcher = new Client();
-  console.log("allocated ram",data.ram)
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),

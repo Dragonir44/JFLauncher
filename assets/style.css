@@ -118,7 +118,7 @@
 body {
     background: #76b852;
     /* fallback for old browsers */
-    background: url("./asset/background.jpg");
+    background: url("./background.jpg");
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

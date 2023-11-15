@@ -8,14 +8,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="asset/toast.css" />
-    <script src="asset/toast.js"></script>
-    <title>LauncherMC - App</title>
+    <link rel="stylesheet" href="assets/toast.css" />
+    <script src="assets/toast.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
   </head>
 
   <body
     style="
-      background-image: url(asset/background.jpg);
+      background-image: url(assets/background.jpg);
       background-size: auto;
       background-repeat: no-repeat;
     "
@@ -29,16 +29,8 @@
         </div>
         <div class="modal-body">
           <b>Mémoire vive :</b>
-          <select id="ram">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </select>
+          <input type="range" min="1" value="1" id="ram" />
+          <span id="ramValue">1</span>
           GO
           <hr />
           <button id="deco">Déconnexion</button>
@@ -53,177 +45,6 @@
       <button id="options">OPTIONS</button>
       <button id="playbtn">JOUER</button>
     </footer>
-    <script>
-      // Importation des modules
-      const ipc = window.ipc
-      const custombar = window.electronCustomTitleBar
-
-      // Variables globales
-      let pseudo = document.getElementById("pseudo");
-      let skin = document.getElementById("skin");
-      let deco = document.getElementById("deco");
-      let playbtn = document.getElementById("playbtn");
-      let ram = document.getElementById("ram");
-
-      // Modal
-      var modal = document.getElementById("myModal");
-      var span = document.getElementsByClassName("close")[0];
-      document.getElementById("options").addEventListener("click", () => {
-        modal.style.display = "block";
-      });
-      span.onclick = function () {
-        modal.style.display = "none";
-      };
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-
-      playbtn.onclick = () => {
-        ipc.send("launch", {ram: ram.value});
-      };
-    </script>
-    <style>
-      * {
-        font-family: sans-serif;
-      }
-
-      footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        color: white;
-        background: #222;
-        width: 100%;
-      }
-      footer * {
-        margin: 10px;
-      }
-
-      button {
-        background: red;
-        border: 5px red solid;
-        padding: 5px;
-        font-size: 15px;
-        color: white;
-        transition-duration: 0.5s;
-      }
-
-      button:hover,
-      button:focus {
-        padding: 5px;
-        border: 5px darkred solid;
-      }
-
-      #playbtn {
-        float: right;
-      }
-
-      #news {
-        display: block;
-        padding: 70px 0;
-        text-align: center;
-        margin: 10%;
-        color: white;
-        background: rgba(0, 0, 0, 0.7);
-      }
-
-      /* The Modal (background) */
-      .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0); /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-        animation-name: fadeIn;
-        animation-duration: 0.4s;
-      }
-
-      /* Modal Content */
-      .modal-content {
-        position: fixed;
-        bottom: 0;
-        background-color: #fefefe;
-        width: 50%;
-        -webkit-animation-name: slideIn;
-        -webkit-animation-duration: 0.4s;
-        animation-name: slideIn;
-        animation-duration: 0.4s;
-        margin-right: 25vw;
-        margin-left: 25vw;
-      }
-
-      /* The Close Button */
-      .close {
-        color: white;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
-
-      .close:hover,
-      .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .modal-header {
-        padding: 2px 16px;
-        background-color: #ff0000;
-        color: white;
-      }
-
-      .modal-body {
-        padding: 16px 16px;
-      }
-
-      /* Add Animation */
-      @-webkit-keyframes slideIn {
-        from {
-          bottom: -300px;
-          opacity: 0;
-        }
-        to {
-          bottom: 0;
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideIn {
-        from {
-          bottom: -300px;
-          opacity: 0;
-        }
-        to {
-          bottom: 0;
-          opacity: 1;
-        }
-      }
-
-      @-webkit-keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-    </style>
+    <script src="app/main.js"></script>
   </body>
 </html>

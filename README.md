@@ -1,20 +1,33 @@
-# mclc-example-launcher
+# Jimmu's Factory Launcher
 
-Il s'agit d'une base de launcher, incomplète, afin de vous permettre de vous concentrer sur la logique du launcher au lieu du design.
-Evitez de retirer les lignes de code si vous n'avez pas vu entièrement la série.
+## What is this?
+This is a launcher for the game Minecraft on the Jimmu's Factory's modpack. It is designed to be a simple, easy to use launcher that can be used by anyone.
 
-## Installation
+## How do I use it?
+Simply download the latest release from the [releases page](https://github.com/Dragonir44/JFLauncher/releases)
 
-Ouvrez votre ligne de commande et écrivez ces commandes.
+## How do I build it?
+1. Clone the repository
+2. Run `npm install`
+3. Run `npm run buildW`
+4. The built files will be in the `dist` folder
 
-```batch
-git clone https://github.com/SlashDevv/mclc-example-launcher/
-cd mclc-example-launcher
-npm install
-npm run start
-```
+## How do I contribute?
+1. Fork the repository
+2. Make your changes
+3. Make a pull request
+4. Wait for it to be reviewed
+5. If it is accepted, it will be merged into the main branch
+6. Your changes will be in the next release
 
-## Sources
-- iziModal
-- Bottom Dialog (app.html)
-- Colorlib Login Page (index.html)
+## How do I report a bug?
+1. Go to the [issues page](https://github.com/Dragonir44/JFLauncher/issues)
+2. Click the "New Issue" button
+3. Fill out the form
+4. Submit the issue
+
+## How do I request a feature?
+1. Go to the [issues page](https://github.com/Dragonir44/JFLauncher/issues)
+2. Click the "New Issue" button
+3. Fill out the form
+4. Submit the issue

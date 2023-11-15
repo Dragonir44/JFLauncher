@@ -1,2 +1,3 @@
 window.ipc = require("electron").ipcRenderer;
-window.store  = require("store")
+window.Store = require("electron-store");
+window.os = require("os");
