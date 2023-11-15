@@ -12,6 +12,15 @@ let ram = document.getElementById("ram");
 let maxRam = os.totalmem() / 1024 / 1024 / 1024;
 let ramValue = document.getElementById("ramValue");
 let userDetails = JSON.parse(ipc.sendSync('getDetails', ''))
+let progressBar = document.getElementById("progressBar");
+let progress = document.getElementById("progress");
+let progressStatus = document.getElementById("status");
+
+ipc.on('progress', (event, data) => {
+  progressBar.style.display = 'flex'
+  progress.style.width = `${data.progress}%` || '0%'
+  progressStatus.innerHTML = `Chargement de ${data.type} : ${data.progress || 0}%`
+})
 
 // Affichage des informations
 pseudo.innerHTML = userDetails.profile.name;
@@ -42,7 +51,14 @@ window.onclick = function (event) {
 
 playbtn.onclick = () => {
   ipc.send("launch", {ram: ram.value});
+  playbtn.disabled = true;
 };
+
+ipc.on('closed', (event, data) => {
+  playbtn.disabled = false;
+  progressBar.style.display = 'none'
+  progress.style.width = '0%'
+})
 
 deco.onclick = () => {
   ipc.send("deco", "");
