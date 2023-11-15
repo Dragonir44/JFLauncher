@@ -14,7 +14,7 @@ const store = new Store();
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "JFLauncher",
-    icon: path.join(__dirname, "/asset/logo.ico"),
+    icon: path.join(__dirname, "/assets/logo.ico"),
     width: 800,
     height: 600,
     autoHideMenuBar: true,
