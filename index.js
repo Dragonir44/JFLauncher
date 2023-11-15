@@ -17,6 +17,7 @@ function createWindow() {
     icon: path.join(__dirname, "/asset/logo.ico"),
     width: 800,
     height: 600,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -70,7 +71,6 @@ ipcMain.on("getDetails", (evt, data) => {
 
 ipcMain.on('launch', (evt, data) => {
   const launcher = new Client();
-  console.log("allocated ram",data.ram)
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),
