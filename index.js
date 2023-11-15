@@ -46,14 +46,20 @@ app.on("window-all-closed", function () {
 
 // Quand un utilisateur tente de se connecter
 ipcMain.on("login", async (evt, data) => {
-  const authManager = new Auth("select_account")
-  const xboxManager = await authManager.launch("raw")
-  token = await xboxManager.getMinecraft();
+  try {
+    const authManager = new Auth("select_account")
+    const xboxManager = await authManager.launch("raw")
+    token = await xboxManager.getMinecraft();
 
-  store.set("userDetails", JSON.stringify(xboxManager));
-  store.set("token", JSON.stringify(token));
+    store.set("userDetails", JSON.stringify(xboxManager));
+    store.set("token", JSON.stringify(token));
 
-  mainWindow.loadURL(path.join(__dirname, "app.html"));
+    mainWindow.loadURL(path.join(__dirname, "app.html"));
+  }
+  catch(err) {
+    console.log(err);
+    mainWindow.loadURL(path.join(__dirname, "index.html"));
+  }
 });
 
 ipcMain.on("loginToken", async (evt, data) => {
@@ -94,4 +100,10 @@ ipcMain.on('launch', (evt, data) => {
   // launcher.on('progress', (e) => console.log(e));
   // launcher.on('close', (e) => console.log(e));
   // launcher.on('download-status', (e) => console.log(e));
+})
+
+ipcMain.on('deco', (evt, data) => {
+  store.delete("token");
+  store.delete("userDetails");
+  mainWindow.loadURL(path.join(__dirname, "index.html"));
 })
