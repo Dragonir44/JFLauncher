@@ -32,7 +32,7 @@
   },
   "build": {
     "appId": "fr.dragonir.jflauncher",
-    "icon": "asset/logo.ico",
+    "icon": "assets/logo.ico",
     "win": {
       "publish": [
         "github"
