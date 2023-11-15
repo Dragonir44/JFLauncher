@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "index.js",
   "repository": {
@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
+    "electron-log": "^5.0.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
     "minecraft-launcher-core": "^3.14.1",
@@ -36,9 +37,8 @@
     "appId": "fr.dragonir.jflauncher",
     "icon": "assets/logo.ico",
     "win": {
-      "publish": [
-        "github"
-      ]
+      "publish": ["github"],
+      "publisherName": "Team Project"
     }
   }
 }
