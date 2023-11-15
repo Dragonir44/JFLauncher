@@ -3,6 +3,9 @@ const ipc = window.ipc
 const store = new window.Store()
 const os = window.os
 
+let version = window.location.hash.substring(1);
+document.getElementById('version').innerText = version;
+
 // Variables globales
 let pseudo = document.getElementById("pseudo");
 let skin = document.getElementById("skin");
@@ -50,7 +53,8 @@ window.onclick = function (event) {
 };
 
 playbtn.onclick = () => {
-  ipc.send("launch", {ram: ram.value});
+  console.log('launch')
+  ipc.send("launch", {ram: ram.value, channel: 'beta'});
   playbtn.disabled = true;
 };
 
@@ -63,3 +67,11 @@ ipc.on('closed', (event, data) => {
 deco.onclick = () => {
   ipc.send("deco", "");
 }
+
+ipc.on('message', function(event, text) {
+  var container = document.getElementById('messages');
+  var message = document.createElement('div');
+  console.log(text)
+  message.innerHTML = text;
+  container.appendChild(message);
+})
