@@ -7,6 +7,12 @@ const Store = require("electron-store");
 const log = require('electron-log');
 const { autoUpdater } = require("electron-updater")
 
+const sysRoot =
+  process.env.APPDATA ||
+  (process.platform == "darwin"
+    ? process.env.HOME + "/Library/Application Support"
+    : process.env.HOME);
+
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
@@ -122,10 +128,10 @@ ipcMain.on('launch', (evt, data) => {
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),
-    root: `./mc/${data.channel}`,
+    root: path.join(sysRoot, `.JFLauncher-${data.channel}`),
     clientPackage : `https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${data.channel}.zip`,
     removePackage: true,
-    forge: `./mc/${data.channel}/forge.jar`,
+    forge: path.join(sysRoot, `.JFLaunche-${data.channel}`,'forge.jar'),
     version: {
       number: "1.20.1",
       type: "release"
