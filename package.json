@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "index.js",
   "repository": {
