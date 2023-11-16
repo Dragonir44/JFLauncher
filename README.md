@@ -35,8 +35,11 @@ Simply download the latest release from the [releases page](https://github.com/D
 ## TODO
 
 - [ ] Add a way to change the channel of the modpack
-- [ ] Change the way the modpack is downloaded
+- [ ] Create a manifest with news and update infos
 - [ ] Change the way the modpack is installed
+    - [ ] Change the way the modpack is downloaded
+      - [ ] Download modpack folder from link
+      - [ ] Unzip and move in the root folder of the game
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
 - [ ] Add news panel
