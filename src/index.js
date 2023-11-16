@@ -158,12 +158,12 @@ ipcMain.on('launch', (evt, data) => {
   });
 
   launcher.on('progress', (e) => {
-    console.log("progress", e.type, Math.round(e.task/e.total*100) + '%')
+    // console.log("progress", e.type, Math.round(e.task/e.total*100) + '%')
     mainWindow.webContents.send("progress", {type: e.type, progress: Math.round(e.task/e.total*100)});
   });
 
   launcher.on('download-status', (e) => {
-    console.log('download-status', e.type, Math.round(e.current/e.total*100) + '%')
+    // console.log('download-status', e.type, Math.round(e.current/e.total*100) + '%')
     mainWindow.webContents.send("progress", {type: e.type, progress: Math.round(e.current/e.total*100)});
   });
 
