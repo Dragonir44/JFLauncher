@@ -53,7 +53,6 @@ window.onclick = function (event) {
 };
 
 playbtn.onclick = () => {
-  console.log('launch')
   ipc.send("launch", {ram: ram.value, channel: 'beta'});
   playbtn.disabled = true;
 };
