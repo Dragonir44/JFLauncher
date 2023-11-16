@@ -44,7 +44,7 @@ function createWindow() {
     icon: path.join(__dirname, "/assets/logo.ico"),
     width: 800,
     height: 600,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
