@@ -3,7 +3,7 @@
   "displayName": "JFLauncher",
   "version": "0.0.5",
   "description": "Basic Launcher for Jimmu's Factory modpack",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
@@ -26,18 +26,23 @@
   "dependencies": {
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
+    "dotenv": "^16.3.1",
     "electron-log": "^5.0.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
+    "fs-extra": "^11.1.1",
     "minecraft-launcher-core": "^3.14.1",
+    "minecraft-server-ping": "^0.1.2",
     "msmc": "^4.1.0",
     "store": "^2.0.12"
   },
   "build": {
     "appId": "fr.dragonir.jflauncher",
-    "icon": "assets/logo.ico",
+    "icon": "src/assets/logo.ico",
     "win": {
-      "publish": ["github"],
+      "publish": [
+        "github"
+      ],
       "publisherName": "Team Project"
     }
   }
