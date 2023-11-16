@@ -9,7 +9,7 @@
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "electron ./src/",
     "buildW": "electron-builder build -w",
     "buildM": "electron-builder build -m",
     "buildL": "electron-builder build -l",
