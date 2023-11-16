@@ -4,6 +4,12 @@
     margin: 0;
 }
 
+body {
+    background-image: url(background.jpg);
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
 footer {
     position: fixed;
     bottom: 0;
