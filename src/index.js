@@ -6,6 +6,9 @@ const {Auth} = require('msmc')
 const Store = require("electron-store");
 const log = require('electron-log');
 const { autoUpdater } = require("electron-updater")
+const os = require('os');
+const fs = require('fs-extra');
+
 const pjson = require('../package.json');
 
 const sysRoot =
@@ -126,13 +129,18 @@ ipcMain.on("getDetails", (evt, data) => {
 
 ipcMain.on('launch', (evt, data) => {
   const launcher = new Client();
+
+  if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', data.channel))) {
+    fs.mkdirSync(path.join(sysRoot, '.JFLauncher', data.channel), { recursive: true });
+  }
+
   let opts = {
     // Simply call this function to convert the msmc minecraft object into a mclc authorization object
     authorization: token.mclc(),
-    root: path.join(sysRoot, `.JFLauncher-${data.channel}`),
+    root: path.join(sysRoot, '.JFLauncher', data.channel),
     clientPackage : `https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${data.channel}.zip`,
     removePackage: true,
-    forge: path.join(sysRoot, `.JFLaunche-${data.channel}`,'forge.jar'),
+    forge: path.join(sysRoot, '.JFLauncher', data.channel, 'forge.jar'),
     version: {
       number: "1.20.1",
       type: "release"
@@ -145,10 +153,8 @@ ipcMain.on('launch', (evt, data) => {
   launcher.launch(opts);
 
   // launcher.on('debug', (e) => console.log('debug',e));
-  launcher.on('data', (e) => {
-    if(e.match(/.*EARLYDISPLAY.*/)) {
-      mainWindow.hide()
-    }
+  launcher.on('arguments', (e) => {
+    mainWindow.hide()
   });
 
   launcher.on('progress', (e) => {
