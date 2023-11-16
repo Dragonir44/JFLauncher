@@ -9,8 +9,6 @@ let playbtn = document.getElementById("play");
 // Lors d'un click sur le bouton play, non désactivé
 playbtn.addEventListener("click", () => {
   playbtn.disabled = true;
-  console.log("click")
-
   ipc.send("login", {})
 });
 
