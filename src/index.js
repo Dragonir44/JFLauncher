@@ -41,15 +41,15 @@ function sendStatusToWindow(text) {
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "JFLauncher",
-    icon: path.join(__dirname, "/assets/logo.ico"),
+    icon: path.join(__dirname, "/public/assets/logo.ico"),
     width: 800,
     height: 600,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, "app/preload.js")
     },
   });
 
