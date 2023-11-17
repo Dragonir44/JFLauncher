@@ -2,7 +2,13 @@
     "channel": {
         "beta": {
             "mc_version": "1.20.1",
-            "current_pack_version": "beta-1.4"
+            "current_pack_version": "beta-1.4",
+            "release_date": "2023-11-07"
+        },
+        "release": {
+            "mc_version": "1.18.2",
+            "current_pack_version": "1.0.3",
+            "release_date": "2023-10-13"
         }
     },
     "news": [
