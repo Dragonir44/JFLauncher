@@ -3,26 +3,28 @@
   "displayName": "JFLauncher",
   "version": "v0.0.5-alpha",
   "description": "Basic Launcher for Jimmu's Factory modpack",
-  "main": "src/index.js",
+  "main": "build/src/index.js",
+  "author": "Dragonir",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
   },
   "scripts": {
     "start": "electron ./src/",
+    "dev": "nodemon --watch \"src/**/*\" -e ts --exec \"tsc -p src && electron .\"",
     "buildW": "electron-builder build -w",
     "buildM": "electron-builder build -m",
     "buildL": "electron-builder build -l",
     "release": "electron-builder build --publish=always"
   },
-  "author": "Dragonir",
-  "license": "MIT",
   "devDependencies": {
     "@electron/packager": "^18.0.0",
     "@types/fs-extra": "^11.0.4",
     "electron": "^27.0.4",
     "electron-builder": "^24.6.4",
     "electron-winstaller": "^5.2.1",
+    "nodemon": "^3.0.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
@@ -30,6 +32,7 @@
     "custom-electron-titlebar": "^4.2.7",
     "dotenv": "^16.3.1",
     "electron-log": "^5.0.0",
+    "electron-reloader": "^1.2.3",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
     "fs-extra": "^11.1.1",
