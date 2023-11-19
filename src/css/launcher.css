@@ -1,0 +1,198 @@
+* {
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-image: url(../../public/assets/background.jpg);
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    color: white;
+    background: #222;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer * {
+  margin: 10px;
+}
+
+.launchButton {
+    background: red;
+    border: 5px red solid;
+    padding: 5px;
+    font-size: 15px;
+    color: white;
+    transition-duration: 0.5s;
+}
+
+.launchButton:hover,
+.launchButton:focus {
+    padding: 5px;
+    border: 5px darkred solid;
+}
+
+#playbtn {
+    float: right;
+}
+
+#news {
+    display: block;
+    padding: 70px 0;
+    text-align: center;
+    margin: 10%;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+  /* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+}
+
+  /* Modal Content */
+.modal-content {
+    position: fixed;
+    bottom: 0;
+    background-color: #fefefe;
+    width: 50%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+    margin-right: 25vw;
+    margin-left: 25vw;
+}
+
+  /* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #ff0000;
+    color: white;
+}
+
+.modal-body {
+    padding: 16px 16px;
+}
+
+/* .progressBar {
+    display: none;
+    flex-wrap: wrap;
+    align-content: center;
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+} */
+
+.progress {
+    height: 100%;
+    width: 0%;
+    line-height: 20px;
+    background-color: #4CAF50;
+    margin: 0;
+}
+
+.status {
+    position: absolute;
+    color: black;
+    font-size: 20px;
+    margin: 0;
+    z-index: 1;
+}
+
+footer .progressBar {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    /* height: 250px; */
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+}
+
+footer .progressBar .MuiLinearProgress-root {
+    height: 15px;
+    width: 90%;
+    border-radius: 5px;
+}
+
+footer .progressBar .MuiLinearProgress-bar {
+    border-radius: 5px;
+    background-color: #56B5FC;
+}
+
+  /* Add Animation */
+@-webkit-keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
