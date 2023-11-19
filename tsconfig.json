@@ -25,5 +25,5 @@
   },
   "include": [
     "src"
-  ]
+, "electron/preload.ts", "electron/main.ts", "electron/tsconfig.json", "public/assets", "public/scripts", "src/css/index.tsx"  ]
 }
