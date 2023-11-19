@@ -35,6 +35,7 @@ Simply download the latest release from the [releases page](https://github.com/D
 ## TODO
 
 - [ ] Add a way to change the channel of the modpack
+- [x] Add java managment
 - [ ] Create a manifest with news and update infos
 - [ ] Change the way the modpack is installed
     - [ ] Change the way the modpack is downloaded
