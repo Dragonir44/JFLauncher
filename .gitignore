@@ -5,3 +5,4 @@ dist/
 electron-builder.env
 cert/
 build/
+yarn.lock
