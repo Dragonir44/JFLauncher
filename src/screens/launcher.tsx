@@ -3,7 +3,7 @@ import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import { LinearProgress } from "@mui/material";
 
-import '../css/launcher.css';
+import 'css/launcher.css';
 
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
