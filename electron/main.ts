@@ -241,7 +241,7 @@ function launch(channel: string) {
         clientPackage : `https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
         removePackage: true,
         forge: path.join(config.getGamePath(channel), 'forge.jar'),
-        javaPath: path.join("C:", "Program Files", "Java", "jre-1.8", "bin", "java.exe"),//javaPath,
+        javaPath: javaPath,
         version: {
             number: "1.20.1",
             type: "release"
@@ -251,7 +251,6 @@ function launch(channel: string) {
             min:'1G'
         }
     };
-    console.log(opts.javaPath)
     launcher.launch(opts);
 
     launcher.on('debug', (e) => console.log('debug',e));
@@ -272,6 +271,7 @@ function launch(channel: string) {
     });
 
     launcher.on('close', (e) => {
+        console.log('close', e);
         mainWindow.show()
         mainWindow.webContents.send("closed", '');
     });
