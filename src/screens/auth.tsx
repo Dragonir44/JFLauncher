@@ -3,7 +3,7 @@ import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Footer from "screens/footer";
 
-import '../css/style.css'
+import 'css/style.css'
 
 type Props = {
     navigate?: NavigateFunction;
