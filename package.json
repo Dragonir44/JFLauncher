@@ -1,9 +1,9 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v0.0.5-alpha",
+  "version": "v0.0.6-alpha",
   "description": "Basic Launcher for Jimmu's Factory modpack",
-  "main": "build/src/index.js",
+  "main": "build/electron/main.js",
   "author": "Dragonir",
   "license": "MIT",
   "repository": {
@@ -11,23 +11,39 @@
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
   },
   "scripts": {
-    "start": "electron ./src/",
-    "dev": "nodemon --watch \"src/**/*\" -e ts --exec \"tsc -p src && electron .\"",
+    "start": "cross-env BROWSER=none react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "postinstall": "electron-builder install-app-deps",
+    "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
+    "dev": "concurrently \"cross-env BROWSER=none npm start\" \"npm run watch\"",
     "buildW": "electron-builder build -w",
     "buildM": "electron-builder build -m",
     "buildL": "electron-builder build -l",
     "release": "electron-builder build --publish=always"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@electron/packager": "^18.0.0",
+    "@types/adm-zip": "^0.5.4",
     "@types/fs-extra": "^11.0.4",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "electron": "^27.0.4",
     "electron-builder": "^24.6.4",
     "electron-winstaller": "^5.2.1",
     "nodemon": "^3.0.1",
-    "typescript": "^5.2.2"
+    "typescript": "^4.6.2",
+    "wait-on": "^7.2.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.18",
+    "adm-zip": "^0.5.10",
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
     "dotenv": "^16.3.1",
@@ -39,6 +55,11 @@
     "minecraft-launcher-core": "^3.14.1",
     "minecraft-server-ping": "^0.1.2",
     "msmc": "^4.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.5.0",
+    "react-router-dom": "^6.19.0",
+    "react-scripts": "^5.0.1",
     "store": "^2.0.12"
   },
   "build": {
@@ -50,5 +71,17 @@
       ],
       "publisherName": "Team Project"
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
