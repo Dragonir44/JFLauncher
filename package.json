@@ -6,6 +6,7 @@
   "main": "build/electron/main.js",
   "author": "Dragonir",
   "license": "MIT",
+  "homepage": ".",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
@@ -17,8 +18,8 @@
     "eject": "react-scripts eject",
     "postinstall": "electron-builder install-app-deps",
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
-    "dev": "concurrently \"cross-env BROWSER=none npm start\" \"npm run watch\"",
-    "buildW": "electron-builder build -w",
+    "dev": "concurrently \"cross-env BROWSER=none npm start\" \"yarn watch\"",
+    "buildW": "yarn build && tsc -p electron && electron-builder build",
     "buildM": "electron-builder build -m",
     "buildL": "electron-builder build -l",
     "release": "electron-builder build --publish=always"
@@ -64,12 +65,36 @@
   },
   "build": {
     "appId": "fr.dragonir.jflauncher",
-    "icon": "src/assets/logo.ico",
+    "productName": "JFLauncher",
+    "artifactName": "${productName}-setup-${version}.${ext}",
+    "compression": "maximum",
+    "asar": true,
+    "extends": null,
+    "icon": "public/assets/logo.ico",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories":{
+      "buildResources": "assets"
+    },
     "win": {
+      "publisherName": "Team Project",
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
       "publish": [
         "github"
-      ],
-      "publisherName": "Team Project"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true
     }
   },
   "browserslist": {
