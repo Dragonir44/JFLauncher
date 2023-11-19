@@ -45,7 +45,6 @@ class Launcher extends Component<Props, InputChange> {
         pseudo.innerHTML = userDetails.profile.name
         skin.src = `https://mc-heads.net/avatar/${userDetails.profile.name}`
         version.innerHTML = versionNumber
-        // ram.value = savedRam || "1"
         this.setState({
             currentRam: Number(savedRam || "1")
         })
