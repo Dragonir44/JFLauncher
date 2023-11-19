@@ -1,11 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Auth from "screens/auth";
 import Launcher from "screens/launcher";
-
-import 'css/toast.css'
 
 declare global {
     interface Window {
@@ -30,12 +28,12 @@ const root = createRoot(container!);
 root.render(
     <React.StrictMode>
         <div id="titlebarRegion" className="titlebarRegion"></div>
-        <BrowserRouter>
+        <HashRouter>
             <Routes>
                 <Route path="/" element={<Auth />} />
                 <Route path="/launcher" element={<Launcher />} />
             </Routes>
-        </BrowserRouter>
+        </HashRouter>
         <script src="../public/scripts/toast"></script>
     </React.StrictMode>
 )
