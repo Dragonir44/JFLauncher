@@ -13,6 +13,7 @@ import AdmZip from 'adm-zip';
 import ChildProcess from 'child_process';
 
 import * as config from './utils/config';
+config.loadConfig();
 
 const sysRoot = process.env.APPDATA || (process.platform == "darwin"
     ? process.env.HOME + "/Library/Application Support"
@@ -199,7 +200,6 @@ function checkJavaInstall(channel: string) {
 
 async function downloadJava(url: string, target: string, jrePath: string, channel: string) {
     try {
-        // const {data, headers} = await axios({url: url, method: 'GET', responseType: 'stream'});
         axios({
             url: url, 
             method: 'GET', 
@@ -207,24 +207,12 @@ async function downloadJava(url: string, target: string, jrePath: string, channe
             onDownloadProgress: (progressEvent) => {
                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 console.log(`Progression: ${progress}%`);
-                // Tu peux appeler ici une fonction pour mettre à jour la barre de progression dans ton application
+                updateProgress(progress);
             }
         })
-            .then(async (res) => {
-                const totalLength = parseInt(res.headers["content-length"]);
-                let receivedBytes = 0;
-
-                
+            .then(async (res) => {                
                 const buffer = Buffer.from(res.data, 'binary');
                 await fs.writeFileSync(target, buffer);
-
-                
-    
-                // res.data.on("data", (chunk: {length: number}) => {
-                //     receivedBytes += chunk.length;
-                //     updateText('Téléchargement de Java')
-                //     updateProgress(Math.round((receivedBytes * 100) / totalLength));
-                // });
 
                 if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
                     const zip = new AdmZip(target);
@@ -233,23 +221,6 @@ async function downloadJava(url: string, target: string, jrePath: string, channe
                     jre = jrePath;
                     launch(channel)
                 }
-
-                // const writer = fs.createWriteStream(target);
-                // console.log(res)
-    
-                // res.data.pipe(writer);
-    
-                // res.data.on("end", async () => {
-                //     const res = await axios.head(url);
-    
-                //     if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
-                //         const zip = new AdmZip(target);
-                //         zip.extractAllTo(jrePath, true);
-                //         fs.unlinkSync(target);
-                //         jre = jrePath;
-                //         launch(channel)
-                //     }
-                // })
             })
             .catch((err) => {
                 console.error(err);
@@ -258,6 +229,22 @@ async function downloadJava(url: string, target: string, jrePath: string, channe
     catch (err) {
         console.error(err);
     }
+}
+
+function checkModpack(channel: string) {
+    return new Promise<void>(async (resolve, reject) => {
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+        const data = config.loadConfig()
+        console.log(data)
+        if (fs.existsSync(modpackPath)) {
+            return resolve();
+        }
+        else {
+            return reject();
+        }
+    })
+
+
 }
 
 function launch(channel: string) {
@@ -284,7 +271,7 @@ function launch(channel: string) {
     };
     launcher.launch(opts);
 
-    launcher.on('debug', (e) => console.log('debug',e));
+    // launcher.on('debug', (e) => console.log('debug',e));
     launcher.on('arguments', (e) => {
         mainWindow.hide()
     });
@@ -317,7 +304,7 @@ ipcMain.on('launch', async (evt, d) => {
     gameConfig = {
         ram: d.ram,
     }
-
+    checkModpack(d.channel)
     await checkJavaInstall(d.channel)
         .then(() => {
             launch(d.channel)
