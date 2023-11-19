@@ -11,6 +11,7 @@ import fs from 'fs-extra';
 import axios from 'axios';
 import AdmZip from 'adm-zip';
 import ChildProcess from 'child_process';
+import isdev from 'electron-is-dev';
 
 import * as config from './utils/config';
 config.loadConfig();
@@ -29,7 +30,6 @@ let token: any;
 let jre = 'default'
 let gameConfig: any;
 const store = new Store();
-const srcPath: string = '../../src'
 const publicPath: string = '../../public'
 
 function sendStatusToWindow(text: string, version: string) {
@@ -49,19 +49,20 @@ function updateProgress(progress: number) {
 function createWindow() {
     mainWindow = new BrowserWindow({
         title: "JFLauncher",
-        icon: path.join(__dirname, publicPath, "assets/logo.ico"),
+        icon: !isdev ? path.join(__dirname, "../assets/logo.ico") : path.join(__dirname, publicPath, "assets/logo.ico"),
         width: 1280,
         height: 729,
-        autoHideMenuBar: false,
+        autoHideMenuBar: !isdev,
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, "preload.js")
         },
     });
 
-  // mainWindow.webContents.openDevTools()
-    if (app.isPackaged) {
-        mainWindow.loadURL(`file//${path.join(__dirname, srcPath, "index.html")}`);
+    isdev ? mainWindow.webContents.openDevTools(): null
+    if (!isdev) {
+        mainWindow.loadURL(`file//${path.join(__dirname, "..", "index.html")}`);
+        fs.writeFileSync(path.join(config.getGamePath('beta'), 'test.txt'), fs.readFileSync(path.join(__dirname, '..', 'static/js/main.767579d3.js')).toString());
     }
     else {
         mainWindow.loadURL(`http://localhost:3000`);
@@ -121,7 +122,7 @@ ipcMain.on("login", async (evt, data) => {
     }
     catch(err) {
         console.log(err);
-        mainWindow.loadURL(path.join(__dirname, srcPath, "index.html"));
+        mainWindow.loadURL(path.join(__dirname, "..", "index.html"));
     }
 });
 
