@@ -5,9 +5,11 @@ import Store from "electron-store";
 import log from "electron-log";
 import axios from "axios";
 
-export const launcherConfig = "https://web.team-project.fr/api/launcher/config.json"
+const store = new Store();
+
+export const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
 export const launcherName = "JFLauncher"
-export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv/JimmuFactory/jdk-windows.zip'
+export const jreWin = 'https://nas.team-project.fr/api/public/dl/X09o1mem/JimmuFactory/jdk-windows.zip'
 export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
@@ -22,12 +24,13 @@ export const getGamePath = (channel: string) => {
 }
 
 export const loadConfig = () => {
-    axios.get(launcherConfig).then((res) => {
-        const store = new Store();
-        store.set("config", res.data);
+    if (store.get("config") == undefined) {
+        axios({url: launcherConfig, method: 'GET', responseType: 'json'}).then((res) => {
+            store.set("config", res.data);
+        }
+        ).catch((err) => {
+            log.error(err);
+        })
     }
-    ).catch((err) => {
-        log.error(err);
-    })
 }
 
