@@ -199,30 +199,61 @@ function checkJavaInstall(channel: string) {
 
 async function downloadJava(url: string, target: string, jrePath: string, channel: string) {
     try {
-        const {data, headers} = await axios({url: url, method: 'GET', responseType: 'stream'});
-        const totalLength = parseInt(headers["content-length"]);
-        let receivedBytes = 0;
-        const writer = fs.createWriteStream(target);
-
-        data.on("data", (chunk: {length: number}) => {
-            receivedBytes += chunk.length;
-            updateText('Téléchargement de Java')
-            updateProgress(Math.round((receivedBytes * 100) / totalLength));
-        });
-
-        data.pipe(writer);
-
-        data.on("end", async () => {
-            const res = await axios.head(url);
-
-            if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
-                const zip = new AdmZip(target);
-                zip.extractAllTo(jrePath, true);
-                fs.unlinkSync(target);
-                jre = jrePath;
-                launch(channel)
+        // const {data, headers} = await axios({url: url, method: 'GET', responseType: 'stream'});
+        axios({
+            url: url, 
+            method: 'GET', 
+            responseType: 'arraybuffer',
+            onDownloadProgress: (progressEvent) => {
+                const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                console.log(`Progression: ${progress}%`);
+                // Tu peux appeler ici une fonction pour mettre à jour la barre de progression dans ton application
             }
         })
+            .then(async (res) => {
+                const totalLength = parseInt(res.headers["content-length"]);
+                let receivedBytes = 0;
+
+                
+                const buffer = Buffer.from(res.data, 'binary');
+                await fs.writeFileSync(target, buffer);
+
+                
+    
+                // res.data.on("data", (chunk: {length: number}) => {
+                //     receivedBytes += chunk.length;
+                //     updateText('Téléchargement de Java')
+                //     updateProgress(Math.round((receivedBytes * 100) / totalLength));
+                // });
+
+                if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
+                    const zip = new AdmZip(target);
+                    zip.extractAllTo(jrePath, true);
+                    fs.unlinkSync(target);
+                    jre = jrePath;
+                    launch(channel)
+                }
+
+                // const writer = fs.createWriteStream(target);
+                // console.log(res)
+    
+                // res.data.pipe(writer);
+    
+                // res.data.on("end", async () => {
+                //     const res = await axios.head(url);
+    
+                //     if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
+                //         const zip = new AdmZip(target);
+                //         zip.extractAllTo(jrePath, true);
+                //         fs.unlinkSync(target);
+                //         jre = jrePath;
+                //         launch(channel)
+                //     }
+                // })
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     }
     catch (err) {
         console.error(err);
