@@ -6,7 +6,6 @@ import {Auth} from 'msmc'
 import Store from "electron-store";
 import log from 'electron-log';
 import { autoUpdater } from "electron-updater"
-import os from 'os';
 import fs from 'fs-extra';
 import axios from 'axios';
 import AdmZip from 'adm-zip';
@@ -59,13 +58,12 @@ function createWindow() {
         },
     });
 
-    isdev ? mainWindow.webContents.openDevTools(): null
     if (!isdev) {
         mainWindow.loadURL(`file//${path.join(__dirname, "..", "index.html")}`);
-        fs.writeFileSync(path.join(config.getGamePath('beta'), 'test.txt'), fs.readFileSync(path.join(__dirname, '..', 'static/js/main.767579d3.js')).toString());
     }
     else {
         mainWindow.loadURL(`http://localhost:3000`);
+        mainWindow.webContents.openDevTools()
     }
 }
 
