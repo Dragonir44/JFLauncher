@@ -1,6 +1,7 @@
 // Importation des modules
 import { app, ipcMain, BrowserWindow, Menu } from "electron";
 import path from "path";
+import url from "url";
 import { Client } from "minecraft-launcher-core";
 import {Auth} from 'msmc'
 import Store from "electron-store";
@@ -59,7 +60,11 @@ function createWindow() {
     });
 
     if (!isdev) {
-        mainWindow.loadURL(`file//${path.join(__dirname, "..", "index.html")}`);
+        mainWindow.loadURL(url.format({
+            protocol: "file",
+            pathname: path.join(__dirname, "..", "index.html"),
+            slashes: true
+        }));//`file//${path.join(__dirname, "..", "index.html")}`
     }
     else {
         mainWindow.loadURL(`http://localhost:3000`);
