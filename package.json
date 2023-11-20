@@ -19,7 +19,7 @@
     "postinstall": "electron-builder install-app-deps",
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "dev": "concurrently \"cross-env BROWSER=none npm start\" \"yarn watch\"",
-    "buildW": "yarn build && tsc -p electron && electron-builder build",
+    "buildW": "yarn build && tsc -p electron && electron-builder",
     "buildM": "electron-builder build -m -c.extraMetadata.main=build/electron/main.js",
     "buildL": "electron-builder build -l",
     "release": "electron-builder build --publish=always"
