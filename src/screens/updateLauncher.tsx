@@ -81,7 +81,7 @@ class UpdateLauncher extends Component<Props, State> {
         const {progress, updateText} = this.state;
         return (
             <div className='updateBox'>
-                <div className='updateText'>{updateText}</div>
+                <div className='updateText'>{updateText || "Vérification des mises à jour ..."}</div>
                 <div className='updateBar'>
                     <div className='updateBarProgress' style={{width: `${progress}%`}}></div>
                 </div>
