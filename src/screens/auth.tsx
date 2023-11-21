@@ -12,15 +12,21 @@ type Props = {
 class Auth extends Component<Props> {
 
     async componentDidMount() {
-        const userDetails = await window.store.get("userDetails")
-        if (userDetails) {
-            const playbtn = document.getElementById("play") as HTMLButtonElement
-            playbtn.disabled = true;
-            window.ipc.send("loginToken", JSON.parse(userDetails))
+        try {
+            const userDetails = await window.store.get("userDetails")
+            if (userDetails) {
+                const playbtn = document.getElementById("play") as HTMLButtonElement
+                playbtn.disabled = true;
+                window.ipc.send("loginToken", JSON.parse(userDetails))
+            }
+            window.ipc.receive("auth-success", () => {
+                this.props.navigate!(`/launcher`);
+            })
         }
-        window.ipc.receive("auth-success", () => {
-            this.props.navigate!(`/launcher`);
-        })
+        catch(err) {
+            console.error(err)
+            throw err
+        }
     }
 
 
