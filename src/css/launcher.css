@@ -109,51 +109,29 @@ footer * {
     padding: 16px 16px;
 }
 
-/* .progressBar {
-    display: none;
-    flex-wrap: wrap;
-    align-content: center;
-    width: 100%;
-    height: 20px;
-    background-color: #ddd;
-} */
+.progressBar {
+  display: none;
+  flex-wrap: wrap;
+  align-content: center;
+  width: 100%;
+  height: 25px;
+  background-color: #ddd;
+}
 
 .progress {
-    height: 100%;
-    width: 0%;
-    line-height: 20px;
-    background-color: #4CAF50;
-    margin: 0;
+  height: 100%;
+  width: 0%;
+  line-height: 20px;
+  background-color: #4CAF50;
+  margin: 0;
 }
 
 .status {
-    position: absolute;
-    color: black;
-    font-size: 20px;
-    margin: 0;
-    z-index: 1;
-}
-
-footer .progressBar {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 800px;
-    /* height: 250px; */
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 30px;
-}
-
-footer .progressBar .MuiLinearProgress-root {
-    height: 15px;
-    width: 90%;
-    border-radius: 5px;
-}
-
-footer .progressBar .MuiLinearProgress-bar {
-    border-radius: 5px;
-    background-color: #56B5FC;
+  position: absolute;
+  color: black;
+  font-size: 20px;
+  margin: 0;
+  z-index: 1;
 }
 
   /* Add Animation */
