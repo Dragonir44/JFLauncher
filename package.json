@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v0.0.6-alpha",
+  "version": "v0.0.7-alpha",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
   "author": "Dragonir",
@@ -43,7 +43,6 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.18",
     "adm-zip": "^0.5.10",
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
