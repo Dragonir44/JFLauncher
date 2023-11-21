@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v1.0.0",
+  "version": "v1.0.1",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
   "author": "Dragonir",
@@ -13,9 +13,7 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "Dragonir44",
-    "repo": "JFLauncher",
-    "releaseType": "prerelease"
+    "releaseType": "release"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
@@ -26,9 +24,7 @@
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "dev": "concurrently \"cross-env BROWSER=none npm start\" \"yarn watch\"",
     "buildW": "yarn build && tsc -p electron && electron-builder",
-    "buildM": "electron-builder build -m -c.extraMetadata.main=build/electron/main.js",
-    "buildL": "electron-builder build -l",
-    "release": "electron-builder build --publish=always"
+    "release": "yarn build && tsc -p electron && electron-builde build --publish=always"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
