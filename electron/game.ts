@@ -22,7 +22,7 @@ let gameConfig: any;
 
 
 export const initGame = () => {
-    ipcMain.on('launch', async (evt, d) => {
+    ipcMain.on('launch', (evt, d) => {
         if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
             fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
         }
@@ -31,7 +31,10 @@ export const initGame = () => {
             ram: d.ram,
         }
         checkModpack(d.channel)
-        await checkJavaInstall(d.channel)
+            .then(() => {})
+            .catch(() => console.log('Modpack not found'))
+        
+        checkJavaInstall(d.channel)
             .then(() => {
                 launch(d.channel)
             })
@@ -77,7 +80,7 @@ function checkJavaInstall(channel: string) {
             return reject();
         });
         spawn.stderr.on('data', (data) => {
-            if (data.includes('version') && data.includes('17')) {
+            if (data.includes('version') && data.includes('1.8')) {
                 data = data.toString().split('\n')[0]
                 const javaVersion = new RegExp("java version").test(data) ? data.split(' ')[2].replace(/"/g, '') : false;
                 if (javaVersion) {
