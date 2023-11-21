@@ -1,7 +1,6 @@
-import { Component, useState } from "react";
+import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
-import { LinearProgress } from "@mui/material";
 
 import 'css/launcher.css';
 
@@ -21,16 +20,15 @@ interface InputChange {
 
 class Launcher extends Component<Props, InputChange> {
 
-    // constructor(props: Props) {
-    //     super(props);
-        
-    // }
-    state = {
-        currentRam: 1,
-        progress: 0,
-        updateText: ""
-    }
+    constructor(props: Props) {
+        super(props);
 
+        this.state = {
+            currentRam: 1,
+            progress: 0,
+            updateText: ""
+        }
+    }
     async componentDidMount() {
         const userDetails = JSON.parse(await window.ipc.sendSync("getDetails"))
         const versionNumber = await window.ipc.sendSync("getVersion")
@@ -52,8 +50,7 @@ class Launcher extends Component<Props, InputChange> {
         this.setState({updateText: "Recherche de maj..."})
 
         window.ipc.receive('updateText', (data) => {
-            const {progress} = this.state
-            this.setState({updateText: `${data} : ${progress}%`})
+            this.setState({updateText:`${data} : ${this.state.progress}%`})
         })
 
         window.ipc.receive('updateProgress', (data) => {
@@ -62,10 +59,10 @@ class Launcher extends Component<Props, InputChange> {
 
         window.ipc.receive('closed', (event, data) => {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
-            const progress = document.getElementById("progress") as HTMLDivElement
-            playbtn.disabled = false;
+            const playbtn = document.getElementById("playbtn") as HTMLButtonElement
             progressBar.style.display = 'none'
-            progress.style.width = '0%'
+            playbtn.disabled = false;
+            this.setState({updateText: "", progress: 0})
         })
 
         window.ipc.receive('message', function(event, text) {
@@ -113,7 +110,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText } = this.state;
+        const { progress, updateText } = this.state
         return (
             <>
                 <header>
@@ -143,11 +140,8 @@ class Launcher extends Component<Props, InputChange> {
                 <footer>
                     <button id="options" className="launchButton" onClick={this.displayModal}>OPTIONS</button>
                     <div id="progressBar" className="progressBar">
-                        <span id="status" className="status">{updateText}</span>
-                        <LinearProgress
-                            variant={progress == 0 ? "indeterminate" : "determinate"}
-                            value={progress}
-                        />
+                        <h3 id="status" className="status">{updateText}</h3>
+                        <div className="progress" style={{width: `${progress}%`}}></div>
                     </div>
                     <button id="playbtn" className="launchButton" onClick={this.handlePlay}>JOUER</button>
                 </footer>
