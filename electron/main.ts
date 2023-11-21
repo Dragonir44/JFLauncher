@@ -1,5 +1,5 @@
 // Importation des modules
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import url from "url";
 import Store from "electron-store";
@@ -8,6 +8,7 @@ import { autoUpdater } from "electron-updater"
 import isdev from 'electron-is-dev';
 import { initIpc } from "./ipc";
 import { initGame } from "./game";
+import fs from "fs-extra";
 
 import * as config from './utils/config';
 config.loadConfig();
@@ -64,27 +65,43 @@ function createWindow() {
     }
 }
 
-autoUpdater.on('checking-for-update', () => {
-    sendStatusToWindow('Checking for update...', app.getVersion());
-})
-autoUpdater.on('update-available', (info) => {
-    sendStatusToWindow('Update available.', app.getVersion());
-})
-autoUpdater.on('update-not-available', (info) => {
-    sendStatusToWindow('Update not available.', app.getVersion());
-})
-autoUpdater.on('error', (err) => {
-    sendStatusToWindow('Error in auto-updater. ' + err, app.getVersion());
-})
-autoUpdater.on('download-progress', (progressObj) => {
-    let log_message = "Download speed: " + progressObj.bytesPerSecond;
-    log_message += ' - Downloaded ' + progressObj.percent + '%';
-    log_message += ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-    sendStatusToWindow(log_message, app.getVersion());
-})
-autoUpdater.on('update-downloaded', (info) => {
-    sendStatusToWindow('Update downloaded', app.getVersion());
+ipcMain.on("install-updates", () => {
+    autoUpdater.quitAndInstall();
 });
+
+ipcMain.on('check-update', () => {
+    if (isdev) {
+        autoUpdater.updateConfigPath = path.join(__dirname, '../../dev-app-update.yml')
+        mainWindow?.webContents.send('update-finished', false)
+    }
+    else {
+        if (process.platform === "darwin") {
+            autoUpdater.autoDownload = false;
+        }
+
+        autoUpdater.allowPrerelease = true;
+        autoUpdater.on("update-downloaded", () => {
+            mainWindow?.webContents.send("update-finished", true);
+        });
+
+        autoUpdater.on("update-not-available", () => {
+            fs.writeFileSync(path.join(config.getGamePath('beta'), 'test.txt'), "No update available");
+            mainWindow?.webContents.send("update-finished", false);
+        });
+
+        autoUpdater.on("error", (err: Error) => {
+            mainWindow?.webContents.send("update-failed", err.message);
+        });
+
+        autoUpdater.on("download-progress", (progress) => {
+            mainWindow?.webContents.send("update-progress", progress.percent.toFixed(2));
+        });
+
+        autoUpdater.checkForUpdates().catch((err: Error) => {
+            mainWindow?.webContents.send("update-failed", err.message);
+        });
+    }
+})
 
 app.on('ready', ()=> {
     autoUpdater.checkForUpdatesAndNotify()
