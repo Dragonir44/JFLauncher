@@ -9,7 +9,7 @@ const store = new Store();
 
 export const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
 export const launcherName = "JFLauncher"
-export const jreWin = 'https://nas.team-project.fr/api/public/dl/X09o1mem/JimmuFactory/jdk-windows.zip'
+export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv'
 export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
