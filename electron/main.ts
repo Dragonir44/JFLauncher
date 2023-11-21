@@ -4,7 +4,7 @@ import path from "path";
 import url from "url";
 import Store from "electron-store";
 import log from 'electron-log';
-import { autoUpdater } from "electron-updater"
+import { autoUpdater, AppUpdater } from "electron-updater"
 import isdev from 'electron-is-dev';
 import { initIpc } from "./ipc";
 import { initGame } from "./game";
@@ -14,6 +14,8 @@ import * as config from './utils/config';
 config.loadConfig();
 
 autoUpdater.logger = log;
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 log.info('App starting...');
 
@@ -79,8 +81,9 @@ ipcMain.on('check-update', () => {
             autoUpdater.autoDownload = false;
         }
 
-        autoUpdater.allowPrerelease = true;
+        autoUpdater.allowPrerelease = false;
         autoUpdater.on("update-downloaded", () => {
+            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-downloaded.txt'), "Update downloaded");
             mainWindow?.webContents.send("update-finished", true);
         });
 
@@ -90,27 +93,26 @@ ipcMain.on('check-update', () => {
         });
 
         autoUpdater.on("error", (err: Error) => {
+            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-error.txt'), JSON.stringify(err));
             mainWindow?.webContents.send("update-failed", err.message);
         });
 
         autoUpdater.on("download-progress", (progress) => {
+            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-progress.txt'), JSON.stringify(progress));
             mainWindow?.webContents.send("update-progress", progress.percent.toFixed(2));
         });
 
         autoUpdater.checkForUpdates().catch((err: Error) => {
+            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-failed.txt'), JSON.stringify(err));
             mainWindow?.webContents.send("update-failed", err.message);
         });
     }
 })
 
-app.on('ready', ()=> {
-    autoUpdater.checkForUpdatesAndNotify()
-})
-
 // Quand l'application est chargée, afficher la fenêtre
 app.whenReady().then(() => {
     createWindow();
-
+    autoUpdater.checkForUpdatesAndNotify()
     app.on("activate", function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
