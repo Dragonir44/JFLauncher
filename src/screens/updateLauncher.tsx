@@ -46,6 +46,7 @@ class UpdateLauncher extends Component<Props, State> {
         window.ipc.receive('update-progress', (progress) => {
             this.setState({updateText: `Mise à jour en cours : ${progress}%`})
             this.setState({progress: progress})
+            console.log(progress)
         })
 
         window.ipc.receive('update-finished', (askInstall) => {
@@ -80,12 +81,15 @@ class UpdateLauncher extends Component<Props, State> {
     render() {
         const {progress, updateText} = this.state;
         return (
-            <div className='updateBox'>
-                <div className='updateText'>{updateText || "Vérification des mises à jour ..."}</div>
-                <div className='updateBar'>
-                    <div className='updateBarProgress' style={{width: `${progress}%`}}></div>
+            <>
+                <div className='updateBox'>
+                    <div className='updateText'>{updateText || "Vérification des mises à jour ..."}</div>
+                    <div className='updateBar'>
+                        <div className='updateBarProgress' style={{width: `${progress}%`}}></div>
+                    </div>
                 </div>
-            </div>
+                <Footer/>
+            </>
         )
     }
 }
