@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v0.0.7-alpha",
+  "version": "v1.0.0",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
   "author": "Dragonir",
@@ -10,6 +10,12 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dragonir44/JFLauncher.git"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "Dragonir44",
+    "repo": "JFLauncher",
+    "releaseType": "prerelease"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
@@ -86,10 +92,7 @@
         "arch": [
           "x64"
         ]
-      },
-      "publish": [
-        "github"
-      ]
+      }
     },
     "nsis": {
       "oneClick": false,
