@@ -65,6 +65,7 @@ function createWindow() {
         mainWindow.loadURL(`http://localhost:3000`);
         mainWindow.webContents.openDevTools()
     }
+    mainWindow.webContents.openDevTools()
 }
 
 ipcMain.on("install-updates", () => {
@@ -112,7 +113,7 @@ ipcMain.on('check-update', () => {
 // Quand l'application est chargée, afficher la fenêtre
 app.whenReady().then(() => {
     createWindow();
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.checkForUpdates()
     app.on("activate", function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
