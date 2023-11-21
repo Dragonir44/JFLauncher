@@ -32,11 +32,9 @@ class Launcher extends Component<Props, InputChange> {
     async componentDidMount() {
         const userDetails = JSON.parse(await window.ipc.sendSync("getDetails"))
         const versionNumber = await window.ipc.sendSync("getVersion")
-        const playbtn = document.getElementById("playbtn") as HTMLButtonElement
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
         const version = document.getElementById("version") as HTMLSpanElement
-        const ram = document.getElementById("ram") as HTMLInputElement
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
 
