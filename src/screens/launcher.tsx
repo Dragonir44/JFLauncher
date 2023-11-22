@@ -62,7 +62,7 @@ class Launcher extends Component<Props, InputChange> {
                     isDisabled: !channel.download_link
                 })
             }
-            if (defaultChannel.value === channel.channel_name) {
+            if (defaultChannel && defaultChannel.value === channel.channel_name) {
                 this.setState({
                     selectedChannel: {
                         value: channel.channel_name, 
