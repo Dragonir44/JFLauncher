@@ -134,6 +134,48 @@ footer * {
   z-index: 1;
 }
 
+.channel__control {
+  color: black;
+  font-size: 15px;
+  /* width: ; */
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.channel__control .channel__indicators {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.channel__control .channel__indicators .channel__indicator {
+  margin: 0;
+  padding: 0;
+}
+
+.channel__control .channel__value-container {
+  margin: 0;
+  padding: 0;
+}
+
+.channel__menu {
+  margin: 0;
+  padding: 0;
+  color: black;
+}
+
+.channel__menu .channel__menu-list {
+  margin: 0;
+  padding: 0;
+}
+
+.channel__menu .channel__menu-list .channel__option {
+  margin: 0;
+  padding: 0;
+}
+
   /* Add Animation */
 @-webkit-keyframes slideIn {
   from {
