@@ -63,6 +63,7 @@
     "react-i18next": "^13.5.0",
     "react-router-dom": "^6.19.0",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.8.0",
     "store": "^2.0.12",
     "sweetalert2": "^11.10.1"
   },
