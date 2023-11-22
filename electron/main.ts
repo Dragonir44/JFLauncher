@@ -11,7 +11,6 @@ import { initGame } from "./game";
 import fs from "fs-extra";
 
 import * as config from './utils/config';
-config.loadConfig();
 
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false;
@@ -51,6 +50,7 @@ function createWindow() {
         },
     });
 
+    config.loadConfig();
     initIpc()
     initGame()
 
