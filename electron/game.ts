@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { Client } from "minecraft-launcher-core";
 import fs from 'fs-extra';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import path from 'path';
 import AdmZip from 'adm-zip';
 import ChildProcess from 'child_process';
@@ -178,19 +178,16 @@ function downloadModpack(channel: string) {
 
         updateText('Téléchargement du modpack')
 
-        axios({
-            url: data?.download_link, 
-            method: 'GET', 
+        const options: AxiosRequestConfig = {
             responseType: 'arraybuffer',
-            onDownloadProgress: (progressEvent) => {
-                const total = parseFloat(progressEvent.currentTarget.responseHeaders['Content-Length'])
-                const current = progressEvent.currentTarget.response.length
-
-                let percentCompleted = Math.floor(current / total * 100)
+            onDownloadProgress: function(progressEvent) {
+                const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
                 console.log('completed: ', percentCompleted)
                 updateProgress(percentCompleted);
             }
-        })
+        }
+
+        axios.get(data?.download_link as string, options)
             .then(async (res) => {
                 const buffer = Buffer.from(res.data, 'binary');
                 await fs.writeFileSync(modpackPath, buffer);
