@@ -16,6 +16,19 @@ const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.e
 const gamePath = path.join(sysRoot, `.${launcherName}`)
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
 
+type Config = {
+    channel: [
+        {
+            channel_name: string,
+            mc_version: string,
+            current_pack_version: string,
+            release_date: Date,
+            download_link: string
+        }
+    ]
+    news:any
+}
+
 export const getGamePath = (channel: string) => {
     if (!fs.existsSync(path.join(gamePath, channel))) {
         fs.mkdirSync(path.join(gamePath, channel), { recursive: true })
@@ -24,13 +37,20 @@ export const getGamePath = (channel: string) => {
 }
 
 export const loadConfig = () => {
-    if (store.get("config") == undefined) {
-        axios({url: launcherConfig, method: 'GET', responseType: 'json'}).then((res) => {
-            store.set("config", res.data);
-        }
-        ).catch((err) => {
-            log.error(err);
-        })
+    axios({url: launcherConfig, method: 'GET', responseType: 'json'}).then((res) => {
+        store.set("config", res.data);
     }
+    ).catch((err) => {
+        log.error(err);
+    })
 }
 
+export const getGameChannelList = () => {
+    const config = store.get("config") as Config
+    return config.channel
+}
+
+export const getGameChannel = (channel: string) => {
+    const config = store.get("config") as Config
+    return config.channel.find((c) => c.channel_name === channel)
+}
