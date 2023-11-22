@@ -39,7 +39,7 @@ export function updateProgress(progress: number) {
 // Création de la fenêtre principale
 function createWindow() {
     mainWindow = new BrowserWindow({
-        title: "JFLauncher",
+        title: `JFLauncher - ${app.getVersion()}`,
         icon: !isdev ? path.join(__dirname, "../assets/logo.ico") : path.join(__dirname, publicPath, "assets/logo.ico"),
         width: 1280,
         height: 729,
