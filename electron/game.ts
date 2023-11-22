@@ -50,10 +50,33 @@ export const initGame = () => {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
                 if (process.platform === 'linux') {
-                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath, d.channel);
+                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath, d.channel).then(() => {
+                        checkModpack(d.channel)
+                            .then(() => launch(d.channel))
+                            .catch(() => {
+                                downloadModpack(d.channel)
+                                    .then(() => launch(d.channel))
+                                    .catch(() => {
+                                        console.error('Erreur lors du téléchargement du modpack');
+                                    })
+                            
+                            })
+                    })
+
                 }
                 else {
-                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath, d.channel);
+                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath, d.channel).then(() => {
+                        checkModpack(d.channel)
+                            .then(() => launch(d.channel))
+                            .catch(() => {
+                                downloadModpack(d.channel)
+                                    .then(() => launch(d.channel))
+                                    .catch(() => {
+                                        console.error('Erreur lors du téléchargement du modpack');
+                                    })
+                            
+                            })
+                    })
                 }
             })
     })
@@ -115,39 +138,46 @@ function checkJavaInstall(channel: string) {
     })
 }
 
-async function downloadJava(url: string, target: string, jrePath: string, channel: string) {
-    try {
-        updateText('Téléchargement de Java')
-        axios({
-            url: url, 
-            method: 'GET', 
-            responseType: 'arraybuffer',
-            onDownloadProgress: (progressEvent) => {
-                const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                console.log(`Progression: ${progress}%`);
-                updateProgress(progress);
-            }
-        })
-            .then(async (res) => {                
-                const buffer = Buffer.from(res.data, 'binary');
-                await fs.writeFileSync(target, buffer);
+function downloadJava(url: string, target: string, jrePath: string, channel: string) {
+    return new Promise<void>(async (resolve, reject) => {
+        try {
+            updateText('Téléchargement de Java')
+            axios.get(url, {responseType: 'stream'})
+                .then(async (res) => {
+                    const writer = fs.createWriteStream(target);
+                    const totalSize = parseInt(res.headers['content-length'], 10);
+                    let downloadedSize = 0
+    
+                    res.data.on('data', (chunk: any) => {
+                        downloadedSize += chunk.length;
+                        const progress = Math.round((downloadedSize / totalSize) * 100)
+                        updateText(`Téléchargement de java`);
+                        updateProgress(progress);
+                    })
 
-                if (fs.statSync(target).size === parseInt(res.headers['content-length'])) {
-                    updateText('Extraction de Java')
-                    const zip = new AdmZip(target);
-                    zip.extractAllTo(jrePath, true);
-                    fs.unlinkSync(target);
-                    jre = jrePath;
-                    launch(channel)
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            })
-    }
-    catch (err) {
-        console.error(err);
-    }
+                    res.data.pipe(writer);
+                    writer.on('finish', () => {
+                        updateText('Extraction de Java')
+                        const zip = new AdmZip(target);
+                        zip.extractAllTo(jrePath, true);
+                        fs.unlinkSync(target);
+                        jre = jrePath;
+                        resolve()
+                    })
+    
+                    writer.on('error', (err) => {
+                        console.error(err);
+                        return reject();
+                    })
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+        }
+        catch (err) {
+            console.error(err);
+        }
+    })
 }
 
 function checkModpack(channel: string) {
@@ -178,34 +208,39 @@ function downloadModpack(channel: string) {
 
         updateText('Téléchargement du modpack')
 
-        const options: AxiosRequestConfig = {
-            responseType: 'arraybuffer',
-            onDownloadProgress: function(progressEvent) {
-                const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-                console.log('completed: ', percentCompleted)
-                updateProgress(percentCompleted);
-            }
-        }
+        axios.get(data?.download_link as string, {responseType: 'stream'})
+            .then((res) => {
 
-        axios.get(data?.download_link as string, options)
-            .then(async (res) => {
-                const buffer = Buffer.from(res.data, 'binary');
-                await fs.writeFileSync(modpackPath, buffer);
+                const writer = fs.createWriteStream(modpackPath);
+                const totalSize = parseInt(res.headers['content-length'], 10);
+                let downloadedSize = 0
 
-                if (fs.statSync(modpackPath).size === parseInt(res.headers['content-length'])) {
+                res.data.on('data', (chunk: any) => {
+                    downloadedSize += chunk.length;
+                    const progress = Math.round((downloadedSize / totalSize) * 100)
+                    updateText(`Téléchargement du modpack`);
+                    updateProgress(progress);
+                })
+
+                res.data.pipe(writer);
+
+                writer.on('finish', () => {
                     updateText('Extraction du modpack')
                     const zip = new AdmZip(modpackPath);
                     zip.extractAllTo(config.getGamePath(channel), true);
                     fs.unlinkSync(modpackPath);
                     return resolve();
-                }
+                })
+                writer.on('error', (err) => {
+                    console.error(err);
+                    return reject();
+                })
             })
             .catch((err) => {
                 console.error(err);
                 return reject();
             })
     })
-
 }
 
 function launch(channel: string) {
