@@ -155,7 +155,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText, options } = this.state
+        const { progress, updateText, options, currentRam, selectedChannel } = this.state
         return (
             <>
                 <header>
@@ -170,7 +170,7 @@ class Launcher extends Component<Props, InputChange> {
                         </div>
                         <div className="modal-body">
                             <b>Mémoire vive :</b>
-                            <input type="range" min="1" value={this.state.currentRam} id="ram" max={maxRam} onInput={this.handleRam} />
+                            <input type="range" min="1" value={currentRam} id="ram" max={maxRam} onInput={this.handleRam} />
                             <span id="ramValue">1</span>
                             GO
                             <hr />
@@ -192,7 +192,7 @@ class Launcher extends Component<Props, InputChange> {
                         name="channel" 
                         id="channel"
                         classNamePrefix="channel"
-                        value={this.state.selectedChannel}
+                        value={selectedChannel}
                         isSearchable={false}
                         options={options} 
                         styles={customStyles}
