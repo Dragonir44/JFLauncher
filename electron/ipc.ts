@@ -1,6 +1,7 @@
 import { app, ipcMain, BrowserWindow, Menu } from "electron";
 import {Auth} from 'msmc'
 import path from "path";
+import * as config from './utils/config';
 
 import { mainWindow, store } from "./main";
 
@@ -39,6 +40,14 @@ export const initIpc = () => {
     
     ipcMain.on("getVersion", (evt, data) => {
         evt.returnValue = app.getVersion();
+    })
+
+    ipcMain.on("getChannels", (evt, data) => {
+        evt.returnValue = config.getGameChannelList();
+    })
+
+    ipcMain.on("getChannel", (evt, data) => {
+        evt.returnValue = config.getGameChannel(data);
     })
     
     ipcMain.on('deco', (evt, data) => {
