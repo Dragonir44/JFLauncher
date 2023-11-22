@@ -18,9 +18,8 @@ interface InputChange {
     progress?: number;
     updateText?: string;
     channels?: string[];
-    selectedChannel?: string;
+    selectedChannel?: any;
     options?: any[];
-    defaultOption?: any;
 }
 
 const customStyles: StylesConfig = {
@@ -41,8 +40,7 @@ class Launcher extends Component<Props, InputChange> {
             progress: 0,
             updateText: "",
             options: [],
-            defaultOption: {value: 'beta', label: 'Beta'},
-            selectedChannel: "beta"
+            selectedChannel: {value: "beta", label: "Beta"},
         }
     }
     async componentDidMount() {
@@ -54,6 +52,7 @@ class Launcher extends Component<Props, InputChange> {
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
         const channels = await window.ipc.sendSync("getChannels")
+        const defaultChannel = await window.store.get("channel")
         let options: any[] = []
 
         for(let i = 0; i < channels.length; i++) {
@@ -62,6 +61,14 @@ class Launcher extends Component<Props, InputChange> {
                 options.push({
                     value: channel.channel_name, 
                     label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+                })
+            }
+            if (defaultChannel.value === channel.channel_name) {
+                this.setState({
+                    selectedChannel: {
+                        value: channel.channel_name, 
+                        label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+                    }
                 })
             }
         }
@@ -116,7 +123,8 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     handleChannel = (e: any) => {
-        this.setState({selectedChannel: e.value})
+        this.setState({selectedChannel: e})
+        window.store.set('channel', e)
     }
     
     displayModal = (e: any) => {
@@ -147,7 +155,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText, options, defaultOption } = this.state
+        const { progress, updateText, options } = this.state
         return (
             <>
                 <header>
@@ -184,8 +192,8 @@ class Launcher extends Component<Props, InputChange> {
                         name="channel" 
                         id="channel"
                         classNamePrefix="channel"
+                        value={this.state.selectedChannel}
                         isSearchable={false}
-                        defaultValue={defaultOption}
                         options={options} 
                         styles={customStyles}
                         menuPlacement="top"
