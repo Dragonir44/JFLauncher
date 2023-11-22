@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
+import Select, { StylesConfig } from "react-select";
 
 import 'css/launcher.css';
 
@@ -16,6 +17,18 @@ interface InputChange {
     currentRam?: number;
     progress?: number;
     updateText?: string;
+    channels?: string[];
+    selectedChannel?: string;
+    options?: any[];
+    defaultOption?: any;
+}
+
+const customStyles: StylesConfig = {
+    dropdownIndicator: (provided:any, state:any) => ({
+        ...provided,
+        transform: state.selectProps.menuIsOpen && 'rotate(180deg)',
+        color: state.selectProps.menuIsOpen && '#fff'
+    })
 }
 
 class Launcher extends Component<Props, InputChange> {
@@ -26,7 +39,10 @@ class Launcher extends Component<Props, InputChange> {
         this.state = {
             currentRam: 1,
             progress: 0,
-            updateText: ""
+            updateText: "",
+            options: [],
+            defaultOption: {value: 'beta', label: 'Beta'},
+            selectedChannel: "beta"
         }
     }
     async componentDidMount() {
@@ -37,6 +53,19 @@ class Launcher extends Component<Props, InputChange> {
         const version = document.getElementById("version") as HTMLSpanElement
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
+        const channels = await window.ipc.sendSync("getChannels")
+        let options: any[] = []
+
+        for(let i = 0; i < channels.length; i++) {
+            const channel = channels[i]
+            if (!options.includes(channel)) {
+                options.push({
+                    value: channel.channel_name, 
+                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+                })
+            }
+        }
+        this.setState({options: options})
 
         pseudo.innerHTML = userDetails.profile.name
         skin.src = `https://mc-heads.net/avatar/${userDetails.profile.name}`
@@ -58,6 +87,9 @@ class Launcher extends Component<Props, InputChange> {
         window.ipc.receive('closed', (event, data) => {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
             const playbtn = document.getElementById("playbtn") as HTMLButtonElement
+            const selectChannel = document.getElementById("channel") as HTMLSelectElement
+            selectChannel.disabled = false;
+            selectChannel.style.display = 'block';
             progressBar.style.display = 'none'
             playbtn.disabled = false;
             this.setState({updateText: "", progress: 0})
@@ -75,9 +107,16 @@ class Launcher extends Component<Props, InputChange> {
     handlePlay = (e: any) => {
         const ram = document.getElementById("ram") as HTMLInputElement
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
+        const selectChannel = document.getElementById("channel") as HTMLSelectElement
+        selectChannel.disabled = true;
+        selectChannel.style.display = 'none';
         progressBar.style.display = 'block'
         e.currentTarget.disabled = true;
-        window.ipc.send("launch", {ram: ram?.value, channel: 'beta'});
+        window.ipc.send("launch", {ram: ram?.value, channel: this.state.selectedChannel});
+    }
+
+    handleChannel = (e: any) => {
+        this.setState({selectedChannel: e.value})
     }
     
     displayModal = (e: any) => {
@@ -108,7 +147,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText } = this.state
+        const { progress, updateText, options, defaultOption } = this.state
         return (
             <>
                 <header>
@@ -135,12 +174,23 @@ class Launcher extends Component<Props, InputChange> {
                     <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" /><br />
                     Bienvenue <b id="pseudo">Inconnu</b>
                 </section>
-                <footer>
+                <footer id="footer">
                     <button id="options" className="launchButton" onClick={this.displayModal}>OPTIONS</button>
                     <div id="progressBar" className="progressBar">
                         <h3 id="status" className="status">{updateText}</h3>
                         <div className="progress" style={{width: `${progress}%`}}></div>
                     </div>
+                    <Select 
+                        name="channel" 
+                        id="channel"
+                        classNamePrefix="channel"
+                        isSearchable={false}
+                        defaultValue={defaultOption}
+                        options={options} 
+                        styles={customStyles}
+                        menuPlacement="top"
+                        onChange={this.handleChannel}
+                    />
                     <button id="playbtn" className="launchButton" onClick={this.handlePlay}>JOUER</button>
                 </footer>
                 <script src="../public/scripts/main.js"></script>
