@@ -8,7 +8,7 @@ import { mainWindow, store } from "./main";
 export let token: any;
 
 export const initIpc = () => {
-    ipcMain.on("login", async (evt, data) => {
+    ipcMain.on("login", async () => {
         try {
             const authManager = new Auth("select_account")
             const xboxManager = await authManager.launch("raw")
@@ -24,7 +24,7 @@ export const initIpc = () => {
         }
     });
     
-    ipcMain.on("loginToken", async (evt, data) => {
+    ipcMain.on("loginToken", async (_, data) => {
         const authManager = new Auth("select_account")
         const xboxManager = await authManager.refresh(data.msToken.refresh_token)
         token = await xboxManager.getMinecraft();
@@ -34,15 +34,15 @@ export const initIpc = () => {
         mainWindow.webContents.send("userDetails", token);
     })
     
-    ipcMain.on("getDetails", (evt, data) => {
+    ipcMain.on("getDetails", (evt, ) => {
         evt.returnValue = store.get("token");
     })
     
-    ipcMain.on("getVersion", (evt, data) => {
+    ipcMain.on("getVersion", (evt,) => {
         evt.returnValue = app.getVersion();
     })
 
-    ipcMain.on("getChannels", (evt, data) => {
+    ipcMain.on("getChannels", (evt) => {
         evt.returnValue = config.getGameChannelList();
     })
 
@@ -50,17 +50,17 @@ export const initIpc = () => {
         evt.returnValue = config.getGameChannel(data);
     })
     
-    ipcMain.on('deco', (evt, data) => {
+    ipcMain.on('deco', () => {
       store.delete("token");
       store.delete("userDetails");
       
     })
     
-    ipcMain.handle('getStore', (evt, data) => {
+    ipcMain.handle('getStore', (_, data) => {
         return store.get(data);
     })
     
-    ipcMain.handle('setStore', (evt, data) => {
+    ipcMain.handle('setStore', (_, data) => {
         return store.set(data.key, data.value);
     })
 }
