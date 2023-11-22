@@ -119,7 +119,7 @@ class Launcher extends Component<Props, InputChange> {
         selectChannel.style.display = 'none';
         progressBar.style.display = 'block'
         e.currentTarget.disabled = true;
-        window.ipc.send("launch", {ram: ram?.value, channel: this.state.selectedChannel});
+        window.ipc.send("launch", {ram: ram?.value, channel: this.state.selectedChannel.value});
     }
 
     handleChannel = (e: any) => {
