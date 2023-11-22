@@ -60,7 +60,8 @@ class Launcher extends Component<Props, InputChange> {
             if (!options.includes(channel)) {
                 options.push({
                     value: channel.channel_name, 
-                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1),
+                    isDisabled: !channel.download_link
                 })
             }
             if (defaultChannel.value === channel.channel_name) {
