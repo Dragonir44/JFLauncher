@@ -30,13 +30,19 @@ export const initGame = () => {
         gameConfig = {
             ram: d.ram,
         }
-        checkModpack(d.channel)
-            .then(() => {})
-            .catch(() => console.log('Modpack not found'))
         
         checkJavaInstall(d.channel)
             .then(() => {
-                launch(d.channel)
+                checkModpack(d.channel)
+                    .then(() => launch(d.channel))
+                    .catch(() => {
+                        downloadModpack(d.channel)
+                            .then(() => launch(d.channel))
+                            .catch(() => {
+                                console.error('Erreur lors du téléchargement du modpack');
+                            })
+                    
+                    })
             })
             .catch(() => {
                 const jrePath = path.join(config.getGamePath(d.channel), 'jre');
@@ -147,16 +153,61 @@ async function downloadJava(url: string, target: string, jrePath: string, channe
 function checkModpack(channel: string) {
     return new Promise<void>(async (resolve, reject) => {
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
-        const data = store.get("config")
-        
-        if (fs.existsSync(modpackPath)) {
+        const data = config.getGameChannel(channel)
+        const lastChannelData = store.get('currentChannelVersion') as {channel: string, version: string}
+
+        updateText('Vérification du modpack')
+        if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
             return resolve();
         }
         else {
+            if (fs.existsSync(modpackPath)) {
+                fs.unlinkSync(modpackPath);
+            }
             return reject();
         }
     })
 
+
+}
+
+function downloadModpack(channel: string) {
+    return new Promise<void>(async (resolve, reject) => {
+        const data = config.getGameChannel(channel)
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+
+        updateText('Téléchargement du modpack')
+
+        axios({
+            url: data?.download_link, 
+            method: 'GET', 
+            responseType: 'arraybuffer',
+            onDownloadProgress: (progressEvent) => {
+                const total = parseFloat(progressEvent.currentTarget.responseHeaders['Content-Length'])
+                const current = progressEvent.currentTarget.response.length
+
+                let percentCompleted = Math.floor(current / total * 100)
+                console.log('completed: ', percentCompleted)
+                updateProgress(percentCompleted);
+            }
+        })
+            .then(async (res) => {
+                const buffer = Buffer.from(res.data, 'binary');
+                await fs.writeFileSync(modpackPath, buffer);
+
+                if (fs.statSync(modpackPath).size === parseInt(res.headers['content-length'])) {
+                    updateText('Extraction du modpack')
+                    const zip = new AdmZip(modpackPath);
+                    zip.extractAllTo(config.getGamePath(channel), true);
+                    fs.unlinkSync(modpackPath);
+                    return resolve();
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                return reject();
+            })
+    })
 
 }
 
@@ -171,12 +222,12 @@ function launch(channel: string) {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
-        clientPackage : channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
+        clientPackage : undefined,//channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
         removePackage: true,
         forge: path.join(config.getGamePath(channel), 'forge.jar'),
         javaPath: javaPath,
         version: {
-            number: "1.20.1",
+            number: channelConfig?.mc_version as string,
             type: "release"
         },
         memory: {
@@ -184,6 +235,9 @@ function launch(channel: string) {
             min:'1G'
         }
     };
+
+    store.set('currentChannelVersion', {channel: channel, version: channelConfig?.current_pack_version})
+
     launcher.launch(opts);
 
     // launcher.on('debug', (e) => console.log('debug',e));
