@@ -165,11 +165,13 @@ function launch(channel: string) {
 
     const javaPath = jre && jre !== "default" ? path.join(jre, "bin", process.platform === "win32" ? "java.exe" : "java" ) : undefined;
 
+    const channelConfig = config.getGameChannel(channel);
+
     let opts = {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
-        clientPackage : `https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
+        clientPackage : channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
         removePackage: true,
         forge: path.join(config.getGamePath(channel), 'forge.jar'),
         javaPath: javaPath,
