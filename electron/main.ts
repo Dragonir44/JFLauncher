@@ -53,7 +53,6 @@ function createWindow() {
     config.loadConfig();
     initIpc()
     initGame()
-    store.set('currentChannelVersion', {})
     if (!isdev) {
         mainWindow.loadURL(url.format({
             protocol: "file",
@@ -65,7 +64,6 @@ function createWindow() {
         mainWindow.loadURL(`http://localhost:3000`);
         mainWindow.webContents.openDevTools()
     }
-    mainWindow.webContents.openDevTools()
 }
 
 ipcMain.on("install-updates", () => {
