@@ -45,10 +45,8 @@ class Launcher extends Component<Props, InputChange> {
     }
     async componentDidMount() {
         const userDetails = JSON.parse(await window.ipc.sendSync("getDetails"))
-        const versionNumber = await window.ipc.sendSync("getVersion")
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
-        const version = document.getElementById("version") as HTMLSpanElement
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
         const channels = await window.ipc.sendSync("getChannels")
@@ -77,7 +75,6 @@ class Launcher extends Component<Props, InputChange> {
 
         pseudo.innerHTML = userDetails.profile.name
         skin.src = `https://mc-heads.net/avatar/${userDetails.profile.name}`
-        version.innerHTML = versionNumber
         this.setState({
             currentRam: Number(savedRam || "1")
         })
@@ -160,7 +157,6 @@ class Launcher extends Component<Props, InputChange> {
         return (
             <>
                 <header>
-                    Current version: <span id="version">vX.Y.Z</span>
                     <div id="messages"></div>
                 </header>
                 <div id="myModal" className="modal">
