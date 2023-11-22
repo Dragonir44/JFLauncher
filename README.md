@@ -34,16 +34,16 @@ Simply download the latest release from the [releases page](https://github.com/D
 
 ## TODO
 
-- [ ] Add a way to change the channel of the modpack
+- [x] Add a way to change the channel of the modpack
 - [x] Add java managment
 - [ ] Create a manifest with news and update infos
+  - [ ] Add news panel
 - [ ] Change the way the modpack is installed
     - [ ] Change the way the modpack is downloaded
       - [ ] Download modpack folder from link
       - [ ] Unzip and move in the root folder of the game
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
-- [ ] Add news panel
 - [ ] Add a way to change the language of the launcher
 - [ ] Add a ping check to the server
 - [x] Add a progress bar
