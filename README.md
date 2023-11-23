@@ -38,10 +38,10 @@ Simply download the latest release from the [releases page](https://github.com/D
 - [x] Add java managment
 - [ ] Create a manifest with news and update infos
   - [ ] Add news panel
-- [ ] Change the way the modpack is installed
-    - [ ] Change the way the modpack is downloaded
-      - [ ] Download modpack folder from link
-      - [ ] Unzip and move in the root folder of the game
+- [x] Change the way the modpack is installed
+    - [x] Change the way the modpack is downloaded
+      - [x] Download modpack folder from link
+      - [x] Unzip and move in the root folder of the game
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
 - [ ] Add a way to change the language of the launcher
