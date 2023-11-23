@@ -21,7 +21,7 @@ let jre = 'default'
 let gameConfig: any;
 
 
-export const initGame = () => {
+export const initGame =  () => {
     ipcMain.on('launch', (evt, d) => {
         if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
             fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
@@ -32,51 +32,28 @@ export const initGame = () => {
         }
         
         checkJavaInstall(d.channel)
-            .then(() => {
-                checkModpack(d.channel)
-                    .then(() => launch(d.channel))
-                    .catch(() => {
-                        downloadModpack(d.channel)
-                            .then(() => launch(d.channel))
-                            .catch(() => {
-                                console.error('Erreur lors du téléchargement du modpack');
-                            })
-                    
-                    })
-            })
             .catch(() => {
                 const jrePath = path.join(config.getGamePath(d.channel), 'jre');
                 if (!fs.existsSync(jrePath)) {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
                 if (process.platform === 'linux') {
-                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath, d.channel).then(() => {
-                        checkModpack(d.channel)
-                            .then(() => launch(d.channel))
-                            .catch(() => {
-                                downloadModpack(d.channel)
-                                    .then(() => launch(d.channel))
-                                    .catch(() => {
-                                        console.error('Erreur lors du téléchargement du modpack');
-                                    })
-                            
-                            })
-                    })
-
+                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath, d.channel)
+                        .then(() => {
+                            updatePackAndLaunch(d.channel)
+                        })
+                        .catch(() => {
+                            console.error('Erreur lors du téléchargement de java');
+                        })
                 }
                 else {
-                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath, d.channel).then(() => {
-                        checkModpack(d.channel)
-                            .then(() => launch(d.channel))
-                            .catch(() => {
-                                downloadModpack(d.channel)
-                                    .then(() => launch(d.channel))
-                                    .catch(() => {
-                                        console.error('Erreur lors du téléchargement du modpack');
-                                    })
-                            
-                            })
-                    })
+                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath, d.channel)
+                        .then(() => {
+                            updatePackAndLaunch(d.channel)
+                        })
+                        .catch(() => {
+                            console.error('Erreur lors du téléchargement de java');
+                        })
                 }
             })
     })
@@ -172,18 +149,86 @@ function downloadJava(url: string, target: string, jrePath: string, channel: str
                 })
                 .catch((err) => {
                     console.error(err);
+                    return reject();
                 })
         }
         catch (err) {
             console.error(err);
+            return reject();
         }
     })
 }
 
-function checkModpack(channel: string) {
-    return new Promise<void>(async (resolve, reject) => {
-        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+function updatePackAndLaunch(channel: string) {
+    downloadForge(channel)
+        .then(() => {
+            downloadModpack(channel)
+                .then(() => launch(channel))
+                .catch(() => {
+                    console.error('Erreur lors du téléchargement du modpack');
+                })
+        
+        })
+        .catch(() => {
+            console.error('Erreur lors du téléchargement de forge');
+        })
+}
+
+function downloadForge(channel: string) {
+    return new Promise<void>((resolve, reject) => {
         const data = config.getGameChannel(channel)
+        const forgePath = path.join(config.getGamePath(channel), `forge-${data?.mc_version}-${data?.current_forge_version}-installer.jar`);
+
+        updateText('Vérification de forge')
+
+        if (fs.existsSync(forgePath) && data?.current_forge_version) {
+            return resolve();
+        }
+        else {
+            if (fs.existsSync(forgePath)) {
+                fs.unlinkSync(forgePath);
+            }
+            updateText('Téléchargement de forge')
+
+            const forgeLink = config.forgeBaseLink.replace(/%mc/g, data?.mc_version as string).replace(/%fo/g, data?.current_forge_version as string)
+
+            axios.get(forgeLink, {responseType: 'stream'})
+                .then((res) => {
+
+                    const writer = fs.createWriteStream(forgePath);
+                    const totalSize = parseInt(res.headers['content-length'], 10);
+                    let downloadedSize = 0
+
+                    res.data.on('data', (chunk: any) => {
+                        downloadedSize += chunk.length;
+                        const progress = Math.round((downloadedSize / totalSize) * 100)
+                        updateText(`Téléchargement de forge`);
+                        updateProgress(progress);
+                    })
+
+                    res.data.pipe(writer);
+
+                    writer.on('finish', () => {
+                        return resolve();
+                    })
+                    writer.on('error', (err) => {
+                        console.error(err);
+                        return reject();
+                    })
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return reject();
+                })
+        }
+    })
+
+}
+
+function downloadModpack(channel: string) {
+    return new Promise<void>(async (resolve, reject) => {
+        const data = config.getGameChannel(channel)
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
         const lastChannelData = store.get('currentChannelVersion') as {channel: string, version: string}
 
         updateText('Vérification du modpack')
@@ -194,52 +239,41 @@ function checkModpack(channel: string) {
             if (fs.existsSync(modpackPath)) {
                 fs.unlinkSync(modpackPath);
             }
-            return reject();
-        }
-    })
+            updateText('Téléchargement du modpack')
 
+            axios.get(data?.download_link as string, {responseType: 'stream'})
+                .then((res) => {
 
-}
+                    const writer = fs.createWriteStream(modpackPath);
+                    const totalSize = parseInt(res.headers['content-length'], 10);
+                    let downloadedSize = 0
 
-function downloadModpack(channel: string) {
-    return new Promise<void>(async (resolve, reject) => {
-        const data = config.getGameChannel(channel)
-        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+                    res.data.on('data', (chunk: any) => {
+                        downloadedSize += chunk.length;
+                        const progress = Math.round((downloadedSize / totalSize) * 100)
+                        updateText(`Téléchargement du modpack`);
+                        updateProgress(progress);
+                    })
 
-        updateText('Téléchargement du modpack')
+                    res.data.pipe(writer);
 
-        axios.get(data?.download_link as string, {responseType: 'stream'})
-            .then((res) => {
-
-                const writer = fs.createWriteStream(modpackPath);
-                const totalSize = parseInt(res.headers['content-length'], 10);
-                let downloadedSize = 0
-
-                res.data.on('data', (chunk: any) => {
-                    downloadedSize += chunk.length;
-                    const progress = Math.round((downloadedSize / totalSize) * 100)
-                    updateText(`Téléchargement du modpack`);
-                    updateProgress(progress);
+                    writer.on('finish', () => {
+                        updateText('Extraction du modpack')
+                        const zip = new AdmZip(modpackPath);
+                        zip.extractAllTo(config.getGamePath(channel), true);
+                        fs.unlinkSync(modpackPath);
+                        return resolve();
+                    })
+                    writer.on('error', (err) => {
+                        console.error(err);
+                        return reject();
+                    })
                 })
-
-                res.data.pipe(writer);
-
-                writer.on('finish', () => {
-                    updateText('Extraction du modpack')
-                    const zip = new AdmZip(modpackPath);
-                    zip.extractAllTo(config.getGamePath(channel), true);
-                    fs.unlinkSync(modpackPath);
-                    return resolve();
-                })
-                writer.on('error', (err) => {
+                .catch((err) => {
                     console.error(err);
                     return reject();
                 })
-            })
-            .catch((err) => {
-                console.error(err);
-                return reject();
-            })
+        }
     })
 }
 
@@ -256,7 +290,7 @@ function launch(channel: string) {
         root: config.getGamePath(channel),
         clientPackage : undefined,//channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
         removePackage: true,
-        forge: path.join(config.getGamePath(channel), 'forge.jar'),
+        forge: path.join(config.getGamePath(channel), `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
         javaPath: javaPath,
         version: {
             number: channelConfig?.mc_version as string,
