@@ -53,6 +53,7 @@ function createWindow() {
     config.loadConfig();
     initIpc()
     initGame()
+    // store.set('currentChannelVersion', {})
     if (!isdev) {
         mainWindow.loadURL(url.format({
             protocol: "file",
