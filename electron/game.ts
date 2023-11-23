@@ -134,9 +134,11 @@ function updatePackAndLaunch(channel: string) {
     downloadForge(channel)
         .then(() => {
             downloadModpack(channel)
-                .then(() => launch(channel))
-                .catch(() => {
-                    console.error('Erreur lors du téléchargement du modpack');
+                .then(() => {
+                    launch(channel)
+                })
+                .catch((err) => {
+                    console.error('Erreur lors du téléchargement du modpack', err);
                 })
         
         })
@@ -204,11 +206,16 @@ function downloadModpack(channel: string) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
-        const lastChannelData = store.get('currentChannelVersion') as {channel: string, version: string}
+        const lastChannels: any = store.get('currentChannelVersion')
+        const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
 
         updateText('Vérification du modpack')
-        if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
-            return resolve();
+        if (lastChannelData) {
+            for(let i = 0; i < lastChannels.length; i++) {
+                if (lastChannels[i].channel === channel) {
+                    return resolve();
+                }
+            }
         }
         else {
             if (fs.existsSync(modpackPath)) {
@@ -258,7 +265,7 @@ function launch(channel: string) {
     const javaPath = path.join(jre, 'bin', 'java');
 
     const channelConfig = config.getGameChannel(channel);
-    console.log(javaPath)
+
     let opts = {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
@@ -277,7 +284,17 @@ function launch(channel: string) {
         }
     };
 
-    store.set('currentChannelVersion', {channel: channel, version: channelConfig?.current_pack_version})
+    if (store.has('currentChannelVersion')) {
+        const currentChannelsData: any = store.get('currentChannelVersion')
+        currentChannelsData.forEach((c: any) => {
+            if (c.channel !== channel) {
+                store.set('currentChannelVersion', [...currentChannelsData, {channel: channel, version: channelConfig?.current_pack_version}])
+            }
+        })
+    }
+    else {
+        store.set('currentChannelVersion', [{channel: channel, version: channelConfig?.current_pack_version}])
+    }
 
     launcher.launch(opts);
 
