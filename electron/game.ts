@@ -32,13 +32,14 @@ export const initGame =  () => {
         }
         
         checkJavaInstall(d.channel)
+            .then(() => updatePackAndLaunch(d.channel))
             .catch(() => {
-                const jrePath = path.join(config.getGamePath(d.channel), 'jre');
+                const jrePath = config.jrePath
                 if (!fs.existsSync(jrePath)) {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
                 if (process.platform === 'linux') {
-                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath, d.channel)
+                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath)
                         .then(() => {
                             updatePackAndLaunch(d.channel)
                         })
@@ -47,7 +48,7 @@ export const initGame =  () => {
                         })
                 }
                 else {
-                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath, d.channel)
+                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath)
                         .then(() => {
                             updatePackAndLaunch(d.channel)
                         })
@@ -61,7 +62,7 @@ export const initGame =  () => {
 
 function checkJavaInstall(channel: string) {
     return new Promise<void>((resolve, reject) => {
-        const jrePath = path.join(config.getGamePath(channel), 'jre');
+        const jrePath = config.jrePath;
         let jreIntallFiles = path.join(jrePath, 'jre-windows.zip');
 
         updateText('Vérification de Java');
@@ -79,43 +80,13 @@ function checkJavaInstall(channel: string) {
             fs.unlinkSync(jreIntallFiles);
             return reject();
         }
-
-        const spawn = ChildProcess.spawn('java', ['-version']);
-        spawn.on('error', (err) => {
-            console.error(err);
+        else {
             return reject();
-        });
-        spawn.stderr.on('data', (data) => {
-            if (data.includes('version') && data.includes('1.8')) {
-                data = data.toString().split('\n')[0]
-                const javaVersion = new RegExp("java version").test(data) ? data.split(' ')[2].replace(/"/g, '') : false;
-                if (javaVersion) {
-                    jre = 'default';
-                    return resolve();
-                }
-                else {
-                    if (fs.existsSync(jrePath) && fs.readdirSync(jrePath).length !== 0) {
-                        jre = jrePath;
-                        return resolve();
-                    }
-                    else {
-                        return reject();
-                    }
-                }
-            }
-            else {
-                if (fs.existsSync(jrePath) && fs.readdirSync(jrePath).length !== 0) {
-                    jre = jrePath;
-                    return resolve();
-                } else {
-                    return reject();
-                }
-            }
-        });
+        }
     })
 }
 
-function downloadJava(url: string, target: string, jrePath: string, channel: string) {
+function downloadJava(url: string, target: string, jrePath: string) {
     return new Promise<void>(async (resolve, reject) => {
         try {
             updateText('Téléchargement de Java')
@@ -177,9 +148,13 @@ function updatePackAndLaunch(channel: string) {
 function downloadForge(channel: string) {
     return new Promise<void>((resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const forgePath = path.join(config.getGamePath(channel), `forge-${data?.mc_version}-${data?.current_forge_version}-installer.jar`);
+        const forgePath = path.join(config.forgePath, `forge-${data?.mc_version}-${data?.current_forge_version}-installer.jar`);
 
         updateText('Vérification de forge')
+
+        if (!fs.existsSync(config.forgePath)) {
+            fs.mkdirSync(config.forgePath, { recursive: true });
+        }
 
         if (fs.existsSync(forgePath) && data?.current_forge_version) {
             return resolve();
@@ -280,17 +255,17 @@ function downloadModpack(channel: string) {
 function launch(channel: string) {
     const launcher = new Client();
 
-    const javaPath = jre && jre !== "default" ? path.join(jre, "bin", process.platform === "win32" ? "java.exe" : "java" ) : undefined;
+    const javaPath = path.join(jre, 'bin', 'java');
 
     const channelConfig = config.getGameChannel(channel);
-
+    console.log(javaPath)
     let opts = {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
         clientPackage : undefined,//channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
         removePackage: true,
-        forge: path.join(config.getGamePath(channel), `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
+        forge: path.join(config.forgePath, `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
         javaPath: javaPath,
         version: {
             number: channelConfig?.mc_version as string,
