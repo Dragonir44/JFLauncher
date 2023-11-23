@@ -11,6 +11,7 @@ export const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPC
 export const launcherName = "JFLauncher"
 export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv'
 export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
+export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%mc-%fo/forge-%mc-%fo-installer.jar'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
 const gamePath = path.join(sysRoot, `.${launcherName}`)
@@ -22,6 +23,7 @@ type Config = {
             channel_name: string,
             mc_version: string,
             current_pack_version: string,
+            current_forge_version: string,
             release_date: Date,
             download_link: string
         }
