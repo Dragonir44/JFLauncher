@@ -63,4 +63,8 @@ export const initIpc = () => {
     ipcMain.handle('setStore', (_, data) => {
         return store.set(data.key, data.value);
     })
+
+    ipcMain.on("quit-app", () => {
+        app.quit();
+    })
 }
