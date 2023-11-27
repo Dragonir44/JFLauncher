@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import os from "os";
+const shell = require("shell");
 
 contextBridge.exposeInMainWorld("ipc", {
     send: (channel: string, data?: any) => {
@@ -26,4 +27,10 @@ contextBridge.exposeInMainWorld("store", {
     set: (key: string, value: any) => {
         ipcRenderer.invoke("setStore", {key: key, value: value});
     },
+});
+
+contextBridge.exposeInMainWorld("shell", {
+    openExternal: (url: string) => {
+        shell.openExternal(url);
+    }
 });
