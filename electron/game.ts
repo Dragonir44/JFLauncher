@@ -208,7 +208,6 @@ function downloadModpack(channel: string) {
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
-        console.log(lastChannelData.version, data?.current_pack_version);
 
         updateText('Vérification du modpack')
 
