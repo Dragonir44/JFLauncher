@@ -1,5 +1,5 @@
 // Importation des modules
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "path";
 import url from "url";
 import Store from "electron-store";
@@ -65,11 +65,15 @@ function createWindow() {
         mainWindow.loadURL(`http://localhost:3000`);
         mainWindow.webContents.openDevTools()
     }
+    mainWindow.webContents.openDevTools()
 }
 
-ipcMain.on("install-updates", () => {
-    autoUpdater.quitAndInstall();
-});
+ipcMain.on("install-update", (_, link) => {
+    shell.openExternal(link)
+        .then(() => {
+            app.quit()
+        })
+})
 
 ipcMain.on('check-update', () => {
     if (isdev) {
@@ -80,32 +84,15 @@ ipcMain.on('check-update', () => {
         if (process.platform === "darwin") {
             autoUpdater.autoDownload = false;
         }
+        autoUpdater.autoDownload = false
 
-        autoUpdater.allowPrerelease = false;
-        autoUpdater.on("update-downloaded", () => {
-            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-downloaded.txt'), "Update downloaded");
-            mainWindow?.webContents.send("update-finished", true);
-        });
-
-        autoUpdater.on("update-not-available", () => {
-            fs.writeFileSync(path.join(config.getGamePath('beta'), 'test.txt'), "No update available");
-            mainWindow?.webContents.send("update-finished", false);
-        });
-
-        autoUpdater.on("error", (err: Error) => {
-            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-error.txt'), JSON.stringify(err));
-            mainWindow?.webContents.send("update-failed", err.message);
-        });
-
-        autoUpdater.on("download-progress", (progress) => {
-            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-progress.txt'), JSON.stringify(progress));
-            mainWindow?.webContents.send("update-progress", progress.percent.toFixed(2));
-        });
-
-        autoUpdater.checkForUpdates().catch((err: Error) => {
-            fs.writeFileSync(path.join(config.getGamePath('beta'), 'update-failed.txt'), JSON.stringify(err));
-            mainWindow?.webContents.send("update-failed", err.message);
-        });
+        autoUpdater.checkForUpdates()
+            .then((res: any) => {
+                mainWindow?.webContents.send("update-available", res.versionInfo);
+            })
+            .catch((err: Error) => {
+                mainWindow?.webContents.send("update-failed", err.message);
+            });
     }
 })
 
