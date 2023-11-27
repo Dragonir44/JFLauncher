@@ -208,9 +208,11 @@ function downloadModpack(channel: string) {
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
+        console.log(lastChannelData.version, data?.current_pack_version);
 
         updateText('Vérification du modpack')
-        if (lastChannelData) {
+
+        if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
             for(let i = 0; i < lastChannels.length; i++) {
                 if (lastChannels[i].channel === channel) {
                     return resolve();
@@ -218,9 +220,18 @@ function downloadModpack(channel: string) {
             }
         }
         else {
+            const dirToRemove = ['config', 'mods', 'scripts', 'assets', 'libraries', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu', 'versions']
+            updateText('Suppression de l\'ancien modpack')
             if (fs.existsSync(modpackPath)) {
                 fs.unlinkSync(modpackPath);
             }
+            
+            dirToRemove.forEach((d) => {
+                if (fs.existsSync(path.join(config.getGamePath(channel), d))) {
+                    fs.removeSync(path.join(config.getGamePath(channel), d))
+                }
+            })
+
             updateText('Téléchargement du modpack')
 
             axios.get(data?.download_link as string, {responseType: 'stream'})
@@ -244,6 +255,20 @@ function downloadModpack(channel: string) {
                         const zip = new AdmZip(modpackPath);
                         zip.extractAllTo(config.getGamePath(channel), true);
                         fs.unlinkSync(modpackPath);
+
+                        if (lastChannels) {
+                            for(let i = 0; i < lastChannels.length; i++) {
+                                if (lastChannels[i].channel === channel) {
+                                    lastChannels[i].version = data?.current_pack_version
+                                }
+                            }
+                            store.set('currentChannelVersion', lastChannels)
+                        }
+                        else {
+                            store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
+                        }
+
+
                         return resolve();
                     })
                     writer.on('error', (err) => {
@@ -283,18 +308,6 @@ function launch(channel: string) {
             min:'1G'
         }
     };
-
-    if (store.has('currentChannelVersion')) {
-        const currentChannelsData: any = store.get('currentChannelVersion')
-        currentChannelsData.forEach((c: any) => {
-            if (c.channel !== channel) {
-                store.set('currentChannelVersion', [...currentChannelsData, {channel: channel, version: channelConfig?.current_pack_version}])
-            }
-        })
-    }
-    else {
-        store.set('currentChannelVersion', [{channel: channel, version: channelConfig?.current_pack_version}])
-    }
 
     launcher.launch(opts);
 
