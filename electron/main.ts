@@ -85,7 +85,7 @@ autoUpdater.on("update-available", (res) => {
 ipcMain.on('check-update', () => {
     if (isdev) {
         autoUpdater.updateConfigPath = path.join(__dirname, '../../dev-app-update.yml')
-        mainWindow?.webContents.send('update-finished', false)
+        mainWindow?.webContents.send('no-update')
     }
     else {
         if (process.platform === "darwin") {
