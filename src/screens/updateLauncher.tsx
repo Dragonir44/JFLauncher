@@ -59,12 +59,14 @@ class UpdateLauncher extends Component<Props, State> {
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.ipc.send("install-update", `https://github.com/Dragonir44/JFLauncher/releases/download/${updateData.tag}/JFLauncher-setup-${updateData.version}.exe`);
-                    
                 }
                 else {
                     this.props.navigate!(`/auth`);
                 }
             })
+        })
+        window.ipc.receive('no-update', () => {
+            this.props.navigate!(`/auth`);
         })
 
     }
