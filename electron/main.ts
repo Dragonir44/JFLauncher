@@ -65,7 +65,6 @@ function createWindow() {
         mainWindow.loadURL(`http://localhost:3000`);
         mainWindow.webContents.openDevTools()
     }
-    mainWindow.webContents.openDevTools()
 }
 
 ipcMain.on("install-update", (_, link) => {
