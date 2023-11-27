@@ -74,6 +74,14 @@ ipcMain.on("install-update", (_, link) => {
         })
 })
 
+autoUpdater.on("update-not-available", () => {
+    mainWindow?.webContents.send('no-update');
+});
+
+autoUpdater.on("update-available", (res) => {
+    mainWindow?.webContents.send("update-available", res);
+});
+
 ipcMain.on('check-update', () => {
     if (isdev) {
         autoUpdater.updateConfigPath = path.join(__dirname, '../../dev-app-update.yml')
@@ -86,19 +94,12 @@ ipcMain.on('check-update', () => {
         autoUpdater.autoDownload = false
 
         autoUpdater.checkForUpdates()
-            .then((res: any) => {
-                mainWindow?.webContents.send("update-available", res.versionInfo);
-            })
-            .catch((err: Error) => {
-                mainWindow?.webContents.send("update-failed", err.message);
-            });
     }
 })
 
 // Quand l'application est chargée, afficher la fenêtre
 app.whenReady().then(() => {
     createWindow();
-    autoUpdater.checkForUpdates()
     app.on("activate", function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
