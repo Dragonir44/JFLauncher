@@ -42,38 +42,29 @@ class UpdateLauncher extends Component<Props, State> {
             })
         
         })
-
-        window.ipc.receive('update-progress', (progress) => {
-            this.setState({updateText: `Mise à jour en cours : ${progress}%`})
-            this.setState({progress: progress})
-            console.log(progress)
-        })
-
-        window.ipc.receive('update-finished', (askInstall) => {
-            if (askInstall) {
-                Swal.fire({
-                    title: "Mise à jour disponible",
-                    text: "Une mise à jour est disponible, voulez-vous l'installer ?",
-                    icon: "question",
-                    iconColor: "#54c2f0",
-                    confirmButtonText: "Installer",
-                    cancelButtonText: "Annuler",
-                    showCancelButton: true,
-                    background: "#1e1e1e",
-                    confirmButtonColor: "#54c2f0",
-                    cancelButtonColor: "#ff0000"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.ipc.send("install-update");
-                    }
-                    else {
-                        this.props.navigate!(`/auth`);
-                    }
-                })
-            }
-            else {
-                this.props.navigate!(`/auth`);
-            }
+        let updateData: any
+        window.ipc.receive('update-available', (versionData) => {
+            updateData = versionData;
+            Swal.fire({
+                title: "Mise à jour disponible",
+                text: `Une mise à jour est disponible (v${versionData.version}). Voulez-vous la télécharger ?`,
+                icon: "question",
+                iconColor: "#54c2f0",
+                confirmButtonText: "Télécharger",
+                cancelButtonText: "Annuler",
+                showCancelButton: true,
+                background: "#1e1e1e",
+                confirmButtonColor: "#54c2f0",
+                cancelButtonColor: "#ff0000"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.ipc.send("install-update", `https://github.com/Dragonir44/JFLauncher/releases/download/${updateData.tag}/JFLauncher-setup-${updateData.version}.exe`);
+                    
+                }
+                else {
+                    this.props.navigate!(`/auth`);
+                }
+            })
         })
 
     }
