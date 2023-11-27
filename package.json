@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
   "author": "Dragonir",
@@ -64,6 +64,7 @@
     "react-router-dom": "^6.19.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
+    "shell": "^0.5.1",
     "store": "^2.0.12",
     "sweetalert2": "^11.10.1"
   },
