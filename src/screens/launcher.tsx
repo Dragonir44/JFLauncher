@@ -3,7 +3,7 @@ import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Select, { StylesConfig } from "react-select";
 
-import 'css/launcher.css';
+import 'scss/launcher.scss';
 
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
@@ -78,7 +78,7 @@ class Launcher extends Component<Props, InputChange> {
         this.setState({
             currentRam: Number(savedRam || "1")
         })
-        ramValue.innerHTML = savedRam || "1"
+        ramValue.innerHTML = `${savedRam}Go` || "1Go"
         this.setState({updateText: "Recherche de maj..."})
 
         window.ipc.receive('updateText', (data) => {
@@ -133,7 +133,7 @@ class Launcher extends Component<Props, InputChange> {
     handleRam = (e: any) => {
         const ram = e.currentTarget as HTMLInputElement
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
-        ramValue.innerHTML = ram.value
+        ramValue.innerHTML = `${ram.value}Go`
 
         this.setState({
             currentRam: Number(ram.value)
@@ -143,8 +143,8 @@ class Launcher extends Component<Props, InputChange> {
 
     handleDisconnect = (e: any) => {
         e.currentTarget.disabled = true;
-        window.ipc.send("deco", {})
-        this.props.navigate!("/")
+        // window.ipc.send("deco", {})
+        this.props.navigate!("/auth")
     }
     
     handleCloseOptions = (e: any) => {
@@ -166,19 +166,36 @@ class Launcher extends Component<Props, InputChange> {
                             <h2>Options</h2>
                         </div>
                         <div className="modal-body">
-                            <b>Mémoire vive :</b>
-                            <input type="range" min="1" value={currentRam} id="ram" max={maxRam} onInput={this.handleRam} />
-                            <span id="ramValue">1</span>
-                            GO
+                            <div className="ram-block">
+                                <b>Mémoire vive</b>
+                                <input className="ramRange" type="range" min="1" value={currentRam} id="ram" max={maxRam} onInput={this.handleRam} />
+                                <span id="ramValue">1Go</span>
+                            </div>
+                            <hr />
+                            <div className="showFolder">
+                                <button id="showFolder" className="launchButton" onClick={() => window.ipc.send("showFolder", {})}>Ouvrir le dossier</button>
+                            </div>
                             <hr />
                             <button id="deco" className="launchButton" onClick={this.handleDisconnect}>Déconnexion</button>
                         </div>
                     </div>
                 </div>
-                <section id="news">
-                    <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" /><br />
-                    Bienvenue <b id="pseudo">Inconnu</b>
-                </section>
+                <div id="middle" className="middle">
+                    <div className="userInfo">
+                        <h3>Bienvenue <b id="pseudo">Inconnu</b></h3>
+                        <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" className="skin" />
+                    </div>
+                    <div className="news">
+                        <h3>News</h3>
+                        <div className="newsContent">
+                            <div className="newsContentHeader">
+                            </div>
+                            <div className="newsContentBody">
+                                <p className="newsContentBodyText">Pas de nouveauté pour le moment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <footer id="footer">
                     <button id="options" className="launchButton" onClick={this.displayModal}>OPTIONS</button>
                     <div id="progressBar" className="progressBar">
