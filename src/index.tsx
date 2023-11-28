@@ -6,6 +6,8 @@ import UpdateLauncher from "screens/updateLauncher";
 import Auth from "screens/auth";
 import Launcher from "screens/launcher";
 
+import "scss/index.scss";
+
 declare global {
     interface Window {
         ipc: {
@@ -39,6 +41,5 @@ root.render(
                 <Route path="/launcher" element={<Launcher />} />
             </Routes>
         </HashRouter>
-        <script src="../public/scripts/toast"></script>
     </React.StrictMode>
 )
