@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 import Footer from "screens/footer";
 
-import 'css/style.css'
+import 'scss/updateLauncher.scss'
 
 type Props = {
     navigate?: NavigateFunction;
@@ -77,9 +77,9 @@ class UpdateLauncher extends Component<Props, State> {
             <>
                 <div className='updateBox'>
                     <div className='updateText'>{updateText || "Vérification des mises à jour ..."}</div>
-                    <div className='updateBar'>
+                    {/* <div className='updateBar'>
                         <div className='updateBarProgress' style={{width: `${progress}%`}}></div>
-                    </div>
+                    </div> */}
                 </div>
                 <Footer/>
             </>
