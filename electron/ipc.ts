@@ -1,4 +1,4 @@
-import { app, ipcMain, BrowserWindow, Menu } from "electron";
+import { app, ipcMain, shell } from "electron";
 import {Auth} from 'msmc'
 import path from "path";
 import * as config from './utils/config';
@@ -48,6 +48,11 @@ export const initIpc = () => {
 
     ipcMain.on("getChannel", (evt, data) => {
         evt.returnValue = config.getGameChannel(data);
+    })
+
+    ipcMain.on("showFolder", () => {
+        shell.openPath(config.gamePath);
+    
     })
     
     ipcMain.on('deco', () => {
