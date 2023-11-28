@@ -14,7 +14,7 @@ export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
 export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%mc-%fo/forge-%mc-%fo-installer.jar'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
-const gamePath = path.join(sysRoot, `.${launcherName}`)
+export const gamePath = path.join(sysRoot, `.${launcherName}`)
 export const forgePath = path.join(gamePath, "forge")
 export const jrePath = path.join(gamePath, "jre")
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
