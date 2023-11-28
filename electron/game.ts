@@ -30,7 +30,7 @@ export const initGame =  () => {
         gameConfig = {
             ram: d.ram,
         }
-        
+
         checkJavaInstall(d.channel)
             .then(() => updatePackAndLaunch(d.channel))
             .catch(() => {
@@ -208,7 +208,6 @@ function downloadModpack(channel: string) {
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
-
         updateText('Vérification du modpack')
 
         if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
@@ -255,10 +254,13 @@ function downloadModpack(channel: string) {
                         zip.extractAllTo(config.getGamePath(channel), true);
                         fs.unlinkSync(modpackPath);
 
-                        if (lastChannels) {
+                        if (lastChannels.length > 0) {
                             for(let i = 0; i < lastChannels.length; i++) {
                                 if (lastChannels[i].channel === channel) {
                                     lastChannels[i].version = data?.current_pack_version
+                                }
+                                else {
+                                    lastChannels.push({channel: channel, version: data?.current_pack_version})
                                 }
                             }
                             store.set('currentChannelVersion', lastChannels)
