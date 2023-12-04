@@ -47,7 +47,6 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "adm-zip": "^0.5.10",
     "axios": "^0.19.2",
     "custom-electron-titlebar": "^4.2.7",
     "dotenv": "^16.3.1",
@@ -58,8 +57,9 @@
     "electron-updater": "^6.1.4",
     "fs-extra": "^11.1.1",
     "minecraft-launcher-core": "^3.14.1",
-    "minecraft-server-ping": "^0.1.2",
+    "minecraft-ping-server": "^1.0.3",
     "msmc": "^4.1.0",
+    "onezip": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-html-parser": "^2.0.2",
