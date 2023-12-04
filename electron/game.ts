@@ -1,10 +1,9 @@
 import { ipcMain } from 'electron';
 import { Client } from "minecraft-launcher-core";
 import fs from 'fs-extra';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import path from 'path';
-import AdmZip from 'adm-zip';
-import ChildProcess from 'child_process';
+const onezip = require('onezip');
 import {token} from './ipc'
 import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
@@ -105,12 +104,22 @@ function downloadJava(url: string, target: string, jrePath: string) {
 
                     res.data.pipe(writer);
                     writer.on('finish', () => {
-                        updateText('Extraction de Java')
-                        const zip = new AdmZip(target);
-                        zip.extractAllTo(jrePath, true);
-                        fs.unlinkSync(target);
-                        jre = jrePath;
-                        resolve()
+                        const extract = onezip.extract(target, jrePath)
+                        extract.on('start', ()=> {
+                            updateText(`Extraction de java`);
+                        })
+                        extract.on('progress', (percent: any) => {
+                            updateProgress(percent);
+                        })
+                        extract.on('error', (error: any) => {
+                            console.error(error);
+                        });
+                        
+                        extract.on('end', () => {
+                            fs.unlinkSync(target);
+                            jre = jrePath;
+                            return resolve()
+                        });
                     })
     
                     writer.on('error', (err) => {
@@ -249,28 +258,38 @@ function downloadModpack(channel: string) {
                     res.data.pipe(writer);
 
                     writer.on('finish', () => {
-                        updateText('Extraction du modpack')
-                        const zip = new AdmZip(modpackPath);
-                        zip.extractAllTo(config.getGamePath(channel), true);
-                        fs.unlinkSync(modpackPath);
 
-                        if (lastChannels.length > 0) {
-                            for(let i = 0; i < lastChannels.length; i++) {
-                                if (lastChannels[i].channel === channel) {
-                                    lastChannels[i].version = data?.current_pack_version
+                        const extract = onezip.extract(modpackPath, config.getGamePath(channel))
+                        extract.on('start', ()=> {
+                            updateText('Extraction du modpack')
+                        })
+                        extract.on('progress', (percent: any) => {
+                            updateProgress(percent);
+                        })
+                        extract.on('error', (error: any) => {
+                            console.error(error);
+                        });
+                        
+                        extract.on('end', () => {
+                            fs.unlinkSync(modpackPath);
+                            if (lastChannels && lastChannels.length > 0) {
+                                for(let i = 0; i < lastChannels.length; i++) {
+                                    if (lastChannels[i].channel === channel) {
+                                        lastChannels[i].version = data?.current_pack_version
+                                    }
+                                    else {
+                                        lastChannels.push({channel: channel, version: data?.current_pack_version})
+                                    }
                                 }
-                                else {
-                                    lastChannels.push({channel: channel, version: data?.current_pack_version})
-                                }
+                                store.set('currentChannelVersion', lastChannels)
                             }
-                            store.set('currentChannelVersion', lastChannels)
-                        }
-                        else {
-                            store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
-                        }
-
-
-                        return resolve();
+                            else {
+                                store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
+                            }
+    
+    
+                            return resolve();
+                        });
                     })
                     writer.on('error', (err) => {
                         console.error(err);
