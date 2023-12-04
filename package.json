@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps",
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "elec:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"yarn watch\"",
-    "elec:buildW": "yarn build && tsc -p electron && electron-builder",
+    "elec:build": "yarn build && tsc -p electron && electron-builder -wl",
     "elec:release": "yarn build && tsc -p electron && electron-builder build --publish=always"
   },
   "devDependencies": {
@@ -99,6 +99,33 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true
+    },
+    "linux": {
+      "target": [
+        "appImage",
+        "deb",
+        "rpm",
+        "snap",
+        "flatpak"
+      ],
+      "category": "Game",
+      "icon": "public/assets/logo.png"
+    },
+    "deb": {
+      "depends": [
+        "gconf2", 
+        "gconf-service", 
+        "libnotify4", 
+        "libxtst6", 
+        "libnss3"
+      ]
+    },
+    "rpm": {
+      "icon": "public/assets/logo.png",
+      "packageCategory": "Game",
+      "packageName": "jflauncher",
+      "vendor": "Dragonir",
+      "maintainer": "Dragonir"
     }
   },
   "browserslist": {
