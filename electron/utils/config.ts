@@ -19,7 +19,11 @@ export const forgePath = path.join(gamePath, "forge")
 export const jrePath = path.join(gamePath, "jre")
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
 
-type Config = {
+export type Config = {
+    server: {
+        address: string,
+        port: number
+    }
     channel: [
         {
             channel_name: string,
