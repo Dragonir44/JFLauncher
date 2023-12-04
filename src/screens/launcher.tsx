@@ -21,6 +21,7 @@ interface InputChange {
     selectedChannel?: any;
     options?: any[];
     news?: any;
+    serverStatus?: any;
 }
 
 const customStyles: StylesConfig = {
@@ -42,7 +43,13 @@ class Launcher extends Component<Props, InputChange> {
             updateText: "",
             options: [],
             selectedChannel: {value: "beta", label: "Beta"},
-            news: []
+            news: [],
+            serverStatus: {
+                online: false,
+                version: "",
+                onlinePlayers: '0',
+                maxPlayers: '20'
+            }
         }
     }
     async componentDidMount() {
@@ -93,7 +100,7 @@ class Launcher extends Component<Props, InputChange> {
             this.setState({progress: data})
         })
 
-        window.ipc.receive('closed', (event, data) => {
+        window.ipc.receive('closed', () => {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
             const playbtn = document.getElementById("playbtn") as HTMLButtonElement
             const selectChannel = document.getElementById("channel") as HTMLSelectElement
@@ -104,12 +111,16 @@ class Launcher extends Component<Props, InputChange> {
             this.setState({updateText: "", progress: 0})
         })
 
-        window.ipc.receive('message', function(event, text) {
+        window.ipc.receive('message', function(text) {
             const container = document.getElementById('messages') as HTMLDivElement;
             const message = document.createElement('div');
-            console.log(text)
             message.innerHTML = text;
             container.appendChild(message);
+        })
+
+        window.ipc.send("server-ping")
+        window.ipc.receive('server-ping-response', (data) => {
+            this.setState({serverStatus: data})
         })
     }
 
@@ -157,7 +168,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText, options, currentRam, selectedChannel, news } = this.state
+        const { progress, updateText, options, currentRam, selectedChannel, news, serverStatus } = this.state
         return (
             <>
                 <header>
@@ -205,6 +216,27 @@ class Launcher extends Component<Props, InputChange> {
                                         </div>
                                     )
                                 }) : "Pas de nouveauté pour le moment"}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="serverStatus">
+                        <h3>Statut du serveur officiel</h3>
+                        <div className="serverStatusContent">
+                            <div className="serverStatusContentHeader">
+                                <div className="serverStatusContentHeaderStatus">
+                                    <div className="serverStatusContentHeaderStatusIcon"></div>
+                                    <div className="serverStatusContentHeaderStatusText">
+                                        <h4>Statut</h4>
+                                        <p>{serverStatus.online ? "En ligne" : "Hors ligne"}</p>
+                                    </div>
+                                </div>
+                                <div className="serverStatusContentHeaderPlayers">
+                                    <div className="serverStatusContentHeaderPlayersIcon"></div>
+                                    <div className="serverStatusContentHeaderPlayersText">
+                                        <h4>Joueurs</h4>
+                                        <p>{serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
