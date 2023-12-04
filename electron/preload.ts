@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import os from "os";
 const shell = require("shell");
+import ReactHtmlParser from 'react-html-parser';
 
 contextBridge.exposeInMainWorld("ipc", {
     send: (channel: string, data?: any) => {
@@ -32,5 +33,11 @@ contextBridge.exposeInMainWorld("store", {
 contextBridge.exposeInMainWorld("shell", {
     openExternal: (url: string) => {
         shell.openExternal(url);
+    }
+});
+
+contextBridge.exposeInMainWorld("html", {
+    parse: (html: string) => {
+        return ReactHtmlParser(html);
     }
 });
