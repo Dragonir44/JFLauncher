@@ -24,6 +24,9 @@ declare global {
         },
         shell: {
             openExternal: (url: string) => void;
+        },
+        html: {
+            parse: (html: string) => any;
         }
     }
 }
