@@ -143,15 +143,18 @@ footer {
         display: none;
         flex-wrap: wrap;
         align-content: center;
-        width: 100%;
+        width: 80%;
         height: 25px;
         background-color: #ddd;
+        border-radius: 25px;
+        overflow: hidden;
 
         .status {
             position: absolute;
             color: black;
             font-size: 20px;
             margin: 0;
+            margin-left: 20px;
             z-index: 1;
         }
 
@@ -165,6 +168,7 @@ footer {
     }
 
     .channel__control {
+        // display: none;
         color: black;
         height: 2rem;
         width: 7rem;
