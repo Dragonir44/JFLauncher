@@ -20,6 +20,7 @@ interface InputChange {
     channels?: string[];
     selectedChannel?: any;
     options?: any[];
+    news?: any;
 }
 
 const customStyles: StylesConfig = {
@@ -41,6 +42,7 @@ class Launcher extends Component<Props, InputChange> {
             updateText: "",
             options: [],
             selectedChannel: {value: "beta", label: "Beta"},
+            news: []
         }
     }
     async componentDidMount() {
@@ -51,8 +53,8 @@ class Launcher extends Component<Props, InputChange> {
         const savedRam = await window.store.get("ram")
         const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
+        const {news} = await window.store.get("config")
         let options: any[] = []
-
         for(let i = 0; i < channels.length; i++) {
             const channel = channels[i]
             if (!options.includes(channel)) {
@@ -72,6 +74,8 @@ class Launcher extends Component<Props, InputChange> {
             }
         }
         this.setState({options: options})
+
+        this.setState({news: news})
 
         pseudo.innerHTML = userDetails.profile.name
         skin.src = `https://mc-heads.net/avatar/${userDetails.profile.name}`
@@ -153,7 +157,7 @@ class Launcher extends Component<Props, InputChange> {
     }
 
     render() {
-        const { progress, updateText, options, currentRam, selectedChannel } = this.state
+        const { progress, updateText, options, currentRam, selectedChannel, news } = this.state
         return (
             <>
                 <header>
@@ -191,7 +195,16 @@ class Launcher extends Component<Props, InputChange> {
                             <div className="newsContentHeader">
                             </div>
                             <div className="newsContentBody">
-                                <p className="newsContentBodyText">Pas de nouveauté pour le moment</p>
+                                <div className="newsContentBodyText">{news ? news.map((article: any) => {
+                                    return (
+                                        <div className="newsContentBodyArticle" key={article.title}>
+                                            <h4>{article.title}</h4>
+                                            <article>
+                                                {window.html.parse(article.content)}
+                                            </article>
+                                        </div>
+                                    )
+                                }) : "Pas de nouveauté pour le moment"}</div>
                             </div>
                         </div>
                     </div>
