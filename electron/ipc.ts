@@ -2,6 +2,7 @@ import { app, ipcMain, shell } from "electron";
 import {Auth} from 'msmc'
 import path from "path";
 import * as config from './utils/config';
+import { getStatus } from 'minecraft-ping-server/lib'
 
 import { mainWindow, store } from "./main";
 
@@ -48,6 +49,18 @@ export const initIpc = () => {
 
     ipcMain.on("getChannel", (evt, data) => {
         evt.returnValue = config.getGameChannel(data);
+    })
+
+    ipcMain.on('server-ping', () => {
+        config.loadConfig()
+        const serverData = store.get("config") as config.Config
+        getStatus(serverData.server.address, serverData.server.port)
+            .then((res) => {
+                mainWindow?.webContents.send("server-ping-response", res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     })
 
     ipcMain.on("showFolder", () => {
