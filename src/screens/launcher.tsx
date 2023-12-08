@@ -53,7 +53,7 @@ class Launcher extends Component<Props, InputChange> {
         }
     }
     async componentDidMount() {
-        const userDetails = JSON.parse(await window.ipc.sendSync("getDetails"))
+        const selectedAccount = JSON.parse(await window.store.get("selectedAccount"))
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
@@ -83,9 +83,9 @@ class Launcher extends Component<Props, InputChange> {
         this.setState({options: options})
 
         this.setState({news: news})
-
-        pseudo.innerHTML = userDetails.profile.name
-        skin.src = `https://mc-heads.net/avatar/${userDetails.profile.name}`
+        console.log("userdetails", selectedAccount)
+        pseudo.innerHTML = selectedAccount.token.profile.name
+        skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
         this.setState({
             currentRam: Number(savedRam || "1")
         })
