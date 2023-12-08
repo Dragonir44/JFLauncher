@@ -90,3 +90,4 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
 [ReactMCLauncher by dd060606](https://github.com/dd060606/ReactMCLauncher)
 
 ### First base
+[SlashDev](https://www.youtube.com/playlist?list=PLVL4NfPFCyboclv5EhQOj-P6rfXNOmNe-)
