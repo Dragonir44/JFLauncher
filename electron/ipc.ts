@@ -12,12 +12,14 @@ export const initIpc = () => {
     ipcMain.on("login", async () => {
         try {
             const authManager = new Auth("select_account")
+            let currentAccounts = JSON.parse(store.get("registeredAccounts") as string || "[]");
             const xboxManager = await authManager.launch("raw")
             token = await xboxManager.getMinecraft();
-    
-            store.set("userDetails", JSON.stringify(xboxManager));
-            store.set("token", JSON.stringify(token));
-            mainWindow?.webContents.send("auth-success", app.getVersion());
+
+            currentAccounts.push({manager: xboxManager, token: token});
+            store.set("registeredAccounts", JSON.stringify(currentAccounts));
+
+            mainWindow?.webContents.send("auth-success");
         }
         catch(err) {
             console.log(err);
@@ -26,17 +28,18 @@ export const initIpc = () => {
     });
     
     ipcMain.on("loginToken", async (_, data) => {
+        const selectedAccount = JSON.parse(data)
         const authManager = new Auth("select_account")
-        const xboxManager = await authManager.refresh(data.msToken.refresh_token)
+        const xboxManager = await authManager.refresh(selectedAccount.manager.msToken.refresh_token)
+        
         token = await xboxManager.getMinecraft();
-        store.set("token", JSON.stringify(token));
+        store.set('selectedAccount', JSON.stringify({manager: xboxManager, token: token}))
     
-        mainWindow?.webContents.send("auth-success", app.getVersion());
-        mainWindow.webContents.send("userDetails", token);
+        mainWindow?.webContents.send("connect");
     })
     
     ipcMain.on("getDetails", (evt, ) => {
-        evt.returnValue = store.get("token");
+        evt.returnValue = store.get("registeredAccounts");
     })
     
     ipcMain.on("getVersion", (evt,) => {
@@ -69,8 +72,6 @@ export const initIpc = () => {
     })
     
     ipcMain.on('deco', () => {
-      store.delete("token");
-      store.delete("userDetails");
       
     })
     
