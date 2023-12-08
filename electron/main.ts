@@ -99,6 +99,9 @@ ipcMain.on('check-update', () => {
 
 // Quand l'application est chargée, afficher la fenêtre
 app.whenReady().then(() => {
+    store.delete("token");
+    store.delete("userDetails");
+
     createWindow();
     app.on("activate", function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
