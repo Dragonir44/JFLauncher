@@ -80,16 +80,16 @@ class Launcher extends Component<Props, InputChange> {
                 })
             }
         }
-        this.setState({options: options})
 
-        this.setState({news: news})
-        console.log("userdetails", selectedAccount)
         pseudo.innerHTML = selectedAccount.token.profile.name
         skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
+        ramValue.innerHTML = `${savedRam}Go` || "1Go"
+
+        this.setState({options: options})
+        this.setState({news: news})
         this.setState({
             currentRam: Number(savedRam || "1")
         })
-        ramValue.innerHTML = `${savedRam}Go` || "1Go"
         this.setState({updateText: "Recherche de maj..."})
 
         window.ipc.receive('updateText', (data) => {
@@ -158,7 +158,6 @@ class Launcher extends Component<Props, InputChange> {
 
     handleDisconnect = (e: any) => {
         e.currentTarget.disabled = true;
-        // window.ipc.send("deco", {})
         this.props.navigate!("/auth")
     }
     
@@ -191,15 +190,19 @@ class Launcher extends Component<Props, InputChange> {
                                 <button id="showFolder" className="launchButton" onClick={() => window.ipc.send("showFolder", {})}>Ouvrir le dossier</button>
                             </div>
                             <hr />
-                            <button id="deco" className="launchButton" onClick={this.handleDisconnect}>Déconnexion</button>
+                            <button id="deco" className="launchButton" onClick={this.handleDisconnect}>Changer de compte</button>
                         </div>
                     </div>
                 </div>
-                <div id="middle" className="middle">
+                <div id="top" className="top">
                     <div className="userInfo">
-                        <h3>Bienvenue <b id="pseudo">Inconnu</b></h3>
-                        <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" className="skin" />
+                        <div id="skinFrame" className="skinFrame">
+                            <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" className="skin" />
+                        </div>
+                        <b id="pseudo">Inconnu</b>
                     </div>
+                </div>
+                <div id="middle" className="middle">
                     <div className="news">
                         <h3>News</h3>
                         <div className="newsContent">
@@ -220,22 +223,16 @@ class Launcher extends Component<Props, InputChange> {
                         </div>
                     </div>
                     <div className="serverStatus">
-                        <h3>Statut du serveur officiel</h3>
+                        <h3>serveur officiel</h3>
                         <div className="serverStatusContent">
-                            <div className="serverStatusContentHeader">
-                                <div className="serverStatusContentHeaderStatus">
-                                    <div className="serverStatusContentHeaderStatusIcon"></div>
-                                    <div className="serverStatusContentHeaderStatusText">
-                                        <h4>Statut</h4>
-                                        <p>{serverStatus.online ? "En ligne" : "Hors ligne"}</p>
-                                    </div>
-                                </div>
-                                <div className="serverStatusContentHeaderPlayers">
-                                    <div className="serverStatusContentHeaderPlayersIcon"></div>
-                                    <div className="serverStatusContentHeaderPlayersText">
-                                        <h4>Joueurs</h4>
-                                        <p>{serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
-                                    </div>
+                            
+                            <p className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></p>
+
+                            <div className="serverStatusContentPlayers">
+                                <div className="serverStatusContentPlayersIcon"></div>
+                                <div className="serverStatusContentPlayersText">
+                                    <h4>Joueurs</h4>
+                                    <p>{serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
                                 </div>
                             </div>
                         </div>
