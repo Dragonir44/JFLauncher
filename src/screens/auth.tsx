@@ -25,13 +25,18 @@ class Auth extends Component<Props, State> {
 
     async componentDidMount() {
         try {
-            const userDetails = await window.store.get("userDetails")
-            const accounts = JSON.parse(await window.store.get("token"))
-            if (accounts && this.state.accounts.length === 0) {
-                this.setState({ accounts: [{userDetails: userDetails, account: accounts}] });
+            const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]") 
+            if (registeredAccounts && this.state.accounts.length === 0) {
+                this.setState({ accounts: registeredAccounts });
             }
-            window.ipc.receive("auth-success", () => {
-                this.props.navigate!(`/launcher`);
+            window.ipc.receive("auth-success", async () => {
+                const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]") 
+                if (registeredAccounts && this.state.accounts.length === 0) {
+                    this.setState({ accounts: registeredAccounts });
+                }
+            })
+            window.ipc.receive("connect", ()=> {
+                this.props.navigate!("/launcher");
             })
         }
         catch(err) {
@@ -48,36 +53,34 @@ class Auth extends Component<Props, State> {
 
     render() {
         const { accounts } = this.state
-        let countAccounts = 0
         return (
             <>
                 <div className="login-page">
 
                     <div className="accountList">
-                        {accounts.map((data: any) => {
-                            if (data.account.profile.name) {
-                                data.id = countAccounts++
+                        {accounts && accounts.map((data: any) => {
+                            console.log(data)
+                            if (data.token.profile.name) {
                                 return (
-                                    <div className="account" key={data.account.profile.id}>
-                                        <img src={`https://mc-heads.net/avatar/${data.account.profile.name}`} className="skin" />
-                                        <div className="accountName">{data.account.profile.name}</div>
+                                    <div className="account" key={data.token.mcToken}>
+                                        <img src={`https://mc-heads.net/avatar/${data.token.profile.name}`} className="skin" />
+                                        <div className="accountName">{data.token.profile.name}</div>
 
                                         <div className="accountButtons">
                                             <button className="accountButton play" onClick={(e) => {
                                                 e.currentTarget.disabled = true;
-                                                window.ipc.send("loginToken", JSON.parse(data.userDetails))
+                                                window.ipc.send("loginToken", JSON.stringify(data))
                                             }}>
                                             <img src="assets/play.svg" className="accountButtonIcon" />
                                             </button>
-                                            {/* <button className="accountButton delete" onClick={async () => {
-                                                const accounts = JSON.parse(await window.store.get("token") || "{}")
-                                                console.log(accounts[data.id])
-                                                // delete accounts[data.id-1]
-                                                // window.store.set("token", JSON.stringify(accounts))
-                                                // this.setState({ accounts: Object.values(accounts) });
+                                            <button className="accountButton delete" onClick={async () => {
+                                                const accounts = JSON.parse(await window.store.get("registeredAccounts") as string || "{}");
+                                                const updatedAccounts = accounts.filter((account: any) => account.id !== data.id);
+                                                await window.store.set("registeredAccounts", JSON.stringify(updatedAccounts));
+                                                this.setState({ accounts: updatedAccounts });
                                             }}>
                                                 <img src="assets/delete.svg" className="accountButtonIcon" />
-                                            </button> */}
+                                            </button>
                                         </div>
                                     </div>
                                 )
