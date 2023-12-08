@@ -77,6 +77,38 @@
     }
 }
 
+.top {
+    width: 100%;
+    .userInfo {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5rem;
+
+        .skinFrame{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #222;
+
+            .skin {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+            }
+        }
+        .pseudo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    }
+}
+
 .middle {
     display: flex;
     justify-content: space-around;
@@ -87,26 +119,7 @@
     margin: 10%;
     color: white;
     background: rgba(0, 0, 0, 0.7);
-
-    .userInfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-right: 5rem;
-
-        .skin {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #222;
-            margin-right: 10px;
-        }
-        .pseudo {
-            font-size: 2rem;
-            font-weight: bold;
-        }
-    }
+    border-radius: 10px;
 
     .news {
         display: flex;
@@ -122,6 +135,44 @@
         }
         .content {
             font-size: 1.5rem;
+        }
+    
+    }
+
+    .serverStatus {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        height: 100%;
+        background: #222;
+        border-radius: 10px;
+
+        .serverStatusContent {
+            .state{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .serverStatusContentStatusIcon {
+                    &.online {
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        background-color: green;
+                        border-radius: 50%;
+                        margin-left: 10px;
+                    }
+                    &.offline {
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        background-color: red;
+                        border-radius: 50%;
+                        margin-left: 10px;
+                    }
+                }
+            }
         }
     
     }
