@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps",
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "elec:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"yarn watch\"",
-    "elec:build": "yarn build && tsc -p electron && electron-builder -wl",
+    "elec:build": "yarn build && tsc -p electron && electron-builder -w",
     "elec:release": "yarn build && tsc -p electron && electron-builder build --publish=always"
   },
   "devDependencies": {
