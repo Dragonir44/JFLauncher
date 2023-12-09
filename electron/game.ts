@@ -9,8 +9,6 @@ import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
 
 import * as config from './utils/config';
-config.loadConfig();
-
 
 const sysRoot = process.env.APPDATA || (process.platform == "darwin"
     ? process.env.HOME + "/Library/Application Support"
@@ -21,6 +19,7 @@ let gameConfig: any;
 
 
 export const initGame =  () => {
+    config.loadConfig();
     ipcMain.on('launch', (evt, d) => {
         if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
             fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
