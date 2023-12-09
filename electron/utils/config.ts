@@ -7,17 +7,20 @@ import axios from "axios";
 
 const store = new Store();
 
-export const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
+const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
 export const launcherName = "JFLauncher"
 export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv'
 export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
 export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%mc-%fo/forge-%mc-%fo-installer.jar'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
+const refreshTime = 5 * 1000
 export const gamePath = path.join(sysRoot, `.${launcherName}`)
 export const forgePath = path.join(gamePath, "forge")
 export const jrePath = path.join(gamePath, "jre")
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
+
+store.set("refreshTime", refreshTime)
 
 export type Config = {
     server: {
@@ -62,3 +65,7 @@ export const getGameChannel = (channel: string) => {
     const config = store.get("config") as Config
     return config.channel.find((c) => c.channel_name === channel)
 }
+
+setInterval(() => {
+    loadConfig()
+}, refreshTime)
