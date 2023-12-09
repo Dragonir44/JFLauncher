@@ -99,33 +99,6 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true
-    },
-    "linux": {
-      "target": [
-        "appImage",
-        "deb",
-        "rpm",
-        "snap",
-        "flatpak"
-      ],
-      "category": "Game",
-      "icon": "public/assets/logo.png"
-    },
-    "deb": {
-      "depends": [
-        "gconf2", 
-        "gconf-service", 
-        "libnotify4", 
-        "libxtst6", 
-        "libnss3"
-      ]
-    },
-    "rpm": {
-      "icon": "public/assets/logo.png",
-      "packageCategory": "Game",
-      "packageName": "jflauncher",
-      "vendor": "Dragonir",
-      "maintainer": "Dragonir"
     }
   },
   "browserslist": {
