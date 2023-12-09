@@ -2,7 +2,25 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    &::-webkit-scrollbar {
+		width: 0.15em;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: black;
+		border-radius: 0.25rem;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: whitesmoke;
+		border-radius: 0.25rem;
+	}
 }
+
+html {
+	scroll-behavior: smooth;
+}
+
 
 body {
     font-family: 'Roboto', sans-serif;
