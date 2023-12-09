@@ -60,7 +60,7 @@ class Launcher extends Component<Props, InputChange> {
         const savedRam = await window.store.get("ram")
         const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
-        const {news} = await window.store.get("config")
+        const refreshTime = await window.store.get("refreshTime")
         let options: any[] = []
         for(let i = 0; i < channels.length; i++) {
             const channel = channels[i]
@@ -80,13 +80,21 @@ class Launcher extends Component<Props, InputChange> {
                 })
             }
         }
+        
+        const configs = await window.store.get("config");
+        this.setState({ news: configs.news });
+
+        setInterval(async () => {
+            const configs = await window.store.get("config");
+            this.setState({ news: configs.news });
+        }, refreshTime);
 
         pseudo.innerHTML = selectedAccount.token.profile.name
         skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
         ramValue.innerHTML = `${savedRam}Go` || "1Go"
 
         this.setState({options: options})
-        this.setState({news: news})
+        // this.setState({news: news})
         this.setState({
             currentRam: Number(savedRam || "1")
         })
@@ -206,27 +214,23 @@ class Launcher extends Component<Props, InputChange> {
                     <div className="news">
                         <h3>News</h3>
                         <div className="newsContent">
-                            <div className="newsContentHeader">
-                            </div>
-                            <div className="newsContentBody">
-                                <div className="newsContentBodyText">{news ? news.map((article: any) => {
-                                    return (
-                                        <div className="newsContentBodyArticle" key={article.title}>
-                                            <h4>{article.title}</h4>
-                                            <article>
-                                                {window.html.parse(article.content)}
-                                            </article>
-                                        </div>
-                                    )
-                                }) : "Pas de nouveauté pour le moment"}</div>
-                            </div>
+                            {news.length > 0 ? news.map((article: any) => {
+                                return (
+                                    <div className="newsContentBodyArticle" key={article.title}>
+                                        <h4 className="title">{article.title}</h4>
+                                        <article className="content">
+                                            {window.html.parse(article.content)}
+                                        </article>
+                                    </div>
+                                )
+                            }) : "Pas de nouveauté pour le moment"}
                         </div>
                     </div>
                     <div className="serverStatus">
                         <h3>serveur officiel</h3>
                         <div className="serverStatusContent">
                             
-                            <p className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></p>
+                            <article className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
 
                             <div className="serverStatusContentPlayers">
                                 <div className="serverStatusContentPlayersIcon"></div>
