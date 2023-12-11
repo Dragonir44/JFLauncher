@@ -71,8 +71,8 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
   - [x] Make news panel dynamic
 - [x] Change the way the modpack is installed
   - [x] Change the way the modpack is downloaded
-      - [x] Download modpack folder from link
-      - [x] Unzip and move in the root folder of the game
+    - [x] Download modpack folder from link
+    - [x] Unzip and move in the root folder of the game
 - [ ] Add a way to change the version of the modpack
   - [ ] Add a version selector update via manifest
   - [ ] Add a "latest" option to always get the latest version
