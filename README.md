@@ -66,9 +66,9 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
 
 - [x] Add a way to change the channel of the modpack
 - [x] Add java managment
-- [ ] Create a manifest with news and update infos
+- [x] Create a manifest with news and update infos
   - [x] Add news panel
-  - [ ] Make news panel dynamic
+  - [x] Make news panel dynamic
 - [x] Change the way the modpack is installed
     - [x] Change the way the modpack is downloaded
       - [x] Download modpack folder from link
