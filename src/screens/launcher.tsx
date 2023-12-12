@@ -94,19 +94,12 @@ class Launcher extends Component<Props, InputChange> {
         ramValue.innerHTML = `${savedRam}Go` || "1Go"
 
         this.setState({options: options})
-        // this.setState({news: news})
-        this.setState({
-            currentRam: Number(savedRam || "1")
-        })
+        this.setState({currentRam: Number(savedRam || "1")})
         this.setState({updateText: "Recherche de maj..."})
 
-        window.ipc.receive('updateText', (data) => {
-            this.setState({updateText:`${data} : ${this.state.progress}%`})
-        })
+        window.ipc.receive('updateText', (data) => {this.setState({updateText:`${data} : ${this.state.progress}%`})})
 
-        window.ipc.receive('updateProgress', (data) => {
-            this.setState({progress: data})
-        })
+        window.ipc.receive('updateProgress', (data) => {this.setState({progress: data})})
 
         window.ipc.receive('closed', () => {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
@@ -127,9 +120,7 @@ class Launcher extends Component<Props, InputChange> {
         })
 
         window.ipc.send("server-ping")
-        window.ipc.receive('server-ping-response', (data) => {
-            this.setState({serverStatus: data})
-        })
+        window.ipc.receive('server-ping-response', (data) => {this.setState({serverStatus: data})})
     }
 
     handlePlay = (e: any) => {
@@ -158,9 +149,7 @@ class Launcher extends Component<Props, InputChange> {
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         ramValue.innerHTML = `${ram.value}Go`
 
-        this.setState({
-            currentRam: Number(ram.value)
-        })
+        this.setState({currentRam: Number(ram.value)})
         window.store.set("ram", ram.value)
     }
 
@@ -205,7 +194,7 @@ class Launcher extends Component<Props, InputChange> {
                 <div id="top" className="top">
                     <div className="userInfo">
                         <div id="skinFrame" className="skinFrame">
-                            <img src="https://minotar.net/avatar/MHF_Steve/100.png" id="skin" className="skin" />
+                            <img src="https://mc-heads.net/avatar/MHF_Steve" id="skin" className="skin" />
                         </div>
                         <b id="pseudo">Inconnu</b>
                     </div>
