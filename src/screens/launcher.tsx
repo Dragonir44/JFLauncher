@@ -200,16 +200,34 @@ class Launcher extends Component<Props, InputChange> {
                     </div>
                 </div>
                 <div id="middle" className="middle">
+                    <div id="newsModal" className="newsModal">
+                        <span className="newsModalClose" onClick={() => {
+                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                            newsModel.style.display = "none"
+                        }}>&times;</span>
+                        <div className="newsModalContent">
+                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
+                        </div>
+                    </div>
                     <div className="news">
                         <h3>News</h3>
                         <div className="newsContent">
                             {news.length > 0 ? news.map((article: any) => {
                                 return (
-                                    <div className="newsContentBodyArticle" key={article.title}>
+                                    <div className="newsContentBodyArticle" key={article.title} onClick={
+                                        () => {
+                                            const newsContentBodyArticleContent = document.getElementById("newsContentBodyArticleContent") as HTMLDivElement
+                                            newsContentBodyArticleContent.innerHTML = `
+                                                <h4 class="title">${article.title}</h4>
+                                                <article class="articleContent">
+                                                    ${article.content}
+                                                </article>
+                                            `
+                                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                                            newsModel.style.display = "flex"
+                                        }
+                                    }>
                                         <h4 className="title">{article.title}</h4>
-                                        <article className="content">
-                                            {window.html.parse(article.content)}
-                                        </article>
                                     </div>
                                 )
                             }) : "Pas de nouveauté pour le moment"}
