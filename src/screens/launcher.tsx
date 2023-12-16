@@ -119,7 +119,7 @@ class Launcher extends Component<Props, InputChange> {
             container.appendChild(message);
         })
 
-        window.ipc.send("server-ping")
+        setInterval(() => window.ipc.send("server-ping"), 1000)
         window.ipc.receive('server-ping-response', (data) => {this.setState({serverStatus: data})})
     }
 
