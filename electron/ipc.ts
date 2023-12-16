@@ -16,14 +16,15 @@ export const initIpc = () => {
             const xboxManager = await authManager.launch("raw")
             token = await xboxManager.getMinecraft();
 
-            currentAccounts.push({manager: xboxManager, token: token});
+            await currentAccounts.push({manager: xboxManager, token: token});
             store.set("registeredAccounts", JSON.stringify(currentAccounts));
 
             mainWindow?.webContents.send("auth-success");
         }
         catch(err) {
             console.log(err);
-            mainWindow.loadURL(path.join(__dirname, "..", "index.html"));
+            mainWindow?.webContents.send("auth-failed", err);
+            // mainWindow.loadURL(path.join(__dirname, "..", "index.html"));
         }
     });
     
@@ -62,7 +63,7 @@ export const initIpc = () => {
                 mainWindow?.webContents.send("server-ping-response", res);
             })
             .catch((err) => {
-                console.log(err);
+                mainWindow?.webContents.send("server-ping-response", err);
             })
     })
 
