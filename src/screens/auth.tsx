@@ -30,10 +30,13 @@ class Auth extends Component<Props, State> {
                 this.setState({ accounts: registeredAccounts });
             }
             window.ipc.receive("auth-success", async () => {
-                const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]") 
+                const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]")
                 if (registeredAccounts && this.state.accounts.length === 0) {
                     this.setState({ accounts: registeredAccounts });
                 }
+            })
+            window.ipc.receive("auth-failed", (err) => {
+                console.log(err)
             })
             window.ipc.receive("connect", ()=> {
                 this.props.navigate!("/launcher");
