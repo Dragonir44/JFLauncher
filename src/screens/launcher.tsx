@@ -2,6 +2,7 @@ import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Select, { StylesConfig } from "react-select";
+import Swal from "sweetalert2";
 
 import 'scss/launcher.scss';
 
@@ -121,6 +122,50 @@ class Launcher extends Component<Props, InputChange> {
 
         setInterval(() => window.ipc.send("server-ping"), 1000)
         window.ipc.receive('server-ping-response', (data) => {this.setState({serverStatus: data})})
+
+        window.ipc.receive('reinstall-complete', () => {
+            const progressBar = document.getElementById("progressBar") as HTMLDivElement
+            const playbtn = document.getElementById("playbtn") as HTMLButtonElement
+            const selectChannel = document.getElementById("channel") as HTMLSelectElement
+            selectChannel.disabled = false;
+            selectChannel.style.display = 'block';
+            progressBar.style.display = 'none'
+            playbtn.disabled = false;
+            this.setState({updateText: "", progress: 0})
+        })
+
+        window.ipc.receive('reinstall-error', (err) => {
+            const progressBar = document.getElementById("progressBar") as HTMLDivElement
+            const playbtn = document.getElementById("playbtn") as HTMLButtonElement
+            const selectChannel = document.getElementById("channel") as HTMLSelectElement
+            selectChannel.disabled = false;
+            selectChannel.style.display = 'block';
+            progressBar.style.display = 'none'
+            playbtn.disabled = false;
+            this.setState({updateText: "", progress: 0})
+            Swal.fire({
+                title: "Une erreur est survenue",
+                showDenyButton: true,
+                text: err,
+                icon: "error",
+                iconColor: "#ff0000",
+                confirmButtonText: "Fermer",
+                denyButtonText: "Réessayer",
+                background: "#1e1e1e",
+                confirmButtonColor: "#ff0000"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    return
+                }
+                if (result.isDenied) {
+                    selectChannel.disabled = true;
+                    selectChannel.style.display = 'none';
+                    progressBar.style.display = 'block'
+                    playbtn.disabled = true;
+                    window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
+                }
+            })
+        })
     }
 
     handlePlay = (e: any) => {
@@ -163,6 +208,18 @@ class Launcher extends Component<Props, InputChange> {
         modal!.style.display = "none";
     }
 
+    handleReinstall = (e: any) => {
+        const progressBar = document.getElementById("progressBar") as HTMLDivElement
+        const selectChannel = document.getElementById("channel") as HTMLSelectElement
+        const modal = document.getElementById("myModal");
+        modal!.style.display = "none";
+        selectChannel.disabled = true;
+        selectChannel.style.display = 'none';
+        progressBar.style.display = 'block'
+        e.currentTarget.disabled = true;
+        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
+    }
+
     render() {
         const { progress, updateText, options, currentRam, selectedChannel, news, serverStatus } = this.state
         return (
@@ -183,8 +240,9 @@ class Launcher extends Component<Props, InputChange> {
                                 <span id="ramValue">1Go</span>
                             </div>
                             <hr />
-                            <div className="showFolder">
+                            <div className="functionButtons">
                                 <button id="showFolder" className="launchButton" onClick={() => window.ipc.send("showFolder", {})}>Ouvrir le dossier</button>
+                                <button id="reinstall" className="launchButton" onClick={this.handleReinstall}>{`Réinstaller le cannal ${selectedChannel.label}`}</button>
                             </div>
                             <hr />
                             <button id="deco" className="launchButton" onClick={this.handleDisconnect}>Changer de compte</button>
