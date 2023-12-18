@@ -77,7 +77,7 @@
     "compression": "maximum",
     "asar": true,
     "extends": null,
-    "icon": "public/assets/logo.ico",
+    "icon": "public/assets/logo.png",
     "files": [
       "build/**/*",
       "node_modules/**/*"
