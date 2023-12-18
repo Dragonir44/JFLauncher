@@ -256,6 +256,30 @@ class Launcher extends Component<Props, InputChange> {
                         </div>
                         <b id="pseudo">Inconnu</b>
                     </div>
+                    <div className="serverStatus">
+                        <h3>serveur officiel</h3>
+                        <div className="serverStatusContent">
+                            
+                            <article className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
+
+                            <div className="serverStatusContentPlayers">
+                                <div className="serverStatusContentPlayersIcon"></div>
+                                <div className="serverStatusContentPlayersText">
+                                    <p><strong>Joueurs</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="socialBox">
+                        <div id="github" className="social github">
+                            <span className="label">Github</span>
+                            <img id="githubLink" src='assets/github.png' onClick={() => window.ipc.send('open-external-link', "https://github.com/Dragonir44/JFLauncher")}/>
+                        </div>
+                        <div id="curseforge" className="social curseforge">
+                            <span className="label">Curseforge</span>
+                            <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
+                        </div>
+                    </div>
                 </div>
                 <div id="middle" className="middle">
                     <div id="newsModal" className="newsModal">
@@ -289,20 +313,6 @@ class Launcher extends Component<Props, InputChange> {
                                     </div>
                                 )
                             }) : "Pas de nouveauté pour le moment"}
-                        </div>
-                    </div>
-                    <div className="serverStatus">
-                        <h3>serveur officiel</h3>
-                        <div className="serverStatusContent">
-                            
-                            <article className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
-
-                            <div className="serverStatusContentPlayers">
-                                <div className="serverStatusContentPlayersIcon"></div>
-                                <div className="serverStatusContentPlayersText">
-                                    <p><strong>Joueurs</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
