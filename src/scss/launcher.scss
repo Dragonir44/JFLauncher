@@ -73,6 +73,11 @@
                     width: 20%;
                 }
             }
+
+            .functionButtons {
+                display: flex;
+                justify-content: space-evenly;
+            }
         }
     }
 }
