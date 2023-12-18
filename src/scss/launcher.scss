@@ -116,9 +116,9 @@
 
 .middle {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 50vh;
+    // justify-content: space-around;
+    flex-direction: column-reverse;
+    height: 65vh;
     padding: 70px;
     text-align: center;
     margin: 10%;
@@ -194,7 +194,7 @@
         flex-direction: column;
         align-items: center;
         max-height: 100%;
-        width: 50%;
+        width: 100%;
         
         h3 {
             margin-bottom: 0.5rem;
@@ -203,6 +203,7 @@
         .newsContent {
             overflow-y: auto;
             text-align: justify;
+            width: 90%;
 
             .newsContentBodyArticle {
                 display: flex;
@@ -240,11 +241,12 @@
     .serverStatus {
         display: flex;
         flex-direction: column;
+        position: relative;
+        top: 1rem;
+        right: -48rem;
+        width: max-content;
         align-items: center;
         justify-content: center;
-        width: 50%;
-        height: 100%;
-        background: #222;
         border-radius: 10px;
 
         .serverStatusContent {
