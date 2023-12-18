@@ -5,6 +5,7 @@ import * as config from './utils/config';
 import { getStatus } from 'minecraft-ping-server/lib'
 
 import { mainWindow, store } from "./main";
+import { reinstall } from "./game"
 
 export let token: any;
 
@@ -72,8 +73,14 @@ export const initIpc = () => {
     
     })
     
-    ipcMain.on('deco', () => {
-      
+    ipcMain.on('reinstall', (_, data) => {
+        reinstall(data.channel)
+            .then(() => {
+                mainWindow?.webContents.send("reinstall-complete");
+            })
+            .catch((err) => {
+                mainWindow?.webContents.send("reinstall-failed", err);
+            })
     })
     
     ipcMain.handle('getStore', (_, data) => {
