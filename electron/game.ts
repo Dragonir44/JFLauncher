@@ -17,6 +17,7 @@ const sysRoot = process.env.APPDATA || (process.platform == "darwin"
 let jre = 'default'
 let gameConfig: any;
 
+type Progress = { type: string; task: number; total: number };
 
 export const initGame =  () => {
     config.loadConfig();
@@ -213,7 +214,6 @@ function downloadForge(channel: string) {
 function downloadModpack(channel: string) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
         updateText('Vérification du modpack')
@@ -226,80 +226,96 @@ function downloadModpack(channel: string) {
             }
         }
         else {
-            const dirToRemove = ['config', 'mods', 'scripts', 'assets', 'libraries', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu', 'versions']
-            updateText('Suppression de l\'ancien modpack')
-            if (fs.existsSync(modpackPath)) {
-                fs.unlinkSync(modpackPath);
-            }
-            
-            dirToRemove.forEach((d) => {
-                if (fs.existsSync(path.join(config.getGamePath(channel), d))) {
-                    fs.removeSync(path.join(config.getGamePath(channel), d))
-                }
-            })
-
-            updateText('Téléchargement du modpack')
-
-            axios.get(data?.download_link as string, {responseType: 'stream'})
-                .then((res) => {
-
-                    const writer = fs.createWriteStream(modpackPath);
-                    const totalSize = parseInt(res.headers['content-length'], 10);
-                    let downloadedSize = 0
-
-                    res.data.on('data', (chunk: any) => {
-                        downloadedSize += chunk.length;
-                        const progress = Math.round((downloadedSize / totalSize) * 100)
-                        updateText(`Téléchargement du modpack`);
-                        updateProgress(progress);
-                    })
-
-                    res.data.pipe(writer);
-
-                    writer.on('finish', () => {
-
-                        const extract = onezip.extract(modpackPath, config.getGamePath(channel))
-                        extract.on('start', ()=> {
-                            updateText('Extraction du modpack')
-                        })
-                        extract.on('progress', (percent: any) => {
-                            updateProgress(percent);
-                        })
-                        extract.on('error', (error: any) => {
-                            console.error(error);
-                        });
-                        
-                        extract.on('end', () => {
-                            fs.unlinkSync(modpackPath);
-                            if (lastChannels && lastChannels.length > 0) {
-                                for(let i = 0; i < lastChannels.length; i++) {
-                                    if (lastChannels[i].channel === channel) {
-                                        lastChannels[i].version = data?.current_pack_version
-                                    }
-                                    else {
-                                        lastChannels.push({channel: channel, version: data?.current_pack_version})
-                                    }
-                                }
-                                store.set('currentChannelVersion', lastChannels)
-                            }
-                            else {
-                                store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
-                            }
-    
-    
-                            return resolve();
-                        });
-                    })
-                    writer.on('error', (err) => {
-                        console.error(err);
-                        return reject();
-                    })
+            reinstall(channel)
+                .then(() => {
+                    return resolve();
                 })
-                .catch((err) => {
-                    console.error(err);
+                .catch(() => {
                     return reject();
                 })
         }
+    })
+}
+
+export function reinstall(channel: string) {
+    return new Promise<void>(async (resolve, reject) => {
+        const data = config.getGameChannel(channel)
+        const lastChannels: any = store.get('currentChannelVersion')
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+        const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'kubejs', 'packmenu']
+        updateText('Suppression de l\'ancien modpack')
+        if (fs.existsSync(modpackPath)) {
+                    fs.unlinkSync(modpackPath);
+        }
+        
+        dirToRemove.forEach((d) => {
+                    if (fs.existsSync(path.join(config.getGamePath(channel), d))) {
+                        fs.removeSync(path.join(config.getGamePath(channel), d))
+                    }
+        })
+
+        updateText('Téléchargement du modpack')
+
+        axios.get(data?.download_link as string, {responseType: 'stream'})
+            .then((res) => {
+
+                const writer = fs.createWriteStream(modpackPath);
+                const totalSize = parseInt(res.headers['content-length'], 10);
+                let downloadedSize = 0
+
+                res.data.on('data', (chunk: any) => {
+                    downloadedSize += chunk.length;
+                    const progress = Math.round((downloadedSize / totalSize) * 100)
+                    updateText(`Téléchargement du modpack`);
+                    updateProgress(progress);
+                })
+
+                res.data.pipe(writer);
+
+                writer.on('finish', () => {
+
+                    const extract = onezip.extract(modpackPath, config.getGamePath(channel))
+                    extract.on('start', ()=> {
+                        updateText('Extraction du modpack')
+                    })
+                    extract.on('progress', (percent: any) => {
+                        updateText('Extraction du modpack')
+                        updateProgress(percent);
+                    })
+                    extract.on('error', (error: any) => {
+                        console.error(error);
+                    });
+                    
+                    extract.on('end', () => {
+                        fs.unlinkSync(modpackPath);
+                        if (lastChannels && lastChannels.length > 0) {
+                            for(let i = 0; i < lastChannels.length; i++) {
+                                if (lastChannels[i].channel === channel) {
+                                    lastChannels[i].version = data?.current_pack_version
+                                }
+                                else {
+                                    lastChannels.push({channel: channel, version: data?.current_pack_version})
+                                }
+                            }
+                            store.set('currentChannelVersion', lastChannels)
+                        }
+                        else {
+                            store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
+                        }
+
+
+                        return resolve();
+                    });
+                })
+                writer.on('error', (err) => {
+                    console.error(err);
+                    return reject(err);
+                })
+            })
+            .catch((err) => {
+                console.error(err);
+                return reject(err);
+            })
     })
 }
 
@@ -335,14 +351,41 @@ function launch(channel: string) {
         mainWindow.hide()
     });
 
-    launcher.on('progress', (e) => {
-        updateText(`Chargement de ${e.type}`);
-        updateProgress(parseInt((100.0*e.task/e.total).toFixed(0)));
+    launcher.on('progress', (progress: Progress) => {
+        switch (progress.type) {
+            case "assets":
+                updateText("Téléchargement des assets");
+                updateProgress(
+                    parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
+                );
+              break;
+            case "natives":
+                updateText("Téléchargement des natives");
+                updateProgress(
+                  parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
+                );
+              break;
+  
+            default:
+                if (progress.type.includes("classes")) {
+                    updateText("Installation de forge");
+                    updateProgress(
+                        parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
+                    );
+                } else if (progress.type.includes("assets")) {
+                    updateText("Téléchargement des assets");
+                    updateProgress(
+                        parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
+                    );
+                }
+                break;
+        }
     });
 
-    launcher.on('download-status', (e) => {
-        updateText(`Téléchargement de ${e.type}`);
-        updateProgress(Math.round(e.current/e.total*100));
+    launcher.on('download-status', (progress: Progress) => {
+        // updateText(`Téléchargement de ${e.type}`);
+        // updateProgress(Math.round(e.current/e.total*100));
+        
     });
 
     launcher.on('close', (e) => {
