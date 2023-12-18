@@ -127,10 +127,12 @@ class Launcher extends Component<Props, InputChange> {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
             const playbtn = document.getElementById("playbtn") as HTMLButtonElement
             const selectChannel = document.getElementById("channel") as HTMLSelectElement
+            const reinstall = document.getElementById("reinstall") as HTMLButtonElement
             selectChannel.disabled = false;
             selectChannel.style.display = 'block';
             progressBar.style.display = 'none'
             playbtn.disabled = false;
+            reinstall.disabled = false;
             this.setState({updateText: "", progress: 0})
         })
 
@@ -138,10 +140,12 @@ class Launcher extends Component<Props, InputChange> {
             const progressBar = document.getElementById("progressBar") as HTMLDivElement
             const playbtn = document.getElementById("playbtn") as HTMLButtonElement
             const selectChannel = document.getElementById("channel") as HTMLSelectElement
+            const reinstall = document.getElementById("reinstall") as HTMLButtonElement
             selectChannel.disabled = false;
             selectChannel.style.display = 'block';
             progressBar.style.display = 'none'
             playbtn.disabled = false;
+            reinstall.disabled = false;
             this.setState({updateText: "", progress: 0})
             Swal.fire({
                 title: "Une erreur est survenue",
