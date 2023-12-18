@@ -300,8 +300,7 @@ class Launcher extends Component<Props, InputChange> {
                             <div className="serverStatusContentPlayers">
                                 <div className="serverStatusContentPlayersIcon"></div>
                                 <div className="serverStatusContentPlayersText">
-                                    <h4>Joueurs</h4>
-                                    <p>{serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
+                                    <p><strong>Joueurs</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
                                 </div>
                             </div>
                         </div>
