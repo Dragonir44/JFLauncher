@@ -83,14 +83,17 @@
 }
 
 .top {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     width: 100%;
+
     .userInfo {
-        position: absolute;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-right: 5rem;
 
         .skinFrame{
             display: flex;
@@ -112,16 +115,102 @@
             font-weight: bold;
         }
     }
+
+    .serverStatus {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        top: 1rem;
+        right: 0;
+        width: max-content;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 1rem;
+        color: white;
+        border-radius: 10px;
+
+        .serverStatusContent {
+            .state{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .serverStatusContentStatusIcon {
+                    &.online {
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        background-color: green;
+                        border-radius: 50%;
+                        margin-left: 10px;
+                    }
+                    &.offline {
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        background-color: red;
+                        border-radius: 50%;
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+    
+    }
+
+    .socialBox {
+        position: relative;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+
+        .social {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+            width: max-content;
+
+            .label {
+                opacity: 0;
+                color: white;
+                background: #222;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+                padding: 0.25rem;
+            }
+    
+            img {
+                width: 50px;
+                height: 50px;
+                margin: 0.5rem;
+                cursor: pointer;
+                transition-duration: 0.5s;
+            }
+
+            &:hover .label {
+                opacity: 1;
+            }
+        }
+    }
 }
 
 .middle {
+    position: relative;
+    top: calc(50% - (65vh / 2));
+    left: calc(50% - (70% / 2));
     display: flex;
-    // justify-content: space-around;
-    flex-direction: column-reverse;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 65vh;
-    padding: 70px;
+    width: 70%;
+    padding: 2rem;
     text-align: center;
-    margin: 10%;
     color: white;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
@@ -231,45 +320,6 @@
                         ul {
                             list-style: inside "- ";
                         }
-                    }
-                }
-            }
-        }
-    
-    }
-
-    .serverStatus {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        top: 1rem;
-        right: -48rem;
-        width: max-content;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-
-        .serverStatusContent {
-            .state{
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                .serverStatusContentStatusIcon {
-                    &.online {
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        background-color: green;
-                        border-radius: 50%;
-                        margin-left: 10px;
-                    }
-                    &.offline {
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        background-color: red;
-                        border-radius: 50%;
-                        margin-left: 10px;
                     }
                 }
             }
