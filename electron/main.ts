@@ -40,7 +40,7 @@ export function updateProgress(progress: number) {
 function createWindow() {
     mainWindow = new BrowserWindow({
         title: `JFLauncher - ${app.getVersion()}`,
-        icon: !isdev ? path.join(__dirname, "../assets/logo.png") : path.join(__dirname, publicPath, "assets/logo.png"),
+        icon: !isdev ? path.join(__dirname, "../src/assets/logo.png") : path.join(__dirname, publicPath, "assets/logo.png"),
         width: 1280,
         height: 729,
         autoHideMenuBar: !isdev,
@@ -72,6 +72,10 @@ ipcMain.on("install-update", (_, link) => {
         .then(() => {
             app.quit()
         })
+})
+
+ipcMain.on('open-external-link', (_, link) => {
+    shell.openExternal(link)
 })
 
 autoUpdater.on("update-not-available", () => {
