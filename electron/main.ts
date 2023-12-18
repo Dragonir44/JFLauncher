@@ -40,7 +40,7 @@ export function updateProgress(progress: number) {
 function createWindow() {
     mainWindow = new BrowserWindow({
         title: `JFLauncher - ${app.getVersion()}`,
-        icon: !isdev ? path.join(__dirname, "../assets/logo.ico") : path.join(__dirname, publicPath, "assets/logo.ico"),
+        icon: !isdev ? path.join(__dirname, "../assets/logo.png") : path.join(__dirname, publicPath, "assets/logo.png"),
         width: 1280,
         height: 729,
         autoHideMenuBar: !isdev,
