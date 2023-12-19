@@ -55,6 +55,7 @@
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
     "fs-extra": "^11.1.1",
+    "i18next": "^23.7.11",
     "minecraft-launcher-core": "^3.14.1",
     "minecraft-ping-server": "^1.0.3",
     "msmc": "^4.1.0",
