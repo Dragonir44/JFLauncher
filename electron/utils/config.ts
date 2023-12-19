@@ -9,8 +9,8 @@ const store = new Store();
 
 const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
 export const launcherName = "JFLauncher"
-export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv'
-export const jreLinux = 'https://dd06-dev.fr/dl/jre/jre-linux.zip'
+export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv/JimmuFactory/jdk-windows.zip'
+export const jreLinux = 'https://nas.team-project.fr/api/public/dl/MpoYU100/JimmuFactory/jdk-linux.tar.gz'
 export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%mc-%fo/forge-%mc-%fo-installer.jar'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
