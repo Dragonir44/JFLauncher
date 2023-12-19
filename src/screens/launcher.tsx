@@ -3,6 +3,8 @@ import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Select, { StylesConfig } from "react-select";
 import Swal from "sweetalert2";
+import { WithTranslation, withTranslation } from "react-i18next";
+import "i18n"
 
 import 'scss/launcher.scss';
 
@@ -33,26 +35,23 @@ const customStyles: StylesConfig = {
     })
 }
 
-class Launcher extends Component<Props, InputChange> {
+class Launcher extends Component<Props & WithTranslation, InputChange> {
 
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            currentRam: 1,
-            progress: 0,
-            updateText: "",
-            options: [],
-            selectedChannel: {value: "beta", label: "Beta"},
-            news: [],
-            serverStatus: {
-                online: false,
-                version: "",
-                onlinePlayers: '0',
-                maxPlayers: '20'
-            }
+    state = {
+        currentRam: 1,
+        progress: 0,
+        updateText: "",
+        options: [],
+        selectedChannel: {value: "beta", label: "Beta"},
+        news: [],
+        serverStatus: {
+            online: false,
+            version: "",
+            onlinePlayers: '0',
+            maxPlayers: '20'
         }
     }
+    
     async componentDidMount() {
         const selectedAccount = JSON.parse(await window.store.get("selectedAccount"))
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
@@ -345,4 +344,4 @@ class Launcher extends Component<Props, InputChange> {
     }
 }
 
-export default withRouter<Props>(Launcher);
+export default withTranslation()(withRouter<Props & WithTranslation>(Launcher));
