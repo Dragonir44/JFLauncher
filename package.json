@@ -6,7 +6,8 @@
   "main": "build/electron/main.js",
   "author": {
     "name": "Dragonir",
-    "email": "dragonir44@gmail.com"
+    "email": "dragonir44@gmail.com",
+    "url": "https://github.com/dragonir44"
   },
   "license": "MIT",
   "homepage": ".",
@@ -110,7 +111,9 @@
         "AppImage",
         "deb",
         "rpm"
-      ]
+      ],
+      "icon": "public/assets/logo.png",
+      "asar": true
     }
   },
   "browserslist": {
