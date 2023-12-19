@@ -4,7 +4,10 @@
   "version": "v0.1.7",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
-  "author": "Dragonir",
+  "author": {
+    "name": "Dragonir",
+    "email": "dragonir44@gmail.com"
+  },
   "license": "MIT",
   "homepage": ".",
   "repository": {
@@ -102,7 +105,6 @@
       "allowElevation": true
     },
     "linux": {
-      "email": "dragonir44@gmail.com",
       "category": "games",
       "target": [
         "AppImage",
