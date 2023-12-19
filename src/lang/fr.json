@@ -1,0 +1,32 @@
+{
+    "update": {
+        "update-failed-title": "Une erreur est survenue",
+        "update-found-title": "Mise à jour disponible",
+        "update-found-body": "Une mise à jour est disponible (v{{version}}). Voulez-vous la télécharger ?",
+        "update-found-confirmButton": "Télécharger",
+        "update-found-cancelButton": "Annuler",
+        "searching": "Vérification des mises à jour ..."
+    },
+    "footer": {
+        "warning": "Attention:",
+        "warning-text": "Ce lanceur n'est pas encore terminé, et est encore en cours de developpement.",
+        "disclaimer": "Clause de non-responsabilité:",
+        "disclaimer-text": "Ce lanceur n'est pas affilié à Mojang Studios, Microsoft ou Minecraft."
+    },
+    "auth": {
+        "add-account": "Ajouter un compte",
+        "error": "Une erreur est survenue : {{error}}",
+        "error-not-found": "profile Minecraft non trouvé sur ce compte"
+    },
+    "launcher": {
+        "news": "Actualités",
+        "play": "Jouer",
+        "server-title": "Serveur officiel",
+        "server-status-title": "Statut",
+        "server-status-checking": "Vérification du statut ...",
+        "server-status-online": "En ligne",
+        "server-status-offline": "Hors ligne",
+        "server-status-players": "Joueurs: {{online}}/{{max}}",
+        "settings": "Option"
+    }
+}
