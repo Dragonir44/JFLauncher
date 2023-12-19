@@ -1,7 +1,6 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "email": "dragonir44@gmail.com",
   "version": "v0.1.7",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
@@ -103,6 +102,7 @@
       "allowElevation": true
     },
     "linux": {
+      "email": "dragonir44@gmail.com",
       "category": "games",
       "target": [
         "AppImage",
