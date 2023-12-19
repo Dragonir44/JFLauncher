@@ -108,9 +108,7 @@
     "linux": {
       "category": "games",
       "target": [
-        "AppImage",
-        "deb",
-        "rpm"
+        "AppImage"
       ],
       "icon": "public/assets/logo.png",
       "asar": true
