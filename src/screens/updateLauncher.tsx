@@ -2,6 +2,8 @@ import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Swal from "sweetalert2";
+import { WithTranslation, withTranslation } from "react-i18next";
+import "i18n"
 
 import Footer from "screens/footer";
 
@@ -16,21 +18,28 @@ type State = {
     updateText: string;
   };
 
-class UpdateLauncher extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
+class UpdateLauncher extends Component<Props & WithTranslation, State> {
+    // constructor(props: Props) {
+    //     super(props);
 
-        this.state = {
-            progress: 0,
-            updateText: ""
-        }
+    //     this.state = {
+    //         progress: 0,
+    //         updateText: ""
+    //     }
+    // }
+
+    state = {
+        progress: 0,
+        updateText: ""
     }
+
     componentDidMount() {
+        const {t} = this.props
         window.ipc.send("check-update");
 
         window.ipc.receive('update-failed', (error) => {
             Swal.fire({
-                title: "Une erreur est survenue",
+                title: t("update.update-failed-title"),
                 text: error,
                 icon: "error",
                 iconColor: "#ff0000",
@@ -42,16 +51,18 @@ class UpdateLauncher extends Component<Props, State> {
             })
         
         })
+
         let updateData: any
+
         window.ipc.receive('update-available', (versionData) => {
             updateData = versionData;
             Swal.fire({
-                title: "Mise à jour disponible",
-                text: `Une mise à jour est disponible (v${versionData.version}). Voulez-vous la télécharger ?`,
+                title: t("update.update-found-title"),
+                text: t("update.update-found-text", {version: `${updateData.version}`}),
                 icon: "question",
                 iconColor: "#54c2f0",
-                confirmButtonText: "Télécharger",
-                cancelButtonText: "Annuler",
+                confirmButtonText: t("update.update-found-confirmButton"),
+                cancelButtonText: t("update.update-found-cancelButton"),
                 showCancelButton: true,
                 background: "#1e1e1e",
                 confirmButtonColor: "#54c2f0",
@@ -73,10 +84,11 @@ class UpdateLauncher extends Component<Props, State> {
 
     render() {
         const {progress, updateText} = this.state;
+        const {t} = this.props
         return (
             <>
                 <div className='updateBox'>
-                    <div className='updateText'>{updateText || "Vérification des mises à jour ..."}</div>
+                    <div className='updateText'>{updateText || t("update.searching")}</div>
                     {/* <div className='updateBar'>
                         <div className='updateBarProgress' style={{width: `${progress}%`}}></div>
                     </div> */}
@@ -87,4 +99,4 @@ class UpdateLauncher extends Component<Props, State> {
     }
 }
 
-export default withRouter<Props>(UpdateLauncher);
+export default withTranslation()(withRouter<Props & WithTranslation>(UpdateLauncher));
