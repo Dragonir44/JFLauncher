@@ -83,7 +83,7 @@ export const initIpc = () => {
             })
     })
 
-    ipcMain.on('updateChannel', (_, data) => {
+    ipcMain.on('updateChannel', () => {
         mainWindow?.webContents.send("updateChannel");
     })
     

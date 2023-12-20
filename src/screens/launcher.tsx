@@ -9,9 +9,6 @@ import OptionsModal from "./optionsModal";
 
 import 'scss/launcher.scss';
 
-
-
-
 type Props = {
     navigate?: NavigateFunction;
 }
@@ -77,7 +74,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
                     }
                 })
-                window.ipc.send("updateChannel", {channel: this.state.selectedChannel})
+                window.store.set('channel', {channel: this.state.selectedChannel})
+                window.ipc.send("updateChannel")
             }
         }
         
