@@ -74,7 +74,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
                     }
                 })
-                window.store.set('channel', {channel: this.state.selectedChannel})
+                window.store.set('channel', this.state.selectedChannel)
                 window.ipc.send("updateChannel")
             }
         }
@@ -182,6 +182,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
     handleChannel = (e: any) => {
         this.setState({selectedChannel: e})
+        console.log(e)
         window.store.set('channel', e)
         window.ipc.send("updateChannel")
     }
