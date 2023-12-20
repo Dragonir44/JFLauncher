@@ -82,6 +82,10 @@ export const initIpc = () => {
                 mainWindow?.webContents.send("reinstall-failed", err);
             })
     })
+
+    ipcMain.on('updateChannel', (_, data) => {
+        mainWindow?.webContents.send("updateChannel");
+    })
     
     ipcMain.handle('getStore', (_, data) => {
         return store.get(data);
