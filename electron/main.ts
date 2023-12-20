@@ -8,7 +8,6 @@ import { autoUpdater, AppUpdater } from "electron-updater"
 import isdev from 'electron-is-dev';
 import { initIpc } from "./ipc";
 import { initGame } from "./game";
-import fs from "fs-extra";
 
 import * as config from './utils/config';
 
@@ -116,3 +115,8 @@ app.whenReady().then(() => {
 app.on("window-all-closed", function () {
     if (process.platform !== "darwin") app.quit();
 });
+
+app.commandLine.appendSwitch('ignore-gpu-blacklist');
+app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch('disable-gpu-compositing');
+app.disableHardwareAcceleration()
