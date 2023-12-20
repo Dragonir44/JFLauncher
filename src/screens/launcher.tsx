@@ -5,11 +5,11 @@ import Select, { StylesConfig } from "react-select";
 import Swal from "sweetalert2";
 import { WithTranslation, withTranslation } from "react-i18next";
 import "i18n"
+import OptionsModal from "./optionsModal";
 
 import 'scss/launcher.scss';
 
 
-const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
 
 
 type Props = {
@@ -56,7 +56,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const selectedAccount = JSON.parse(await window.store.get("selectedAccount"))
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
-        const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
         const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
@@ -78,6 +77,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
                     }
                 })
+                window.ipc.send("updateChannel", {channel: this.state.selectedChannel})
             }
         }
         
@@ -91,7 +91,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
         pseudo.innerHTML = selectedAccount.token.profile.name
         skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
-        ramValue.innerHTML = `${savedRam}Go` || "1Go"
+        
 
         this.setState({options: options})
         this.setState({currentRam: Number(savedRam || "1")})
@@ -185,90 +185,40 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
     handleChannel = (e: any) => {
         this.setState({selectedChannel: e})
         window.store.set('channel', e)
+        window.ipc.send("updateChannel")
     }
     
     displayModal = (e: any) => {
         const modal = document.getElementById("myModal");
         modal!.style.display = "block";
     }
-    
-    handleRam = (e: any) => {
-        const ram = e.currentTarget as HTMLInputElement
-        const ramValue = document.getElementById("ramValue") as HTMLSpanElement
-        ramValue.innerHTML = `${ram.value}Go`
-
-        this.setState({currentRam: Number(ram.value)})
-        window.store.set("ram", ram.value)
-    }
-
-    handleDisconnect = (e: any) => {
-        e.currentTarget.disabled = true;
-        this.props.navigate!("/auth")
-    }
-    
-    handleCloseOptions = (e: any) => {
-        const modal = document.getElementById("myModal");
-        modal!.style.display = "none";
-    }
-
-    handleReinstall = (e: any) => {
-        const progressBar = document.getElementById("progressBar") as HTMLDivElement
-        const selectChannel = document.getElementById("channel") as HTMLSelectElement
-        const modal = document.getElementById("myModal");
-        modal!.style.display = "none";
-        selectChannel.disabled = true;
-        selectChannel.style.display = 'none';
-        progressBar.style.display = 'block'
-        e.currentTarget.disabled = true;
-        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
-    }
 
     render() {
         const { progress, updateText, options, currentRam, selectedChannel, news, serverStatus } = this.state
+        const {t} = this.props
         return (
             <>
                 <header>
                     <div id="messages"></div>
                 </header>
-                <div id="myModal" className="modal">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <span className="close" onClick={this.handleCloseOptions}>&times;</span>
-                            <h2>Options</h2>
-                        </div>
-                        <div className="modal-body">
-                            <div className="ram-block">
-                                <b>Mémoire vive</b>
-                                <input className="ramRange" type="range" min="1" value={currentRam} id="ram" max={maxRam} onInput={this.handleRam} />
-                                <span id="ramValue">1Go</span>
-                            </div>
-                            <hr />
-                            <div className="functionButtons">
-                                <button id="showFolder" className="launchButton" onClick={() => window.ipc.send("showFolder", {})}>Ouvrir le dossier</button>
-                                <button id="reinstall" className="launchButton" onClick={this.handleReinstall}>{`Réinstaller le cannal ${selectedChannel.label}`}</button>
-                            </div>
-                            <hr />
-                            <button id="deco" className="launchButton" onClick={this.handleDisconnect}>Changer de compte</button>
-                        </div>
-                    </div>
-                </div>
+                <OptionsModal />
                 <div id="top" className="top">
                     <div className="userInfo">
                         <div id="skinFrame" className="skinFrame">
                             <img src="https://mc-heads.net/avatar/MHF_Steve" id="skin" className="skin" />
                         </div>
-                        <b id="pseudo">Inconnu</b>
+                        <b id="pseudo"></b>
                     </div>
                     <div className="serverStatus">
-                        <h3>serveur officiel</h3>
+                        <h3>{t('launcher.server-title')}</h3>
                         <div className="serverStatusContent">
                             
-                            <article className="state"><strong>Statut</strong>: {serverStatus.online ? "En ligne" : "Hors ligne"} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
+                            <article className="state"><strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
 
                             <div className="serverStatusContentPlayers">
                                 <div className="serverStatusContentPlayersIcon"></div>
                                 <div className="serverStatusContentPlayersText">
-                                    <p><strong>Joueurs</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
+                                    <p><strong>{t('launcher.server-status-players')}</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
                                 </div>
                             </div>
                         </div>
@@ -295,7 +245,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         </div>
                     </div>
                     <div className="news">
-                        <h3>News</h3>
+                        <h3>{t('launcher.news')}</h3>
                         <div className="newsContent">
                             {news.length > 0 ? news.map((article: any) => {
                                 return (
@@ -315,12 +265,12 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                         <h4 className="title">{article.title}</h4>
                                     </div>
                                 )
-                            }) : "Pas de nouveauté pour le moment"}
+                            }) : t("launcher.no-news")}
                         </div>
                     </div>
                 </div>
                 <footer id="footer">
-                    <button id="options" className="launchButton" onClick={this.displayModal}>OPTIONS</button>
+                    <button id="options" className="launchButton" onClick={this.displayModal}>{t('launcher.settings').toUpperCase()}</button>
                     <div id="progressBar" className="progressBar">
                         <h3 id="status" className="status">{updateText}</h3>
                         <div className="progress" style={{width: `${progress}%`}}></div>
@@ -336,7 +286,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         menuPlacement="top"
                         onChange={this.handleChannel}
                     />
-                    <button id="playbtn" className="launchButton" onClick={this.handlePlay}>JOUER</button>
+                    <button id="playbtn" className="launchButton" onClick={this.handlePlay}>{t('launcher.play').toUpperCase()}</button>
                 </footer>
                 <script src="../public/scripts/main.js"></script>
             </>
