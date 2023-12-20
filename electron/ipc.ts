@@ -14,7 +14,7 @@ export const initIpc = () => {
         try {
             const authManager = new Auth("select_account")
             let currentAccounts = JSON.parse(store.get("registeredAccounts") as string || "[]");
-            const xboxManager = await authManager.launch("raw")
+            const xboxManager = await authManager.launch("electron")
             token = await xboxManager.getMinecraft();
 
             await currentAccounts.push({manager: xboxManager, token: token});
