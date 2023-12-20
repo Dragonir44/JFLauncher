@@ -78,7 +78,7 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
   - [ ] Add a "latest" option to always get the latest version
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
-- [ ] Add a way to change the language of the launcher
+- [x] Add a way to change the language of the launcher
 - [x] Add a ping check to the server
 - [x] Add a progress bar
 - [x] Hide window when game launched
