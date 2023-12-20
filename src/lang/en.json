@@ -17,5 +17,21 @@
         "add-account": "Add account",
         "error": "An error occured : {{error}}",
         "error-not-found": "Minecraft profile not found on this account"
+    },
+    "launcher": {
+        "news": "News",
+        "no-news": "No news available",
+        "play": "Play",
+        "server-title": "Official server",
+        "server-status-title": "Status",
+        "server-status-checking": "Checking status ...",
+        "server-status-online": "Online",
+        "server-status-offline": "Offline",
+        "server-status-players": "Players:",
+        "settings": "Option",
+        "ram": "Memory",
+        "open-folder": "Open folder",
+        "reinstall-channel": "Reinstall {{channel}} channel",
+        "change-account": "Change account"
     }
 }

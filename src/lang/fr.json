@@ -20,13 +20,17 @@
     },
     "launcher": {
         "news": "Actualités",
+        "no-news": "Pas de nouveauté pour le moment",
         "play": "Jouer",
         "server-title": "Serveur officiel",
         "server-status-title": "Statut",
-        "server-status-checking": "Vérification du statut ...",
         "server-status-online": "En ligne",
         "server-status-offline": "Hors ligne",
-        "server-status-players": "Joueurs: {{online}}/{{max}}",
-        "settings": "Option"
+        "server-status-players": "Joueurs:",
+        "settings": "Option",
+        "ram": "Mémoire vive",
+        "open-folder": "Ouvrir le dossier",
+        "reinstall-channel": "Réinstaller le canal {{channel}}",
+        "change-account": "Changer de compte"
     }
 }
