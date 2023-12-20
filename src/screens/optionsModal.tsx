@@ -24,7 +24,7 @@ class OptionsModal extends Component<Props & WithTranslation> {
     async componentDidMount() {
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
-        const savedChannel = await window.store.get("channel")
+        const savedChannel = await window.store.get("channel") || {value: "beta", label: "Beta"}
         
         ramValue.innerHTML = `${savedRam}Go` || "1Go"
 
