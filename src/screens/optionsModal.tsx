@@ -2,6 +2,7 @@ import { Component } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next"
 import "i18n"
+import { withRouter } from "utils/withRouter";
 
 type Props = {
     navigate?: NavigateFunction;
@@ -17,22 +18,22 @@ const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
 class OptionsModal extends Component<Props & WithTranslation> {
     state = {
         currentRam: 1,
-        selectedChannel: {value: "beta", label: "Beta"},
-
+        selectedChannel: {value: "beta", label: "Beta"}
     }
 
     async componentDidMount() {
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
+        const savedChannel = await window.store.get("channel")
     
         ramValue.innerHTML = `${savedRam}Go` || "1Go"
+
+        this.setState({currentRam: Number(savedRam || "1")})
+        this.setState({selectedChannel: savedChannel})
     
         window.ipc.receive('updateChannel', async () => {
             this.setState({selectedChannel: await window.store.get('channel')})
         })
-        
-        this.setState({currentRam: Number(savedRam || "1")})
-        this.setState({selectedChannel: await window.store.get('channel')})
     }
 
     handleRam = (e: any) => {
@@ -98,4 +99,4 @@ class OptionsModal extends Component<Props & WithTranslation> {
     }
 }
 
-export default withTranslation()(OptionsModal)
+export default withTranslation()(withRouter<Props & WithTranslation>(OptionsModal))
