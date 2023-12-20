@@ -38,7 +38,7 @@ export const initGame =  () => {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
                 if (process.platform === 'linux') {
-                    downloadJava(config.jreLinux, path.join(jrePath, 'jre-linux.zip'), jrePath)
+                    downloadJava(config.jreLinux, path.join(jrePath, 'jdk-linux.tar.gz'), jrePath)
                         .then(() => {
                             updatePackAndLaunch(d.channel)
                         })
@@ -47,7 +47,7 @@ export const initGame =  () => {
                         })
                 }
                 else {
-                    downloadJava(config.jreWin, path.join(jrePath, 'jre-windows.zip'), jrePath)
+                    downloadJava(config.jreWin, path.join(jrePath, 'jdk-windows.zip'), jrePath)
                         .then(() => {
                             updatePackAndLaunch(d.channel)
                         })
@@ -62,12 +62,12 @@ export const initGame =  () => {
 function checkJavaInstall(channel: string) {
     return new Promise<void>((resolve, reject) => {
         const jrePath = config.jrePath;
-        let jreIntallFiles = path.join(jrePath, 'jre-windows.zip');
+        let jreIntallFiles = path.join(jrePath, 'jdk-windows.zip');
 
         updateText('Vérification de Java');
         
         if (process.platform === 'linux') {
-            jreIntallFiles = path.join(jrePath, 'jre-linux.zip');
+            jreIntallFiles = path.join(jrePath, 'jdk-linux.zip');
         }
 
         if (fs.existsSync(jrePath) && fs.readdirSync(jrePath).length > 0 && !fs.existsSync(jreIntallFiles)) {
