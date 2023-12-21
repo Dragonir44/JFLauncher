@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import axios from 'axios';
 import path from 'path';
 const onezip = require('onezip');
+import {exec} from 'child_process';
 import {token} from './ipc'
 import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
@@ -38,7 +39,7 @@ export const initGame =  () => {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
                 if (process.platform === 'linux') {
-                    downloadJava(config.jreLinux, path.join(jrePath, 'jdk-linux.tar.gz'), jrePath)
+                    downloadJava(config.jreLinux, path.join(jrePath, 'jdk-linux.zip'), jrePath)
                         .then(() => {
                             updatePackAndLaunch(d.channel)
                         })
@@ -117,6 +118,17 @@ function downloadJava(url: string, target: string, jrePath: string) {
                         });
                         
                         extract.on('end', () => {
+                            if (process.platform === 'linux') {
+                                exec(`chmod +x ${path.join(jrePath, 'bin/java')}`, (err, stdout, stderr) => {
+                                    if (err) {
+                                        console.error(err);
+                                        return reject();
+                                    }
+                                    fs.unlinkSync(target);
+                                    jre = jrePath;
+                                    return resolve()
+                                })
+                            }
                             fs.unlinkSync(target);
                             jre = jrePath;
                             return resolve()
