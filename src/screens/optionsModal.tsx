@@ -15,7 +15,7 @@ interface InputChange {
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
 
-class OptionsModal extends Component<Props & WithTranslation> {
+class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     state = {
         currentRam: 1,
         selectedChannel: {value: "beta", label: "Beta"}
@@ -25,10 +25,10 @@ class OptionsModal extends Component<Props & WithTranslation> {
         const ramValue = document.getElementById("ramValue") as HTMLSpanElement
         const savedRam = await window.store.get("ram")
         const savedChannel = await window.store.get("channel") || {value: "beta", label: "Beta"}
-        
-        ramValue.innerHTML = `${savedRam}Go` || "1Go"
 
-        this.setState({currentRam: Number(savedRam || "1")})
+        ramValue.innerHTML = savedRam != 'undefined' ? `${savedRam}Go` : "1Go"
+
+        this.setState({currentRam: Number(savedRam != 'undefined' ? savedRam : "1")})
         this.setState({selectedChannel: savedChannel})
     
         window.ipc.receive('updateChannel', async () => {
