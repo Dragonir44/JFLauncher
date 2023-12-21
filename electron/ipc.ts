@@ -84,7 +84,6 @@ export const initIpc = () => {
     })
 
     ipcMain.on('updateChannel', () => {
-        console.log("Updating channel");
         mainWindow?.webContents.send("updateChannel");
     })
     
