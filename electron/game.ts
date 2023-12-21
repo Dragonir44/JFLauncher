@@ -109,6 +109,7 @@ function downloadJava(url: string, target: string, jrePath: string) {
                             updateText(`Extraction de java`);
                         })
                         extract.on('progress', (percent: any) => {
+                            updateText(`Extraction de java`);
                             updateProgress(percent);
                         })
                         extract.on('error', (error: any) => {
@@ -323,15 +324,13 @@ function launch(channel: string) {
     const launcher = new Client();
 
     const javaPath = path.join(jre, 'bin', 'java');
-
+    console.log(javaPath);
     const channelConfig = config.getGameChannel(channel);
 
     let opts = {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
-        clientPackage : undefined,//channelConfig?.download_link,//`https://nas.team-project.fr/api/public/dl/qhdPbmWq/JimmuFactory/JF-${channel}.zip`,
-        removePackage: true,
         forge: path.join(config.forgePath, `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
         javaPath: javaPath,
         version: {
@@ -346,7 +345,7 @@ function launch(channel: string) {
 
     launcher.launch(opts);
 
-    // launcher.on('debug', (e) => console.log('debug',e));
+    launcher.on('debug', (e) => console.log('debug',e));
     launcher.on('arguments', (e) => {
         mainWindow.hide()
     });
