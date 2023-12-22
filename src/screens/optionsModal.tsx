@@ -28,7 +28,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         ramValue.innerHTML = savedRam != 'undefined' ? `${savedRam}Go` : "1Go"
 
-        this.setState({currentRam: Number(savedRam != 'undefined' ? savedRam : "1")})
+        this.setState({currentRam: Number(savedRam != 'undefined' ? savedRam : 1)})
         this.setState({selectedChannel: savedChannel})
     
         window.ipc.receive('updateChannel', async () => {
