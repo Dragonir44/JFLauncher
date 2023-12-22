@@ -6,3 +6,4 @@ electron-builder.env
 cert/
 build/
 yarn.lock
+news.html
