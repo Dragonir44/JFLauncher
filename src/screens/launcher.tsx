@@ -232,16 +232,16 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         </div>
                     </div>
                 </div>
-                <div id="middle" className="middle">
-                    <div id="newsModal" className="newsModal">
-                        <span className="newsModalClose" onClick={() => {
-                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                            newsModel.style.display = "none"
-                        }}>&times;</span>
-                        <div className="newsModalContent">
-                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
-                        </div>
+                <div id="newsModal" className="newsModal">
+                    <span className="newsModalClose" onClick={() => {
+                        const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                        newsModel.style.display = "none"
+                    }}>&times;</span>
+                    <div className="newsModalContent">
+                        <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
                     </div>
+                </div>
+                <div id="middle" className="middle">
                     <div className="news">
                         <h3>{t('launcher.news')}</h3>
                         <div className="newsContent">

@@ -199,6 +199,70 @@
     }
 }
 
+.newsModal{
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    z-index: 1;
+
+    .newsModalContent {
+        max-width: 90%;
+        max-height: 90%;
+        text-align: justify;
+
+        .newsContentBodyArticleContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background: #222;
+            height: 35rem;
+            overflow-y: hidden;
+
+            .title {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .articleContent{
+                padding-left: 1rem;
+                height: 80%;
+                ul.masterList {
+                    height: 100%;
+                    overflow-y: auto;
+                    li {
+                        list-style: inside "- ";
+                        padding-left: 1rem;
+                        ul {
+                            list-style: inside "- ";
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .newsModalClose {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
 .middle {
     position: relative;
     top: calc(50% - (65vh / 2));
@@ -214,69 +278,6 @@
     color: white;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
-
-    .newsModal{
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        padding: 2%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1;
-
-        .newsModalContent {
-            max-width: 90%;
-            max-height: 90%;
-            text-align: justify;
-
-            .newsContentBodyArticleContent {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 1rem;
-                border-radius: 10px;
-                background: #222;
-                height: 35rem;
-                overflow-y: hidden;
-    
-                .title {
-                    font-size: 1.5rem;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }
-    
-                .articleContent{
-                    padding-left: 1rem;
-                    height: 80%;
-                    ul.masterList {
-                        height: 100%;
-                        overflow-y: auto;
-                        li {
-                            list-style: inside "- ";
-                            padding-left: 1rem;
-                            ul {
-                                list-style: inside "- ";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        .newsModalClose {
-            position: absolute;
-            top: 0;
-            right: 0;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    }
 
     .news {
         display: flex;
