@@ -28,7 +28,7 @@
         "server-status-online": "Online",
         "server-status-offline": "Offline",
         "server-status-players": "Players:",
-        "settings": "Option",
+        "settings": "Settings",
         "ram": "Memory",
         "open-folder": "Open folder",
         "reinstall-channel": "Reinstall {{channel}} channel",
