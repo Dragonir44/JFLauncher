@@ -23,12 +23,22 @@ type Progress = { type: string; task: number; total: number };
 export const initGame =  () => {
     config.loadConfig();
     ipcMain.on('launch', (evt, d) => {
+        const serverAddress = d.autoConnect ? 'node2.team-project.fr' : ''
+        const serverPort = d.autoConnect ? '25565' : ''
+
         if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
             fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
         }
     
         gameConfig = {
             ram: d.ram,
+            window: {
+                width: d.width,
+                height: d.height,
+                fullscreen: d.fullscreen,
+            },
+            autoConnect: d.autoConnect,
+            serverAddress: `${serverAddress}:${serverPort}`
         }
 
         checkJavaInstall(d.channel)
@@ -255,16 +265,16 @@ export function reinstall(channel: string) {
         const data = config.getGameChannel(channel)
         const lastChannels: any = store.get('currentChannelVersion')
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
-        const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'kubejs', 'packmenu']
+        const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu']
         updateText('Suppression de l\'ancien modpack')
         if (fs.existsSync(modpackPath)) {
-                    fs.unlinkSync(modpackPath);
+            fs.unlinkSync(modpackPath);
         }
         
         dirToRemove.forEach((d) => {
-                    if (fs.existsSync(path.join(config.getGamePath(channel), d))) {
-                        fs.removeSync(path.join(config.getGamePath(channel), d))
-                    }
+            if (fs.existsSync(path.join(config.getGamePath(channel), d))) {
+                fs.removeSync(path.join(config.getGamePath(channel), d))
+            }
         })
 
         updateText('Téléchargement du modpack')
@@ -336,10 +346,9 @@ function launch(channel: string) {
     const launcher = new Client();
 
     const javaPath = path.join(jre, 'bin', 'java');
-    console.log(javaPath);
     const channelConfig = config.getGameChannel(channel);
 
-    let opts = {
+    let opts:any = {
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
@@ -352,8 +361,19 @@ function launch(channel: string) {
         memory: {
             max: `${gameConfig.ram}G`,
             min:'1G'
-        }
+        },
+        features: ['has_custom_resolution'],
+        window: {
+            fullscreen: gameConfig.window.fullscreen,
+            width: gameConfig.window.width,
+            height: gameConfig.window.height,
+        },
     };
+
+    opts.quickPlay = gameConfig.autoConnect ? {
+        type: "multiplayer",
+        identifier: gameConfig.serverAddress,
+    } : undefined
 
     launcher.launch(opts);
 
