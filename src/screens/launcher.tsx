@@ -217,70 +217,72 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                     <div id="messages"></div>
                 </header>
                 <OptionsModal />
-                <div id="top" className="top">
-                    <div className="userInfo">
-                        <div id="skinFrame" className="skinFrame">
-                            <img src="https://mc-heads.net/avatar/MHF_Steve" id="skin" className="skin" />
+                <div className="content">
+                    <div id="newsModal" className="newsModal">
+                        <span className="newsModalClose" onClick={() => {
+                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                            newsModel.style.display = "none"
+                        }}>&times;</span>
+                        <div className="newsModalContent">
+                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
                         </div>
-                        <b id="pseudo"></b>
                     </div>
-                    <div className="serverStatus">
-                        <h3>{t('launcher.server-title')}</h3>
-                        <div className="serverStatusContent">
-                            
-                            <article className="state"><strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
-
-                            <div className="serverStatusContentPlayers">
-                                <div className="serverStatusContentPlayersIcon"></div>
-                                <div className="serverStatusContentPlayersText">
-                                    <p><strong>{t('launcher.server-status-players')}</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
-                                </div>
+                    <div id="top" className="top">
+                        <div className="socialBox">
+                            <div id="github" className="social github">
+                                <span className="label">Github</span>
+                                <img id="githubLink" src='assets/github.png' onClick={() => window.ipc.send('open-external-link', "https://github.com/Dragonir44/JFLauncher")}/>
+                            </div>
+                            <div id="curseforge" className="social curseforge">
+                                <span className="label">Curseforge</span>
+                                <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
                             </div>
                         </div>
                     </div>
-                    <div className="socialBox">
-                        <div id="github" className="social github">
-                            <span className="label">Github</span>
-                            <img id="githubLink" src='assets/github.png' onClick={() => window.ipc.send('open-external-link', "https://github.com/Dragonir44/JFLauncher")}/>
+                    
+                    <div id="middle" className="middle">
+                        <div className="middle__card userInfo">
+                            <img src="https://mc-heads.net/avatar/MHF_Steve" id="skin" className="skin" />
+                            <b id="pseudo" className="pseudo"></b>
+                            <button id="playbtn" className="middle__card--playButton" onClick={this.handlePlay}>{t('launcher.play').toUpperCase()}</button>
                         </div>
-                        <div id="curseforge" className="social curseforge">
-                            <span className="label">Curseforge</span>
-                            <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
+                        <div className="middle__card news">
+                            <h3>{t('launcher.news')}</h3>
+                            <div className="newsContent">
+                                {news.length > 0 ? news.map((article: any) => {
+                                    return (
+                                        <div className="newsContentBodyArticle" key={article.title} onClick={
+                                            () => {
+                                                const newsContentBodyArticleContent = document.getElementById("newsContentBodyArticleContent") as HTMLDivElement
+                                                newsContentBodyArticleContent.innerHTML = `
+                                                    <h4 class="title">${article.title}</h4>
+                                                    <article class="articleContent">
+                                                        ${article.content}
+                                                    </article>
+                                                `
+                                                const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                                                newsModel.style.display = "flex"
+                                            }
+                                        }>
+                                            <h4 className="title">{article.title}</h4>
+                                        </div>
+                                    )
+                                }) : t("launcher.no-news")}
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div id="newsModal" className="newsModal">
-                    <span className="newsModalClose" onClick={() => {
-                        const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                        newsModel.style.display = "none"
-                    }}>&times;</span>
-                    <div className="newsModalContent">
-                        <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
-                    </div>
-                </div>
-                <div id="middle" className="middle">
-                    <div className="news">
-                        <h3>{t('launcher.news')}</h3>
-                        <div className="newsContent">
-                            {news.length > 0 ? news.map((article: any) => {
-                                return (
-                                    <div className="newsContentBodyArticle" key={article.title} onClick={
-                                        () => {
-                                            const newsContentBodyArticleContent = document.getElementById("newsContentBodyArticleContent") as HTMLDivElement
-                                            newsContentBodyArticleContent.innerHTML = `
-                                                <h4 class="title">${article.title}</h4>
-                                                <article class="articleContent">
-                                                    ${article.content}
-                                                </article>
-                                            `
-                                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                                            newsModel.style.display = "flex"
-                                        }
-                                    }>
-                                        <h4 className="title">{article.title}</h4>
+                        <div className="middle__card serverStatus">
+                            <h3>{t('launcher.server-title')}</h3>
+                            <div className="serverStatusContent">
+                                
+                                <article className="state"><strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
+
+                                <div className="serverStatusContentPlayers">
+                                    <div className="serverStatusContentPlayersIcon"></div>
+                                    <div className="serverStatusContentPlayersText">
+                                        <p><strong>{t('launcher.server-status-players')}</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
                                     </div>
-                                )
-                            }) : t("launcher.no-news")}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -301,7 +303,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         menuPlacement="top"
                         onChange={this.handleChannel}
                     />
-                    <button id="playbtn" className="launchButton" onClick={this.handlePlay}>{t('launcher.play').toUpperCase()}</button>
                 </footer>
                 <script src="../public/scripts/main.js"></script>
             </>
