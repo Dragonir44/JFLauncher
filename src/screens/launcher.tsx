@@ -14,7 +14,6 @@ type Props = {
 }
 
 interface InputChange {
-    currentRam?: number;
     progress?: number;
     updateText?: string;
     channels?: string[];
@@ -35,7 +34,6 @@ const customStyles: StylesConfig = {
 class Launcher extends Component<Props & WithTranslation, InputChange> {
 
     state = {
-        currentRam: 1,
         progress: 0,
         updateText: "",
         options: [],
@@ -92,7 +90,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         
 
         this.setState({options: options})
-        this.setState({currentRam: Number(savedRam || "1")})
         this.setState({updateText: "Recherche de maj..."})
 
         window.ipc.receive('updateText', (data) => {this.setState({updateText:`${data} : ${this.state.progress}%`})})
@@ -173,11 +170,31 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const ram = document.getElementById("ram") as HTMLInputElement
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
+        const width = document.getElementById("windowWidth") as HTMLInputElement
+        const height = document.getElementById("windowHeight") as HTMLInputElement
+        const fullscreen = document.getElementById("fullscreen") as HTMLInputElement
+        const autoConnect = document.getElementById("autoConnect") as HTMLInputElement
+        const serverAddress = document.getElementById("server-address") as HTMLInputElement
+        const serverPort = document.getElementById("server-port") as HTMLInputElement
+
         selectChannel.disabled = true;
         selectChannel.style.display = 'none';
         progressBar.style.display = 'block'
         e.currentTarget.disabled = true;
-        window.ipc.send("launch", {ram: ram?.value, channel: this.state.selectedChannel.value});
+
+        let opts: any = {
+            ram: ram.value,
+            channel: this.state.selectedChannel.value,
+            width: width.value,
+            height: height.value,
+            fullscreen: fullscreen.checked,
+            autoConnect: autoConnect.checked
+        }
+
+        opts.serverAddress = autoConnect.checked ? serverAddress.value : undefined,
+        opts.serverPort = autoConnect.checked ? serverPort.value : undefined
+
+        window.ipc.send("launch", opts);
     }
 
     handleChannel = (e: any) => {
@@ -192,7 +209,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
     }
 
     render() {
-        const { progress, updateText, options, currentRam, selectedChannel, news, serverStatus } = this.state
+        const { progress, updateText, options, selectedChannel, news, serverStatus } = this.state
         const {t} = this.props
         return (
             <>
@@ -268,7 +285,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                     </div>
                 </div>
                 <footer id="footer">
-                    <button id="options" className="launchButton" onClick={this.displayModal}>{t('launcher.settings').toUpperCase()}</button>
+                    <button id="options" className="launchButton" onClick={this.displayModal}>{t('launcher.settings-label').toUpperCase()}</button>
                     <div id="progressBar" className="progressBar">
                         <h3 id="status" className="status">{updateText}</h3>
                         <div className="progress" style={{width: `${progress}%`}}></div>
