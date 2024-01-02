@@ -27,10 +27,18 @@
         "server-status-online": "En ligne",
         "server-status-offline": "Hors ligne",
         "server-status-players": "Joueurs:",
-        "settings": "Options",
-        "ram": "Mémoire vive",
-        "open-folder": "Ouvrir le dossier",
-        "reinstall-channel": "Réinstaller le canal {{channel}}",
-        "change-account": "Changer de compte"
+        "settings-label": "Options",
+        "settings": {
+            "ram": "Mémoire vive",
+            "window-width": "Largeur de la fenêtre",
+            "window-height": "Hauteur de la fenêtre",
+            "window-fullscreen": "Plein écran",
+            "auto-connect": "Connexion automatique au serveur",
+            "server-ip": "Adresse IP du serveur",
+            "server-port": "Port du serveur",
+            "open-folder": "Ouvrir le dossier",
+            "reinstall-channel": "Réinstaller le canal {{channel}}",
+            "change-account": "Changer de compte"
+        }
     }
 }
