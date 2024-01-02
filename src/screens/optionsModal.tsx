@@ -68,11 +68,10 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         autoConnect.checked = await window.store.get("autoConnect") || false
         this.setState({autoConnect: await window.store.get("autoConnect") || false})
 
-        if (autoConnect.checked) {
-            serverAddress.value = await window.store.get("serverAddress")
-            serverPort.value = await window.store.get("serverPort")
-        }
-        else {
+        serverAddress.value = await window.store.get("serverAddress") || ""
+        serverPort.value = await window.store.get("serverPort") || ""
+
+        if (!autoConnect.checked) {
             serverAddress.disabled = true
             serverPort.disabled = true
         }
