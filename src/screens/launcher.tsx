@@ -170,8 +170,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const ram = document.getElementById("ram") as HTMLInputElement
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
-        const width = document.getElementById("windowWidth") as HTMLInputElement
-        const height = document.getElementById("windowHeight") as HTMLInputElement
+        const width = document.getElementById("window-width") as HTMLInputElement
+        const height = document.getElementById("window-height") as HTMLInputElement
         const fullscreen = document.getElementById("fullscreen") as HTMLInputElement
         const autoConnect = document.getElementById("autoConnect") as HTMLInputElement
         const serverAddress = document.getElementById("server-address") as HTMLInputElement

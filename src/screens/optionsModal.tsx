@@ -35,11 +35,9 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
     async componentDidMount() {
         const ramRange = document.getElementById("ram") as HTMLInputElement
-        const ramValue = document.getElementById("ramValue") as HTMLSpanElement
-        const width = document.getElementById("windowWidth") as HTMLInputElement
-        const widthValue = document.getElementById("windowWidthValue") as HTMLSpanElement
-        const height = document.getElementById("windowHeight") as HTMLInputElement
-        const heightValue = document.getElementById("windowHeightValue") as HTMLSpanElement
+        const ramValue = document.getElementById("ramValue") as HTMLInputElement
+        const width = document.getElementById("window-width") as HTMLInputElement
+        const height = document.getElementById("window-height") as HTMLInputElement
         const fullscreen = document.getElementById("fullscreen") as HTMLInputElement
         const autoConnect = document.getElementById("autoConnect") as HTMLInputElement
         const serverAddress = document.getElementById("server-address") as HTMLInputElement
@@ -50,16 +48,14 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedFullscreen = await window.store.get("fullscreen")
         const savedChannel = await window.store.get("channel") || {value: "beta", label: "Beta"}
 
-        ramRange.value = savedRam != 'undefined' ? savedRam : "1"
-        ramValue.innerHTML = savedRam != 'undefined' ? `${savedRam}Go` : "1Go"
+        ramRange.value = savedRam != Math.round(maxRam/2) ? savedRam : "1"
+        ramValue.value = savedRam != Math.round(maxRam/2) ? savedRam : 1
         this.setState({currentRam: Number(savedRam != 'undefined' ? savedRam : 1)})
 
-        width.value = savedWidth != 'undefined' ? savedWidth : "800"
-        widthValue.innerHTML = savedWidth != 'undefined' ? `${savedWidth}px` : "800px"
+        width.value = savedWidth != 'undefined' ? savedWidth : 800
         this.setState({windowWidth: Number(savedWidth != 'undefined' ? savedWidth : 800)})
 
-        height.value = savedHeight != 'undefined' ? savedHeight : "600"
-        heightValue.innerHTML = savedHeight != 'undefined' ? `${savedHeight}px` : "600px"
+        height.value = savedHeight != 'undefined' ? savedHeight : 600
         this.setState({windowHeight: Number(savedHeight != 'undefined' ? savedHeight : 600)})
 
         fullscreen.checked = savedFullscreen != 'undefined' ? savedFullscreen : false
@@ -67,6 +63,12 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         autoConnect.checked = await window.store.get("autoConnect") || false
         this.setState({autoConnect: await window.store.get("autoConnect") || false})
+
+        serverAddress.value = await window.store.get("serverAddress") || ""
+        this.setState({serverAddress: await window.store.get("serverAddress") || ""})
+
+        serverPort.value = await window.store.get("serverPort") || ""
+        this.setState({serverPort: await window.store.get("serverPort") || ""})
 
         if (!autoConnect.checked) {
             serverAddress.disabled = true
@@ -82,29 +84,32 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
     handleRam = (e: any) => {
         const ram = e.currentTarget as HTMLInputElement
-        const ramValue = document.getElementById("ramValue") as HTMLSpanElement
-        ramValue.innerHTML = `${ram.value}Go`
+        const ramValue = document.getElementById("ramValue") as HTMLInputElement
+        console.log(ram.className)
+        if (ram.className === "ramRange") {
+            ramValue.value = ram.value
+        }
+        
+        if (ram.className === "ramValue") {
+            ramValue.value = ram.value
+        }
 
         this.setState({currentRam: Number(ram.value)})
         window.store.set("ram", ram.value)
     }
 
-    handleWidth = (e: any) => {
-        const width = e.currentTarget as HTMLInputElement
-        const widthValue = document.getElementById("windowWidthValue") as HTMLSpanElement
-        widthValue.innerHTML = `${width.value}px`
+    handleSize = (e: any) => {
+        const size = e.currentTarget as HTMLInputElement
 
-        this.setState({windowWidth: Number(width.value)})
-        window.store.set("windowWidth", width.value)
-    }
+        if (size.id === "window-width") {
+            this.setState({windowWidth: Number(size.value)})
+            window.store.set("windowWidth", size.value)
+        }
 
-    handleHeight = (e: any) => {
-        const height = e.currentTarget as HTMLInputElement
-        const heightValue = document.getElementById("windowHeightValue") as HTMLSpanElement
-        heightValue.innerHTML = `${height.value}px`
-
-        this.setState({windowHeight: Number(height.value)})
-        window.store.set("windowHeight", height.value)
+        if (size.id === "window-height") {
+            this.setState({windowHeight: Number(size.value)})
+            window.store.set("windowHeight", size.value)
+        }
     }
 
     handleFullscreen = (e: any) => {
@@ -167,46 +172,40 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             <h2>{t('launcher.settings-label')}</h2>
                         </div>
                         <div className="modal-body">
-                            <div className="ram-block">
+                            <div className="block ram">
                                 <b>{t('launcher.settings.ram')}</b>
                                 <input className="ramRange" id="ram" type="range" min="1" value={currentRam} max={maxRam} onInput={this.handleRam} />
-                                <span id="ramValue">1Go</span>
+                                <input type="number" name="ramValue" id="ramValue" onInput={this.handleRam}/>Go
                             </div>
                             <hr />
-                            <div className="windowBlock">
-                                <div className="width">
-                                    <b>{t('launcher.settings.window-width')}</b>
-                                    <input className="windowRange" id="windowWidth"  type="range" min="800" defaultValue="800" max={window.screen.availWidth} onChange={this.handleWidth} />
-                                    <span id="windowWidthValue">800px</span>
+                            <div className="block size">
+                                <div className="window-size">
+                                    <b>{t('launcher.settings.window-size')}</b>
+                                    <input type="number" name="window-width" id="window-width" onInput={this.handleSize}/>
+                                    <input type="number" name="window-height" id="window-height" onInput={this.handleSize}/>
                                 </div>
-
-                                <div className="height">
-                                    <b>{t('launcher.settings.window-height')}</b>
-                                    <input className="windowRange" id="windowHeight" type="range" min="600" defaultValue="600" max={window.screen.availHeight} onChange={this.handleHeight} />
-                                    <span id="windowHeightValue">600px</span>
-                                </div>
-
                                 <div className="fullscreen">
                                     <b>{t('launcher.settings.window-fullscreen')}</b>
                                     <input type="checkbox" id="fullscreen" onChange={this.handleFullscreen} />
                                 </div>
                             </div>
                             <hr />
-                            <div className="auto-connect">
-                                <b>{t('launcher.settings.auto-connect')}</b>
-                                <input type="checkbox" id="autoConnect" onChange={this.handleAutoConnect} />
+                            <div className="block auto-connect">
+                                <div className="auto-connect-box">
+                                    <b>{t('launcher.settings.auto-connect')}</b>
+                                    <input type="checkbox" id="autoConnect" onChange={this.handleAutoConnect} />
+                                </div>
                                 <div className="auto-connect-block">
                                     <input type="text" name="server-address" id="server-address" placeholder={t('launcher.settings.server-ip')} onChange={this.handleUpdateServerAddress}/>:
                                     <input type="number" name="server-port" id="server-port" placeholder={t('launcher.settings.server-port')} onChange={this.handleUpdateServerPort}/>
                                 </div>
                             </div>
                             <hr />
-                            <div className="functionButtons">
-                                <button id="showFolder" className="launchButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
-                                <button id="reinstall" className="launchButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
+                            <div className="block functionButtons">
+                                <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
+                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
+                                <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                             </div>
-                            <hr />
-                            <button id="deco" className="launchButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                         </div>
                     </div>
                 </div>

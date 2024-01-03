@@ -382,23 +382,73 @@
                 display: flex;
                 flex-direction: column;
                 padding: 16px 16px;
-                .ram-block {
+                z-index: 1;
+                
+                .block {
                     display: flex;
-                    justify-content: space-between;
+                    flex-direction: column;
                     align-items: center;
-    
-                    .ramRange {
-                        width: 50%;
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+
+                    &.ram {
+                        flex-direction: row;
+
+                        input[type=number] {
+                            background: rgba(0, 0, 0, 0.115);
+                            color: #fff;
+                            width: 50px;
+                        }
                     }
-    
-                    .ramValue {
-                        width: 20%;
+
+                    &.size {
+                        align-items: flex-start;
+
+                        > * {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        input[type=number] {
+                            background: rgba(0, 0, 0, 0.115);
+                            color: #fff;
+                        }
                     }
-                }
-    
-                .functionButtons {
-                    display: flex;
-                    justify-content: space-evenly;
+
+                    &.auto-connect {
+                        align-items: flex-start;
+
+                        > * {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        input[type=text],input[type=number] {
+                            background: rgba(0, 0, 0, 0.115);
+                            color: #fff;
+                        }
+                    }
+
+                    &.functionButtons {
+                        flex-direction: row;
+                        justify-content: space-evenly;
+                        width: 100%;
+                    }
+
+                    b {
+                        margin-right: 1rem;
+                    }
+
+                    input[type=range] {
+                        height: 5px;
+                    }
+
+                    .functionButton {
+                        padding: 1rem;
+                        color: #fff;
+                        background: rgba(0, 0, 0, 0.115);
+                        cursor: pointer;
+                    }
                 }
             }
         }
@@ -417,16 +467,18 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    transition: .5s;
 
     .progressBar {
         display: none;
         flex-wrap: wrap;
         align-content: center;
-        width: 80%;
+        width: 100%;
         height: 25px;
         background-color: #ddd;
         border-radius: 25px;
         overflow: hidden;
+        transition: .5s;
 
         .status {
             position: absolute;
