@@ -82,8 +82,6 @@
     }
 }
 
-
-
 .newsModal{
     display: none;
     position: absolute;
@@ -183,6 +181,32 @@
                 &:hover .label {
                     opacity: 1;
                 }
+            }
+        }
+
+        #channel {
+            position: absolute;
+            top: 0;
+            left: calc(50% - 3.5rem);
+
+            .channel__control {
+                // display: none;
+                color: black;
+                height: 2rem;
+                width: 7rem;
+                z-index: 1;
+        
+                .channel__indicators {
+                    height: 100%;
+                }
+        
+                .channel__value-container {
+                    text-align: center;
+                }
+            }
+        
+            .channel__menu {
+                color: black;
             }
         }
     }
@@ -289,6 +313,10 @@
                     }
                 }
             }
+
+            &.serverStatus {
+                
+            }
         }
     }
 }
@@ -332,26 +360,6 @@ footer {
             margin: 0;
             transition: all 0.5s ease;
         }
-    }
-
-    .channel__control {
-        // display: none;
-        color: black;
-        height: 2rem;
-        width: 7rem;
-        z-index: 1;
-
-        .channel__indicators {
-            height: 100%;
-        }
-
-        .channel__value-container {
-            text-align: center;
-        }
-    }
-
-    .channel__menu {
-        color: black;
     }
 }
 
