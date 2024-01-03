@@ -113,36 +113,6 @@
                 }
             }
         }
-
-        #channel {
-            .channel__container {
-                .channel__control {
-                    height: 2rem;
-                    width: 7rem;
-                    z-index: 1;
-                    background: rgba(0, 0, 0, 0.115);
-
-                    .channel__value-container {
-                        text-align: center;
-                        color: #fff;
-                    }
-                    .channel__indicators {
-                        height: 100%;
-                    }
-                }
-
-                .channel__menu {
-                    color: #fff;
-                    background: #222;
-                    .channel__menu-list {
-                        background: #222;
-                        .channel__option {
-
-                        }
-                    }
-                }
-            }
-        }
     }
     
     .middle {
