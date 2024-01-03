@@ -218,11 +218,10 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 </header>
                 <OptionsModal />
                 <div className="content">
-                    <div id="newsModal" className="newsModal">
-                        <span className="newsModalClose" onClick={() => {
-                            const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                            newsModel.style.display = "none"
-                        }}>&times;</span>
+                    <div id="newsModal" className="newsModal" onClick={() => {
+                        const newsModel = document.getElementById("newsModal") as HTMLDivElement
+                        newsModel.style.display = "none"
+                    }}>
                         <div className="newsModalContent">
                             <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
                         </div>
@@ -238,6 +237,17 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                 <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
                             </div>
                         </div>
+                        <Select 
+                            name="channel" 
+                            id="channel"
+                            classNamePrefix="channel"
+                            value={selectedChannel}
+                            isSearchable={false}
+                            options={options} 
+                            styles={customStyles}
+                            menuPlacement="top"
+                            onChange={this.handleChannel}
+                        />
                     </div>
                     
                     <div id="middle" className="middle">
@@ -274,7 +284,10 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                             <h3>{t('launcher.server-title')}</h3>
                             <div className="serverStatusContent">
                                 
-                                <article className="state"><strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div></article>
+                                <article className="state">
+                                    <strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} 
+                                    <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
+                                </article>
 
                                 <div className="serverStatusContentPlayers">
                                     <div className="serverStatusContentPlayersIcon"></div>
@@ -292,17 +305,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         <h3 id="status" className="status">{updateText}</h3>
                         <div className="progress" style={{width: `${progress}%`}}></div>
                     </div>
-                    <Select 
-                        name="channel" 
-                        id="channel"
-                        classNamePrefix="channel"
-                        value={selectedChannel}
-                        isSearchable={false}
-                        options={options} 
-                        styles={customStyles}
-                        menuPlacement="top"
-                        onChange={this.handleChannel}
-                    />
                 </footer>
                 <script src="../public/scripts/main.js"></script>
             </>
