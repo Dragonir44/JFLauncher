@@ -203,10 +203,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         window.ipc.send("updateChannel")
     }
     
-    displayModal = (e: any) => {
-        const modal = document.getElementById("myModal");
-        modal!.style.display = "block";
-    }
 
     render() {
         const { progress, updateText, options, selectedChannel, news, serverStatus } = this.state
@@ -283,16 +279,19 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         <div className="middle__card serverStatus">
                             <h3>{t('launcher.server-title')}</h3>
                             <div className="serverStatusContent">
-                                
                                 <article className="state">
-                                    <strong>{t('launcher.server-status-title')}</strong>: {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} 
-                                    <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
+                                    <strong>{t('launcher.server-status-title')}</strong>
+                                    <div className="status">
+                                        {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} 
+                                        <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
+                                    </div>
                                 </article>
-
                                 <div className="serverStatusContentPlayers">
-                                    <div className="serverStatusContentPlayersIcon"></div>
                                     <div className="serverStatusContentPlayersText">
-                                        <p><strong>{t('launcher.server-status-players')}</strong> : {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}</p>
+                                        <strong>{t('launcher.server-status-players')}</strong>
+                                        <div className="player">
+                                            {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +299,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                     </div>
                 </div>
                 <footer id="footer">
-                    <button id="options" className="launchButton" onClick={this.displayModal}>{t('launcher.settings-label').toUpperCase()}</button>
                     <div id="progressBar" className="progressBar">
                         <h3 id="status" className="status">{updateText}</h3>
                         <div className="progress" style={{width: `${progress}%`}}></div>
