@@ -349,7 +349,6 @@ function launch(channel: string) {
     const channelConfig = config.getGameChannel(channel);
 
     let opts:any = {
-        // Simply call this function to convert the msmc minecraft object into a mclc authorization object
         authorization: token.mclc(),
         root: config.getGamePath(channel),
         forge: path.join(config.forgePath, `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
