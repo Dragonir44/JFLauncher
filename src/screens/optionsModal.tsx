@@ -146,11 +146,15 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     handleReinstall = (e: any) => {
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
-        const modal = document.getElementById("myModal");
-        modal!.style.display = "none";
+        const option = document.getElementById("options") as HTMLDivElement
+
+        option.classList.remove("active");
+
         selectChannel.disabled = true;
         selectChannel.style.display = 'none';
+
         progressBar.style.display = 'block'
+
         e.currentTarget.disabled = true;
         window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
     }
