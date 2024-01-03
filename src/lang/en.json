@@ -27,7 +27,7 @@
         "server-status-checking": "Checking status ...",
         "server-status-online": "Online",
         "server-status-offline": "Offline",
-        "server-status-players": "Players:",
+        "server-status-players": "Players",
         "settings-label": "Options",
         "settings": {
             "ram": "RAM",

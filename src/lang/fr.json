@@ -26,7 +26,7 @@
         "server-status-title": "Statut",
         "server-status-online": "En ligne",
         "server-status-offline": "Hors ligne",
-        "server-status-players": "Joueurs:",
+        "server-status-players": "Joueurs",
         "settings-label": "Options",
         "settings": {
             "ram": "Mémoire vive",
