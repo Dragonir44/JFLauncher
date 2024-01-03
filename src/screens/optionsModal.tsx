@@ -138,11 +138,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         this.props.navigate!("/auth")
     }
 
-    handleCloseOptions = (e: any) => {
-        const modal = document.getElementById("myModal");
-        modal!.style.display = "none";
-    }
-
     handleReinstall = (e: any) => {
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
@@ -155,15 +150,20 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
     }
 
+    displayModal = () => {
+        const modal = document.getElementById("options") as HTMLDivElement
+        modal!.classList.toggle("active")
+    }
+
     render() {
         const {currentRam, selectedChannel} = this.state
         const {t} = this.props
         return (
-            <>
-                <div id="myModal" className="modal">
+            <div id="options" className="options">
+                <div id="options--button" className="options--button" onClick={this.displayModal}></div>
+                <div id="optionModal" className="optionModal">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <span className="close" onClick={this.handleCloseOptions}>&times;</span>
                             <h2>{t('launcher.settings-label')}</h2>
                         </div>
                         <div className="modal-body">
@@ -210,7 +210,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                         </div>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 }
