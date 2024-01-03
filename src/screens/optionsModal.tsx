@@ -1,8 +1,48 @@
 import { Component } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next"
+import Select, { StylesConfig } from "react-select";
 import "i18n"
 import { withRouter } from "utils/withRouter";
+
+const customStyles: StylesConfig = {
+    dropdownIndicator: (provided:any, state:any) => ({
+        ...provided,
+        transform: state.selectProps.menuIsOpen && 'rotate(180deg)',
+        color: state.selectProps.menuIsOpen && '#fff'
+    }),
+    menu: (provided:any, state:any) => ({
+        ...provided,
+        backgroundColor: '#727272a8',
+        color: '#fff',
+        borderRadius: '0',
+        zIndex: 10
+    }),
+    option: (styles, {data, isDisabled, isFocused, isSelected}) => ({
+        ...styles,
+        color: isDisabled ? '#ccc' : '#fff',
+        backgroundColor: isDisabled ? 'grey' : isSelected ? '#000' : undefined,
+        ":hover" : {
+            ...styles[":active"],
+            backgroundColor: isDisabled ? "grey" : "#fff",
+            color: "#000"
+        }
+    }),
+    control: (provided:any, state:any) => ({
+        ...provided,
+        background: "rgba(0, 0, 0, 0.115)",
+        cursor: "pointer",
+        border: "1px solid #000",
+    }),
+    valueContainer: (provided:any, state:any) => ({
+        ...provided,
+        color: "#fff"
+    }),
+    singleValue: (provided:any, state:any) => ({
+        ...provided,
+        color: "#fff"
+    }),
+}
 
 type Props = {
     navigate?: NavigateFunction;
@@ -17,6 +57,7 @@ interface InputChange {
     serverAddress?: string;
     serverPort?: string;
     selectedChannel?: any;
+    options?: any[];
 }
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
@@ -28,6 +69,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         windowHeight: 600,
         fullscreen: false,
         autoConnect: false,
+        options: [],
         serverAddress: "",
         serverPort: "",
         selectedChannel: {value: "beta", label: "Beta"}
@@ -47,6 +89,31 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedHeight = await window.store.get("windowHeight")
         const savedFullscreen = await window.store.get("fullscreen")
         const savedChannel = await window.store.get("channel") || {value: "beta", label: "Beta"}
+        const channels = await window.ipc.sendSync("getChannels")
+        const defaultChannel = await window.store.get("channel")
+        let options: any[] = []
+
+        
+        for(let i = 0; i < channels.length; i++) {
+            const channel = channels[i]
+            if (!options.includes(channel)) {
+                options.push({
+                    value: channel.channel_name, 
+                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1),
+                    isDisabled: !channel.download_link
+                })
+            }
+            if (defaultChannel && defaultChannel.value === channel.channel_name) {
+                this.setState({
+                    selectedChannel: {
+                        value: channel.channel_name, 
+                        label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+                    }
+                })
+                window.store.set('channel', this.state.selectedChannel)
+                window.ipc.send("updateChannel")
+            }
+        }
 
         ramRange.value = savedRam != Math.round(maxRam/2) ? savedRam : "1"
         ramValue.value = savedRam != Math.round(maxRam/2) ? savedRam : 1
@@ -69,6 +136,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         serverPort.value = await window.store.get("serverPort") || ""
         this.setState({serverPort: await window.store.get("serverPort") || ""})
+
+        this.setState({options: options})
 
         if (!autoConnect.checked) {
             serverAddress.disabled = true
@@ -159,13 +228,19 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
     }
 
+    handleChannel = (e: any) => {
+        this.setState({selectedChannel: e})
+        window.store.set('channel', e)
+        window.ipc.send("updateChannel")
+    }
+
     displayModal = () => {
         const modal = document.getElementById("options") as HTMLDivElement
         modal!.classList.toggle("active")
     }
 
     render() {
-        const {currentRam, selectedChannel} = this.state
+        const {currentRam, selectedChannel, options} = this.state
         const {t} = this.props
         return (
             <div id="options" className="options">
@@ -206,6 +281,17 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             </div>
                             <hr />
                             <div className="block functionButtons">
+                                <Select 
+                                    name="channel" 
+                                    id="channel"
+                                    classNamePrefix="channel"
+                                    value={selectedChannel}
+                                    isSearchable={false}
+                                    options={options} 
+                                    styles={customStyles}
+                                    menuPlacement="top"
+                                    onChange={this.handleChannel}
+                                />
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
                                 <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>

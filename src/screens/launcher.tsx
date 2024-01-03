@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
-import Select, { StylesConfig } from "react-select";
 import Swal from "sweetalert2";
 import { WithTranslation, withTranslation } from "react-i18next";
 import "i18n"
@@ -18,17 +17,8 @@ interface InputChange {
     updateText?: string;
     channels?: string[];
     selectedChannel?: any;
-    options?: any[];
     news?: any;
     serverStatus?: any;
-}
-
-const customStyles: StylesConfig = {
-    dropdownIndicator: (provided:any, state:any) => ({
-        ...provided,
-        transform: state.selectProps.menuIsOpen && 'rotate(180deg)',
-        color: state.selectProps.menuIsOpen && '#fff'
-    })
 }
 
 class Launcher extends Component<Props & WithTranslation, InputChange> {
@@ -51,31 +41,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const selectedAccount = JSON.parse(await window.store.get("selectedAccount"))
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
-        const savedRam = await window.store.get("ram")
-        const channels = await window.ipc.sendSync("getChannels")
-        const defaultChannel = await window.store.get("channel")
         const refreshTime = await window.store.get("refreshTime")
-        let options: any[] = []
-        for(let i = 0; i < channels.length; i++) {
-            const channel = channels[i]
-            if (!options.includes(channel)) {
-                options.push({
-                    value: channel.channel_name, 
-                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1),
-                    isDisabled: !channel.download_link
-                })
-            }
-            if (defaultChannel && defaultChannel.value === channel.channel_name) {
-                this.setState({
-                    selectedChannel: {
-                        value: channel.channel_name, 
-                        label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
-                    }
-                })
-                window.store.set('channel', this.state.selectedChannel)
-                window.ipc.send("updateChannel")
-            }
-        }
         
         const configs = await window.store.get("config");
         this.setState({ news: configs.news });
@@ -89,7 +55,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
         
 
-        this.setState({options: options})
         this.setState({updateText: "Recherche de maj..."})
 
         window.ipc.receive('updateText', (data) => {this.setState({updateText:`${data} : ${this.state.progress}%`})})
@@ -166,7 +131,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         })
     }
 
-    handlePlay = (e: any) => {
+    handlePlay = async (e: any) => {
         const ram = document.getElementById("ram") as HTMLInputElement
         const progressBar = document.getElementById("progressBar") as HTMLDivElement
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
@@ -176,15 +141,17 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const autoConnect = document.getElementById("autoConnect") as HTMLInputElement
         const serverAddress = document.getElementById("server-address") as HTMLInputElement
         const serverPort = document.getElementById("server-port") as HTMLInputElement
+        const playbtn = document.getElementById("playbtn") as HTMLButtonElement
+        const selectedChannel = await window.store.get('channel')
 
         selectChannel.disabled = true;
         selectChannel.style.display = 'none';
         progressBar.style.display = 'block'
-        e.currentTarget.disabled = true;
+        playbtn.disabled = true;
 
         let opts: any = {
             ram: ram.value,
-            channel: this.state.selectedChannel.value,
+            channel: selectedChannel.value,
             width: width.value,
             height: height.value,
             fullscreen: fullscreen.checked,
@@ -233,17 +200,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                 <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
                             </div>
                         </div>
-                        <Select 
-                            name="channel" 
-                            id="channel"
-                            classNamePrefix="channel"
-                            value={selectedChannel}
-                            isSearchable={false}
-                            options={options} 
-                            styles={customStyles}
-                            menuPlacement="top"
-                            onChange={this.handleChannel}
-                        />
                     </div>
                     
                     <div id="middle" className="middle">

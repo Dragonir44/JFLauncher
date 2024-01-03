@@ -115,29 +115,32 @@
         }
 
         #channel {
-            position: absolute;
-            top: 0;
-            left: calc(50% - 3.5rem);
-            z-index: 0;
+            .channel__container {
+                .channel__control {
+                    height: 2rem;
+                    width: 7rem;
+                    z-index: 1;
+                    background: rgba(0, 0, 0, 0.115);
 
-            .channel__control {
-                // display: none;
-                color: black;
-                height: 2rem;
-                width: 7rem;
-                z-index: 1;
-        
-                .channel__indicators {
-                    height: 100%;
+                    .channel__value-container {
+                        text-align: center;
+                        color: #fff;
+                    }
+                    .channel__indicators {
+                        height: 100%;
+                    }
                 }
-        
-                .channel__value-container {
-                    text-align: center;
+
+                .channel__menu {
+                    color: #fff;
+                    background: #222;
+                    .channel__menu-list {
+                        background: #222;
+                        .channel__option {
+
+                        }
+                    }
                 }
-            }
-        
-            .channel__menu {
-                color: black;
             }
         }
     }
