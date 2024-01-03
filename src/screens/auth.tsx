@@ -71,7 +71,7 @@ class Auth extends Component<Props & WithTranslation, State> {
                         {accounts && accounts.map((data: any) => {
                             if (data.token.profile.name) {
                                 return (
-                                    <div className="account" key={data.token.mcToken}>
+                                    <div className="account account-card" key={data.token.mcToken}>
                                         <img src={`https://mc-heads.net/avatar/${data.token.profile.name}`} className="skin" />
                                         <div className="accountName">{data.token.profile.name}</div>
 
@@ -97,8 +97,8 @@ class Auth extends Component<Props & WithTranslation, State> {
                         })}
                         {
                             accounts.length < 2 && 
-                            <button id="addAccount" className="addAccount" onClick={this.handleConnect}>
-                                <img src="assets/addAccount.svg" className="addAccountIcon" />
+                            <button id="addAccount" className="addAccount account-card" onClick={this.handleConnect}>
+                                <img src="assets/addAccount.svg" className="skin" />
                                 <div className="addAccountText">{t('auth.add-account')}</div>
                             </button>
                         }
