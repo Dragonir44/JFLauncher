@@ -27,8 +27,8 @@
     "postinstall": "electron-builder install-app-deps",
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "elec:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"yarn watch\"",
-    "elec:build": "yarn build && tsc -p electron && electron-builder",
-    "elec:release": "yarn build && tsc -p electron && electron-builder build --publish=always"
+    "elec:build": "rm -r dist build && yarn build && tsc -p electron && electron-builder",
+    "elec:release": "rm -r dist build && yarn build && tsc -p electron && electron-builder build --publish=always"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -92,12 +92,7 @@
     "win": {
       "icon": "public/assets/logo.ico",
       "publisherName": "Team Project",
-      "target": {
-        "target": "nsis",
-        "arch": [
-          "x64"
-        ]
-      }
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,
