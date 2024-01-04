@@ -80,7 +80,6 @@
     "productName": "JFLauncher",
     "artifactName": "${productName}-setup-${version}.${ext}",
     "compression": "maximum",
-    "icon": "public/assets/logo.png",
     "asar": true,
     "extends": null,
     "files": [
@@ -91,6 +90,7 @@
       "buildResources": "assets"
     },
     "win": {
+      "icon": "public/assets/logo.ico",
       "publisherName": "Team Project",
       "target": {
         "target": "nsis",
@@ -106,6 +106,7 @@
       "allowElevation": true
     },
     "linux": {
+      "icon": "public/assets/logo.png",
       "category": "games",
       "target": [
         "AppImage"
