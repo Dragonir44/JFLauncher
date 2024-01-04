@@ -2,7 +2,7 @@
     "update": {
         "update-failed-title": "Une erreur est survenue",
         "update-found-title": "Mise à jour disponible",
-        "update-found-body": "Une mise à jour est disponible (v{{version}}). Voulez-vous la télécharger ?",
+        "update-found-text": "Une mise à jour est disponible (v{{version}}). Voulez-vous la télécharger ?",
         "update-found-confirmButton": "Télécharger",
         "update-found-cancelButton": "Annuler",
         "searching": "Vérification des mises à jour ..."

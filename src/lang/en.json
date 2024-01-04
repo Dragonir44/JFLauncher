@@ -2,7 +2,7 @@
     "update": {
         "update-failed-title": "An error occured",
         "update-found-title": "Update available",
-        "update-found-body": "An update are available (v{{version}}). Do you want to download it ?",
+        "update-found-text": "An update are available (v{{version}}). Do you want to download it ?",
         "update-found-confirmButton": "Download",
         "update-found-cancelButton": "Cancel",
         "searching": "Checking for update ..."
