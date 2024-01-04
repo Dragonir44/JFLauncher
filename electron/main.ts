@@ -22,11 +22,6 @@ export let mainWindow: BrowserWindow;
 export const store = new Store();
 const publicPath: string = '../../public'
 
-function sendStatusToWindow(text: string, version: string) {
-    log.info(text, version);
-    mainWindow.webContents.send('message', {text: text, version: version});
-}
-
 export function updateText(text: string) {
     mainWindow.webContents.send('updateText', text);
 }
@@ -39,7 +34,13 @@ export function updateProgress(progress: number) {
 function createWindow() {
     mainWindow = new BrowserWindow({
         title: `JFLauncher - ${app.getVersion()}`,
-        icon: !isdev ? path.join(__dirname, "../src/assets/logo.png") : path.join(__dirname, publicPath, "assets/logo.png"),
+        icon: !isdev 
+            ? process.platform == "win32"
+                ? path.join(__dirname, "../src/assets/logo.ico")
+                : path.join(__dirname, "../src/assets/logo.png")
+            : process.platform == "win32"
+                ? path.join(__dirname, publicPath, "assets/logo.ico")
+                : path.join(__dirname, publicPath, "assets/logo.png"),
         width: 1280,
         height: 729,
         autoHideMenuBar: !isdev,
@@ -48,7 +49,7 @@ function createWindow() {
             preload: path.join(__dirname, "preload.js")
         },
     });
-
+    
     config.loadConfig();
     initIpc()
     initGame()

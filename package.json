@@ -80,9 +80,9 @@
     "productName": "JFLauncher",
     "artifactName": "${productName}-setup-${version}.${ext}",
     "compression": "maximum",
+    "icon": "public/assets/logo.png",
     "asar": true,
     "extends": null,
-    "icon": "public/assets/logo.png",
     "files": [
       "build/**/*",
       "node_modules/**/*"
