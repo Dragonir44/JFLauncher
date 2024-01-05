@@ -152,8 +152,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         let opts: any = {
             ram: ram.value,
             channel: selectedChannel.value,
-            width: width.value,
-            height: height.value,
+            width: width.value || 854,
+            height: height.value || 480,
             fullscreen: fullscreen.checked,
             autoConnect: autoConnect.checked
         }
