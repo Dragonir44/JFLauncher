@@ -23,8 +23,8 @@ type Progress = { type: string; task: number; total: number };
 export const initGame =  () => {
     config.loadConfig();
     ipcMain.on('launch', (evt, d) => {
-        const serverAddress = d.autoConnect ? 'node2.team-project.fr' : ''
-        const serverPort = d.autoConnect ? '25565' : ''
+        const serverAddress = d.autoConnect ? d.serverAddress : ''
+        const serverPort = d.autoConnect ? d.serverPort : ''
 
         if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
             fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
