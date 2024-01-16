@@ -37,7 +37,10 @@
             "server-port": "Server port",
             "open-folder": "Open folder",
             "reinstall-channel": "Reinstall {{channel}} channel",
-            "change-account": "Change account"
+            "change-account": "Change account",
+            "reset": "Reset launcher",
+            "reset-complete-title": "Reset complete",
+            "reset-complete-text": "The launcher will now restart."
         }
     }
 }
