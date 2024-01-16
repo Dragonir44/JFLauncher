@@ -19,15 +19,6 @@ type State = {
   };
 
 class UpdateLauncher extends Component<Props & WithTranslation, State> {
-    // constructor(props: Props) {
-    //     super(props);
-
-    //     this.state = {
-    //         progress: 0,
-    //         updateText: ""
-    //     }
-    // }
-
     state = {
         progress: 0,
         updateText: ""
