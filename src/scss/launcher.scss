@@ -78,13 +78,12 @@
 
 .content {
     .top {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        
+        position: absolute;
+        top: 10rem;
+
         .socialBox {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: space-around;
     
             .social {
@@ -95,8 +94,8 @@
                     opacity: 0;
                     color: white;
                     background: #222;
-                    border-top-left-radius: 10px;
-                    border-bottom-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;
                     padding: 0.25rem;
                 }
         
@@ -125,6 +124,7 @@
         text-align: center;
         color: white;
         border-radius: 10px;
+        padding: 5rem;
     
         .middle__card {
             width: 20.25rem;
@@ -285,7 +285,7 @@
             width: 26px;
             height: 3px;
             border-radius: 3px;
-            background: #365fa1;
+            background: #ffffff;
             transform: translateY(-5px);
             transition: 1s;
         }
@@ -296,7 +296,7 @@
             width: 26px;
             height: 3px;
             border-radius: 3px;
-            background: #365fa1;
+            background: #ffffff;
             transform: translateY(5px);
             transition: 1s;
         }
