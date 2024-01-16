@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { WithTranslation, withTranslation } from "react-i18next";
 import "i18n"
 import OptionsModal from "./optionsModal";
+import { Dialog } from 'primereact/dialog';
 
 import 'scss/launcher.scss';
 
@@ -19,6 +20,8 @@ interface InputChange {
     selectedChannel?: any;
     news?: any;
     serverStatus?: any;
+    modalVisible?: boolean;
+    newsContent?: any;
 }
 
 class Launcher extends Component<Props & WithTranslation, InputChange> {
@@ -34,6 +37,11 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
             version: "",
             onlinePlayers: '0',
             maxPlayers: '20'
+        },
+        modalVisible: false,
+        newsContent: {
+            title: "",
+            content: ""
         }
     }
     
@@ -175,7 +183,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
     
 
     render() {
-        const { progress, updateText, options, selectedChannel, news, serverStatus } = this.state
+        const { progress, updateText, news, serverStatus, newsContent } = this.state
         const {t} = this.props
         return (
             <>
@@ -184,14 +192,23 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 </header>
                 <OptionsModal />
                 <div className="content">
-                    <div id="newsModal" className="newsModal" onClick={() => {
-                        const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                        newsModel.style.display = "none"
-                    }}>
+                    <Dialog 
+                        className="newsModal"
+                        id="newsModal"
+                        visible={this.state.modalVisible}
+                        modal={true} 
+                        onHide={() => this.setState({modalVisible: false})}
+                    >
                         <div className="newsModalContent">
-                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent"></div>
+                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent">
+                            <h4 className="title">{newsContent.title}</h4>
+                            <article className="articleContent">
+                                {window.html.parse(newsContent.content)}
+                            </article>
+                            </div>
                         </div>
-                    </div>
+                        <button className="newsModalClose" onClick={() => this.setState({modalVisible: false})}>X</button>
+                    </Dialog>
                     <div id="top" className="top">
                         <div className="socialBox">
                             <div id="github" className="social github">
@@ -218,15 +235,10 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                     return (
                                         <div className="newsContentBodyArticle" key={article.title} onClick={
                                             () => {
-                                                const newsContentBodyArticleContent = document.getElementById("newsContentBodyArticleContent") as HTMLDivElement
-                                                newsContentBodyArticleContent.innerHTML = `
-                                                    <h4 class="title">${article.title}</h4>
-                                                    <article class="articleContent">
-                                                        ${article.content}
-                                                    </article>
-                                                `
-                                                const newsModel = document.getElementById("newsModal") as HTMLDivElement
-                                                newsModel.style.display = "flex"
+                                                this.setState({
+                                                    modalVisible: true, 
+                                                    newsContent: article
+                                                })
                                             }
                                         }>
                                             <h4 className="title">{article.title}</h4>
