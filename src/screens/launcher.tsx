@@ -42,6 +42,10 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const pseudo = document.getElementById("pseudo") as HTMLSpanElement
         const skin = document.getElementById("skin") as HTMLImageElement
         const refreshTime = await window.store.get("refreshTime")
+        const selectChannel = document.getElementById("channel") as HTMLSelectElement
+
+        selectChannel.disabled = false;
+        selectChannel.style.display = 'block';
         
         const configs = await window.store.get("config");
         this.setState({ news: configs.news });
@@ -145,7 +149,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const selectedChannel = await window.store.get('channel')
 
         selectChannel.disabled = true;
-        selectChannel.style.display = 'none';
         progressBar.style.display = 'block'
         playbtn.disabled = true;
 
@@ -192,12 +195,12 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                     <div id="top" className="top">
                         <div className="socialBox">
                             <div id="github" className="social github">
-                                <span className="label">Github</span>
                                 <img id="githubLink" src='assets/github.png' onClick={() => window.ipc.send('open-external-link', "https://github.com/Dragonir44/JFLauncher")}/>
+                                <span className="label">Github</span>
                             </div>
                             <div id="curseforge" className="social curseforge">
-                                <span className="label">Curseforge</span>
                                 <img id="curseforgeLink" src='assets/curseforge.png' onClick={() => window.ipc.send('open-external-link', "https://www.curseforge.com/minecraft/modpacks/jimmus-factory")}/>
+                                <span className="label">Curseforge</span>
                             </div>
                         </div>
                     </div>
