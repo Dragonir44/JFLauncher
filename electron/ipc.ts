@@ -95,6 +95,16 @@ export const initIpc = () => {
         return store.set(data.key, data.value);
     })
 
+    ipcMain.on("reset", () => {
+        mainWindow?.webContents.send("reset-complete");
+    })
+
+    ipcMain.on('confirm-reset', () => {
+        store.clear();
+        app.relaunch();
+        app.quit();
+    })
+
     ipcMain.on("quit-app", () => {
         app.quit();
     })
