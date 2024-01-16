@@ -13,7 +13,6 @@
 }
 
 .newsModal{
-    display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -28,8 +27,7 @@
 
     .newsModalContent {
         max-width: 90%;
-        max-height: 90%;
-        text-align: justify;
+        max-height: 80%;
 
         .newsContentBodyArticleContent {
             display: flex;
@@ -38,8 +36,7 @@
             padding: 1rem;
             border-radius: 10px;
             background: #222;
-            height: 35rem;
-            overflow-y: hidden;
+            min-height: 25rem;
 
             .title {
                 font-size: 1.5rem;
@@ -49,10 +46,12 @@
 
             .articleContent{
                 padding-left: 1rem;
-                height: 80%;
+                height: 29rem;
+                width:100%;
+                overflow-y: auto;
+
                 ul.masterList {
                     height: 100%;
-                    overflow-y: auto;
                     li {
                         list-style: inside "- ";
                         padding-left: 1rem;
@@ -66,10 +65,12 @@
     }
 
     .newsModalClose {
-        position: absolute;
-        top: 0;
-        right: 0;
+        position: relative;
+        top: -27rem;
+        right: -20rem;
         color: white;
+        background: transparent;
+        border: none;
         font-size: 2rem;
         font-weight: bold;
         cursor: pointer;
