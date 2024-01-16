@@ -2,6 +2,7 @@ import { Component } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next"
 import Select, { StylesConfig } from "react-select";
+import Swal from "sweetalert2";
 import "i18n"
 import { withRouter } from "utils/withRouter";
 
@@ -76,6 +77,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     async componentDidMount() {
+        const {t} = this.props
         const ramRange = document.getElementById("ram") as HTMLInputElement
         const ramValue = document.getElementById("ramValue") as HTMLInputElement
         const width = document.getElementById("window-width") as HTMLInputElement
@@ -115,15 +117,15 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             }
         }
 
-        ramRange.value = savedRam != Math.round(maxRam/2) ? savedRam : "1"
-        ramValue.value = savedRam != Math.round(maxRam/2) ? savedRam : 1
-        this.setState({currentRam: Number(savedRam != 'undefined' ? savedRam : 1)})
+        ramRange.value = savedRam || Math.round(maxRam/2)
+        ramValue.value = savedRam || Math.round(maxRam/2)
+        this.setState({currentRam: Number(savedRam || Math.round(maxRam/2))})
 
-        width.value = savedWidth != 'undefined' ? savedWidth : 800
-        this.setState({windowWidth: Number(savedWidth != 'undefined' ? savedWidth : 800)})
+        width.value = savedWidth || 800
+        this.setState({windowWidth: Number(savedWidth || 800)})
 
-        height.value = savedHeight != 'undefined' ? savedHeight : 600
-        this.setState({windowHeight: Number(savedHeight != 'undefined' ? savedHeight : 600)})
+        height.value = savedHeight || 600
+        this.setState({windowHeight: Number(savedHeight || 600)})
 
         fullscreen.checked = savedFullscreen != 'undefined' ? savedFullscreen : false
         this.setState({fullscreen: savedFullscreen != 'undefined' ? savedFullscreen : false})
@@ -131,11 +133,11 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         autoConnect.checked = await window.store.get("autoConnect") || false
         this.setState({autoConnect: await window.store.get("autoConnect") || false})
 
-        serverAddress.value = await window.store.get("serverAddress") || ""
-        this.setState({serverAddress: await window.store.get("serverAddress") || ""})
+        serverAddress.value = await window.store.get("serverAddress") || "0.0.0.0"
+        this.setState({serverAddress: await window.store.get("serverAddress") || "0.0.0.0"})
 
-        serverPort.value = await window.store.get("serverPort") || ""
-        this.setState({serverPort: await window.store.get("serverPort") || ""})
+        serverPort.value = await window.store.get("serverPort") || 25565
+        this.setState({serverPort: await window.store.get("serverPort") || 25565})
 
         this.setState({options: options})
 
@@ -144,10 +146,27 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             serverPort.disabled = true
         }
         
-        this.setState({selectedChannel: savedChannel})
+        this.setState({selectedChannel: savedChannel || {value: "beta", label: "Beta"}})
     
         window.ipc.receive('updateChannel', async () => {
             this.setState({selectedChannel: await window.store.get('channel')})
+        })
+
+        window.ipc.receive('reset-complete', () => {
+            Swal.fire({
+                title: t("launcher.settings.reset-complete-title"),
+                text: t("launcher.settings.reset-complete-text"),
+                icon: "success",
+                iconColor: "#54c2f0",
+                confirmButtonText: "Fermer",
+                background: "#1e1e1e",
+                confirmButtonColor: "#54c2f0"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.ipc.send("confirm-reset")
+                }
+            })
+        
         })
     }
 
@@ -234,6 +253,10 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         window.ipc.send("updateChannel")
     }
 
+    handleReset = () => {
+        window.ipc.send("reset")
+    }
+
     displayModal = () => {
         const modal = document.getElementById("options") as HTMLDivElement
         modal!.classList.toggle("active")
@@ -295,6 +318,9 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
                                 <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
+                            </div>
+                            <div className="block danger">
+                                <button id="resetLauncher" className="functionButton" onClick={this.handleReset}>{t("launcher.settings.reset")}</button>
                             </div>
                         </div>
                     </div>
