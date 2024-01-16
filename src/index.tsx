@@ -27,7 +27,7 @@ declare global {
         },
         html: {
             parse: (html: string) => any;
-        }
+        },
     }
 }
 
