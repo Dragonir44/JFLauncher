@@ -267,7 +267,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const {t} = this.props
         return (
             <div id="options" className="options">
-                <div id="options--button" className="options--button" onClick={this.displayModal}></div>
+                <div id="options--button" className="options--button" onClick={this.displayModal}><div className="options--button__burger"></div></div>
                 <div id="optionModal" className="optionModal">
                     <div className="modal-content">
                         <div className="modal-header">

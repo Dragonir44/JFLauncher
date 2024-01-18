@@ -267,39 +267,48 @@
 
 .options {
     .options--button {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.115);
-        cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        transition: all 0.4s;
+        position: absolute;
+        top: .5rem;
+        left: 2rem;
+        width: 3rem;
+        height: 3rem;
+        cursor: pointer;
+        transition: .4s;
 
-        &::before {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 3px;
+        .options--button__burger {
+            width: 2rem;
+            height: 0.2rem;
+            background: #F3F3F3;
             border-radius: 3px;
-            background: #ffffff;
-            transform: translateY(-5px);
-            transition: 1s;
-        }
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: .4s;
 
-        &::after {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 3px;
-            border-radius: 3px;
-            background: #ffffff;
-            transform: translateY(5px);
-            transition: 1s;
+            &::before {
+                content: '';
+                position: absolute;
+                width: 2rem;
+                height: 0.2rem;
+                border-radius: 3px;
+                background: #F3F3F3;
+                transform: translateY(-0.5rem);
+                transition: 1s;
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                width: 2rem;
+                height: 0.2rem;
+                border-radius: 3px;
+                background: #F3F3F3;
+                transform: translateY(0.5rem);
+                transition: 1s;
+            }
         }
     }
 
@@ -314,15 +323,16 @@
             }
         }
 
-        .options--button {
+        .options--button,.options--button__burger {
             z-index: 2;
             left: 45%;
+            background: transparent;
         }
 
-        .options--button::before {
+        .options--button__burger::before {
             transform: translateY(0px) rotate(-405deg);
         }
-        .options--button::after {
+        .options--button__burger::after {
             transform: translateY(0px) rotate(225deg);
         }
     }
