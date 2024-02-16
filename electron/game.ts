@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { Client } from "minecraft-launcher-core";
 import fs from 'fs-extra';
 import axios from 'axios';
+import dotenv from 'dotenv';
 import path from 'path';
 const onezip = require('onezip');
 import {exec} from 'child_process';
@@ -10,6 +11,8 @@ import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
 
 import * as config from './utils/config';
+
+dotenv.config()
 
 const sysRoot = process.env.APPDATA || (process.platform == "darwin"
     ? process.env.HOME + "/Library/Application Support"
@@ -42,7 +45,7 @@ export const initGame =  () => {
         }
 
         checkJavaInstall(d.channel)
-            .then(() => updatePackAndLaunch(d.channel))
+            .then(() => updatePackAndLaunch(d.channel, d.version))
             .catch(() => {
                 const jrePath = config.jrePath
                 if (!fs.existsSync(jrePath)) {
@@ -51,7 +54,7 @@ export const initGame =  () => {
                 if (process.platform === 'linux') {
                     downloadJava(config.jreLinux, path.join(jrePath, 'jdk-linux.zip'), jrePath)
                         .then(() => {
-                            updatePackAndLaunch(d.channel)
+                            updatePackAndLaunch(d.channel, d.version)
                         })
                         .catch(() => {
                             console.error('Erreur lors du téléchargement de java');
@@ -60,7 +63,7 @@ export const initGame =  () => {
                 else {
                     downloadJava(config.jreWin, path.join(jrePath, 'jdk-windows.zip'), jrePath)
                         .then(() => {
-                            updatePackAndLaunch(d.channel)
+                            updatePackAndLaunch(d.channel, d.verison)
                         })
                         .catch(() => {
                             console.error('Erreur lors du téléchargement de java');
@@ -162,10 +165,10 @@ function downloadJava(url: string, target: string, jrePath: string) {
     })
 }
 
-function updatePackAndLaunch(channel: string) {
+function updatePackAndLaunch(channel: string, version:string) {
     downloadForge(channel)
         .then(() => {
-            downloadModpack(channel)
+            downloadModpack(channel, version)
                 .then(() => {
                     launch(channel)
                 })
@@ -234,7 +237,7 @@ function downloadForge(channel: string) {
 
 }
 
-function downloadModpack(channel: string) {
+function downloadModpack(channel: string, version: string) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
         const lastChannels: any = store.get('currentChannelVersion')
@@ -249,7 +252,7 @@ function downloadModpack(channel: string) {
             }
         }
         else {
-            reinstall(channel)
+            reinstall(channel, version)
                 .then(() => {
                     return resolve();
                 })
@@ -260,11 +263,12 @@ function downloadModpack(channel: string) {
     })
 }
 
-export function reinstall(channel: string) {
+export function reinstall(channel: string, version: string) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
+        const downloadLink = `${config.channelDetails}/${channel}/${version}/download`
         const lastChannels: any = store.get('currentChannelVersion')
-        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}.zip`);
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}-${version}.zip`);
         const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu']
         updateText('Suppression de l\'ancien modpack')
         if (fs.existsSync(modpackPath)) {
@@ -278,8 +282,8 @@ export function reinstall(channel: string) {
         })
 
         updateText('Téléchargement du modpack')
-
-        axios.get(data?.download_link as string, {responseType: 'stream'})
+        
+        axios.get(downloadLink, {headers: {'token': process.env.TOKEN}, responseType: 'stream'})
             .then((res) => {
 
                 const writer = fs.createWriteStream(modpackPath);
