@@ -18,6 +18,7 @@ interface InputChange {
     updateText?: string;
     channels?: string[];
     selectedChannel?: any;
+    selectedVersion?: any;
     news?: any;
     serverStatus?: any;
     modalVisible?: boolean;
@@ -31,6 +32,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         updateText: "",
         options: [],
         selectedChannel: {value: "beta", label: "Beta"},
+        selectedVersion: {value: "2.0.1", label: "latest"},
         news: [],
         serverStatus: {
             online: false,
@@ -154,15 +156,17 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const serverAddress = document.getElementById("server-address") as HTMLInputElement
         const serverPort = document.getElementById("server-port") as HTMLInputElement
         const playbtn = document.getElementById("playbtn") as HTMLButtonElement
-        const selectedChannel = await window.store.get('channel')
+        const channel = await window.store.get('channel')
+
 
         selectChannel.disabled = true;
         progressBar.style.display = 'block'
         playbtn.disabled = true;
-
+        
         let opts: any = {
             ram: ram.value,
-            channel: selectedChannel.value,
+            channel: channel.channel.value,
+            version: channel.version.value,
             width: width.value || 854,
             height: height.value || 480,
             fullscreen: fullscreen.checked,
