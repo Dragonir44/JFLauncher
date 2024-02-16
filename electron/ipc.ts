@@ -1,11 +1,14 @@
 import { app, ipcMain, shell } from "electron";
 import {Auth} from 'msmc'
-import path from "path";
+import axios from "axios";
 import * as config from './utils/config';
 import { getStatus } from 'minecraft-ping-server/lib'
+import dotenv from 'dotenv'
 
 import { mainWindow, store } from "./main";
 import { reinstall } from "./game"
+
+dotenv.config()
 
 export let token: any;
 
@@ -56,6 +59,16 @@ export const initIpc = () => {
         evt.returnValue = config.getGameChannel(data);
     })
 
+    ipcMain.on("getChannelsFromServer", () => {
+        axios.get(config.channelDetails, {headers: {"token": process.env.TOKEN},responseType: 'json'})
+            .then((res) => {
+                mainWindow?.webContents.send("getChannelsFromServer-complete", res.data);
+            }
+            ).catch((err) => {
+                mainWindow?.webContents.send("getChannelsFromServer-failed", err);
+            })
+    })
+
     ipcMain.on('server-ping', () => {
         config.loadConfig()
         const serverData = store.get("config") as config.Config
@@ -74,7 +87,7 @@ export const initIpc = () => {
     })
     
     ipcMain.on('reinstall', (_, data) => {
-        reinstall(data.channel)
+        reinstall(data.channel, data.version)
             .then(() => {
                 mainWindow?.webContents.send("reinstall-complete");
             })
