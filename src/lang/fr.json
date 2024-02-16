@@ -40,7 +40,12 @@
             "change-account": "Changer de compte",
             "reset": "Réinitialiser le lanceur",
             "reset-complete-title": "Réinitialisation terminée",
-            "reset-complete-text": "Le lanceur va maintenant redémarrer."
+            "reset-complete-text": "Le lanceur va maintenant redémarrer.",
+            "versions": {
+                "channel": "Canal",
+                "version": "Versions",
+                "latest": "Dernière version"
+            }
         }
     }
 }

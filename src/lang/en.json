@@ -40,7 +40,12 @@
             "change-account": "Change account",
             "reset": "Reset launcher",
             "reset-complete-title": "Reset complete",
-            "reset-complete-text": "The launcher will now restart."
+            "reset-complete-text": "The launcher will now restart.",
+            "versions": {
+                "channel": "Channel",
+                "version": "Versions",
+                "latest": "Latest version"
+            }
         }
     }
 }
