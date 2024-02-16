@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, version } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next"
 import Select, { StylesConfig } from "react-select";
@@ -58,7 +58,9 @@ interface InputChange {
     serverAddress?: string;
     serverPort?: string;
     selectedChannel?: any;
+    selectedVersion?: any;
     options?: any[];
+    versions?: any[];
 }
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
@@ -71,9 +73,11 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         fullscreen: false,
         autoConnect: false,
         options: [],
+        versions: [],
         serverAddress: "",
         serverPort: "",
-        selectedChannel: {value: "beta", label: "Beta"}
+        selectedChannel: {value: "beta", label: "Beta"},
+        selectedVersion: {value: "v2.0.0", label: "v2.0.0"}
     }
 
     async componentDidMount() {
@@ -90,32 +94,45 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedWidth = await window.store.get("windowWidth")
         const savedHeight = await window.store.get("windowHeight")
         const savedFullscreen = await window.store.get("fullscreen")
-        const savedChannel = await window.store.get("channel") || {value: "beta", label: "Beta"}
+        const savedChannel = await window.store.get("channel") || {value: "release", label: "Release"}
         const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
         let options: any[] = []
+        let versions: any[] = []
 
-        
-        for(let i = 0; i < channels.length; i++) {
-            const channel = channels[i]
-            if (!options.includes(channel)) {
-                options.push({
-                    value: channel.channel_name, 
-                    label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1),
-                    isDisabled: !channel.download_link
-                })
+
+        window.ipc.send("getChannelsFromServer")
+
+        window.ipc.receive('getChannelsFromServer-complete', (res) => {
+            window.store.set("channels", res)
+            if (options.length === 0) {
+                for(const channel of res) {
+                    options.push({
+                        value: channel.name,
+                        label: channel.name.charAt(0).toUpperCase()+channel.name.slice(1),
+                    })
+                }
+                this.setState({options: options})
             }
-            if (defaultChannel && defaultChannel.value === channel.channel_name) {
-                this.setState({
-                    selectedChannel: {
-                        value: channel.channel_name, 
-                        label: channel.channel_name.charAt(0).toUpperCase()+channel.channel_name.slice(1)
+
+            if (defaultChannel) {
+                for (const channel of res) {
+                    if (channel.name === defaultChannel.value) {
+                        console.log(channel)
+                        for (const version of channel.versions) {
+                            versions.push({
+                                value: version.version,
+                                label: version.version
+                            })
+                        }
                     }
-                })
-                window.store.set('channel', this.state.selectedChannel)
-                window.ipc.send("updateChannel")
+                }
+                this.setState({versions: versions})
             }
-        }
+
+            this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version || versions[0]})
+            console.log(defaultChannel)
+        })
 
         ramRange.value = savedRam || Math.round(maxRam/2)
         ramValue.value = savedRam || Math.round(maxRam/2)
@@ -145,11 +162,9 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             serverAddress.disabled = true
             serverPort.disabled = true
         }
-        
-        this.setState({selectedChannel: savedChannel || {value: "beta", label: "Beta"}})
-    
+            
         window.ipc.receive('updateChannel', async () => {
-            this.setState({selectedChannel: await window.store.get('channel')})
+            this.setState({selectedChannel: await window.store.get('channel').channel, selectedVersion: await window.store.get('channel').version})
         })
 
         window.ipc.receive('reset-complete', () => {
@@ -247,9 +262,29 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
     }
 
-    handleChannel = (e: any) => {
-        this.setState({selectedChannel: e})
-        window.store.set('channel', e)
+    handleChannel = async (e: any) => {
+        const channelsList = await window.store.get("channels")
+        let versions: any[] = []
+        for await (const channel of channelsList) {
+            if (channel.name === e.value) {
+                versions.push({value: channel.versions[0].version, label: "latest"})
+                for(const version of channel.versions) {
+                    versions.push({
+                        value: version.version,
+                        label: version.version
+                    })
+                }
+            }
+        }
+
+        this.setState({selectedChannel: e, selectedVersion: this.state.versions, versions: versions})
+        window.store.set('channel', {channel: e, version: this.state.selectedVersion})
+        window.ipc.send("updateChannel")
+    }
+
+    handleVersion = (e: any) => {
+        this.setState({selectedChannel: this.state.selectedChannel, selectedVersion: e})
+        window.store.set('channel', {channel: this.state.selectedChannel, version: e})
         window.ipc.send("updateChannel")
     }
 
@@ -263,7 +298,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     render() {
-        const {currentRam, selectedChannel, options} = this.state
+        const {currentRam, selectedChannel, selectedVersion, options, versions} = this.state
         const {t} = this.props
         return (
             <div id="options" className="options">
@@ -303,18 +338,38 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                 </div>
                             </div>
                             <hr />
+                            <div className="block versions">
+                                <div className="versions--block">
+                                    <label htmlFor="channel">{t('launcher.settings.versions.channel')}</label>
+                                    <Select 
+                                        name="channel" 
+                                        id="channel"
+                                        classNamePrefix="channel"
+                                        value={selectedChannel}
+                                        isSearchable={false}
+                                        options={options} 
+                                        styles={customStyles}
+                                        menuPlacement="top"
+                                        onChange={this.handleChannel}
+                                    />
+                                </div>
+                                <div className="version--block">
+                                    <label htmlFor="version">{t('launcher.settings.versions.version')}</label>
+                                    <Select 
+                                        name="version" 
+                                        id="version"
+                                        classNamePrefix="version"
+                                        value={selectedVersion}
+                                        isSearchable={false}
+                                        options={versions} 
+                                        styles={customStyles}
+                                        menuPlacement="top"
+                                        onChange={this.handleVersion}
+                                    />
+                                </div>
+                            </div>
+                            <hr />
                             <div className="block functionButtons">
-                                <Select 
-                                    name="channel" 
-                                    id="channel"
-                                    classNamePrefix="channel"
-                                    value={selectedChannel}
-                                    isSearchable={false}
-                                    options={options} 
-                                    styles={customStyles}
-                                    menuPlacement="top"
-                                    onChange={this.handleChannel}
-                                />
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
                                 <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
