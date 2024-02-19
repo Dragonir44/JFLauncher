@@ -118,7 +118,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             if (defaultChannel) {
                 for (const channel of res) {
                     if (channel.name === defaultChannel.value) {
-                        console.log(channel)
                         for (const version of channel.versions) {
                             versions.push({
                                 value: version.version,
@@ -131,7 +130,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             }
 
             this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version || versions[0]})
-            console.log(defaultChannel)
         })
 
         ramRange.value = savedRam || Math.round(maxRam/2)
@@ -162,10 +160,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             serverAddress.disabled = true
             serverPort.disabled = true
         }
-            
-        window.ipc.receive('updateChannel', async () => {
-            this.setState({selectedChannel: await window.store.get('channel').channel, selectedVersion: await window.store.get('channel').version})
-        })
 
         window.ipc.receive('reset-complete', () => {
             Swal.fire({
@@ -188,7 +182,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     handleRam = (e: any) => {
         const ram = e.currentTarget as HTMLInputElement
         const ramValue = document.getElementById("ramValue") as HTMLInputElement
-        console.log(ram.className)
         if (ram.className === "ramRange") {
             ramValue.value = ram.value
         }
@@ -269,23 +262,22 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             if (channel.name === e.value) {
                 versions.push({value: channel.versions[0].version, label: "latest"})
                 for(const version of channel.versions) {
-                    versions.push({
-                        value: version.version,
-                        label: version.version
-                    })
+                    if (version.version !== "latest") {
+                        versions.push({value: version.version, label: version.version})
+                    }
                 }
             }
         }
 
-        this.setState({selectedChannel: e, selectedVersion: this.state.versions, versions: versions})
+        this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
         window.store.set('channel', {channel: e, version: this.state.selectedVersion})
-        window.ipc.send("updateChannel")
+        console.log('handleChannel', this.state.selectedChannel, this.state.selectedVersion)
     }
 
-    handleVersion = (e: any) => {
+    handleVersion = async (e: any) => {
         this.setState({selectedChannel: this.state.selectedChannel, selectedVersion: e})
         window.store.set('channel', {channel: this.state.selectedChannel, version: e})
-        window.ipc.send("updateChannel")
+        console.log('handleVersion', this.state.selectedChannel, this.state.selectedVersion)
     }
 
     handleReset = () => {
@@ -371,7 +363,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             <hr />
                             <div className="block functionButtons">
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
-                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel.label})}</button>
+                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                             </div>
                             <div className="block danger">

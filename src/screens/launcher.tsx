@@ -178,12 +178,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
         window.ipc.send("launch", opts);
     }
-
-    handleChannel = (e: any) => {
-        this.setState({selectedChannel: e})
-        window.store.set('channel', e)
-        window.ipc.send("updateChannel")
-    }
     
 
     render() {
