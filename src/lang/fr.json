@@ -36,7 +36,7 @@
             "server-ip": "Adresse IP du serveur",
             "server-port": "Port du serveur",
             "open-folder": "Ouvrir le dossier",
-            "reinstall-channel": "Réinstaller le canal {{channel}}",
+            "reinstall-channel": "Réinstaller la version {{channel}}",
             "change-account": "Changer de compte",
             "reset": "Réinitialiser le lanceur",
             "reset-complete-title": "Réinitialisation terminée",
