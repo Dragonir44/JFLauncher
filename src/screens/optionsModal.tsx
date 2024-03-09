@@ -100,6 +100,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         let options: any[] = []
         let versions: any[] = []
 
+        console.log(savedChannel, defaultChannel)
 
         window.ipc.send("getChannelsFromServer")
 
@@ -252,7 +253,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         progressBar.style.display = 'block'
 
         e.currentTarget.disabled = true;
-        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
+        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value, version: this.state.selectedVersion.value});
     }
 
     handleChannel = async (e: any) => {
@@ -363,7 +364,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             <hr />
                             <div className="block functionButtons">
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
-                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedChannel})}</button>
+                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedVersion.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                             </div>
                             <div className="block danger">
