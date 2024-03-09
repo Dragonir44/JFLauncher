@@ -31,8 +31,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         progress: 0,
         updateText: "",
         options: [],
-        selectedChannel: {value: "beta", label: "Beta"},
-        selectedVersion: {value: "2.0.1", label: "latest"},
+        selectedChannel: {value: "release", label: "Release"},
+        selectedVersion: {value: "latest", label: "Latest"},
         news: [],
         serverStatus: {
             online: false,

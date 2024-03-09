@@ -76,8 +76,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         versions: [],
         serverAddress: "",
         serverPort: "",
-        selectedChannel: {value: "beta", label: "Beta"},
-        selectedVersion: {value: "v2.0.0", label: "v2.0.0"}
+        selectedChannel: {value: "release", label: "release"},
+        selectedVersion: {value: "latest", label: "Latest"}
     }
 
     async componentDidMount() {
@@ -100,7 +100,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         let options: any[] = []
         let versions: any[] = []
 
-        console.log(savedChannel, defaultChannel)
 
         window.ipc.send("getChannelsFromServer")
 
@@ -118,6 +117,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
             if (defaultChannel) {
                 for (const channel of res) {
+                    console.log(defaultChannel.value, channel.name)
                     if (channel.name === defaultChannel.value) {
                         for (const version of channel.versions) {
                             versions.push({

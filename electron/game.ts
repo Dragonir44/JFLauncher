@@ -351,7 +351,7 @@ function launch(channel: string) {
 
     const javaPath = path.join(jre, 'bin', 'java');
     const channelConfig = config.getGameChannel(channel);
-
+    console.log(javaPath)
     let opts:any = {
         authorization: token.mclc(),
         root: config.getGamePath(channel),
@@ -380,7 +380,7 @@ function launch(channel: string) {
 
     launcher.launch(opts);
 
-    launcher.on('debug', (e) => console.log('debug',e));
+    //launcher.on('debug', (e) => console.log('debug',e));
     launcher.on('arguments', (e) => {
         mainWindow.hide()
     });
