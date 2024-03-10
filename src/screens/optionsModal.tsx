@@ -131,7 +131,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             }
 
             this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version || versions[0]})
-            console.log(defaultChannel)
+            console.log("componentDidMount", defaultChannel)
         })
 
         ramRange.value = savedRam || Math.round(maxRam/2)
@@ -259,30 +259,44 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         progressBar.style.display = 'block'
 
         e.currentTarget.disabled = true;
-        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value});
+        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value, version: this.state.selectedVersion.value});
     }
 
     handleChannel = async (e: any) => {
-        const channelsList = await window.store.get("channels")
-        let versions: any[] = []
-        for await (const channel of channelsList) {
-            if (channel.name === e.value) {
-                versions.push({value: channel.versions[0].version, label: "latest"})
-                for(const version of channel.versions) {
-                    versions.push({
-                        value: version.version,
-                        label: version.version
-                    })
-                }
-            }
-        }
+        // const channelsList = await window.store.get("channels")
+        // let versions: any[] = []
+        // for await (const channel of channelsList) {
+        //     if (channel.name === e.value) {
+        //         versions.push({value: channel.versions[0].version, label: "latest"})
+        //         for(const version of channel.versions) {
+        //             versions.push({
+        //                 value: version.version,
+        //                 label: version.version
+        //             })
+        //         }
+        //     }
+        // }
+        // console.log("handleChannel", e, versions)
+        // this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
+        // console.log("handleChannel", this.state.selectedChannel, this.state.selectedVersion)
+        // window.store.set('channel', {channel: e, version: this.state.selectedVersion})
+        // window.ipc.send("updateChannel")
 
-        this.setState({selectedChannel: e, selectedVersion: this.state.versions, versions: versions})
-        window.store.set('channel', {channel: e, version: this.state.selectedVersion})
-        window.ipc.send("updateChannel")
+        const channels = await window.store.get("channels")
+        let versions: any[] = []
+        
+        versions[versions.length] = channels.map((channel: any) => {
+            if (channel.name === e.value) {
+                return channel.versions.map((version: any) => {
+                    return {value: version.version, label: version.version}
+                }) || null
+            }
+        })
+        console.log("handleChannel", e, versions)
     }
 
     handleVersion = (e: any) => {
+        console.log("handleVersion", this.state.selectedChannel)
         this.setState({selectedChannel: this.state.selectedChannel, selectedVersion: e})
         window.store.set('channel', {channel: this.state.selectedChannel, version: e})
         window.ipc.send("updateChannel")
