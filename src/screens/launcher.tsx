@@ -31,8 +31,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         progress: 0,
         updateText: "",
         options: [],
-        selectedChannel: {value: "beta", label: "Beta"},
-        selectedVersion: {value: "2.0.1", label: "latest"},
+        selectedChannel: {value: "release", label: "Release"},
+        selectedVersion: {value: "latest", label: "Latest"},
         news: [],
         serverStatus: {
             online: false,
@@ -177,12 +177,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         opts.serverPort = autoConnect.checked ? serverPort.value : undefined
 
         window.ipc.send("launch", opts);
-    }
-
-    handleChannel = (e: any) => {
-        this.setState({selectedChannel: e})
-        window.store.set('channel', e)
-        window.ipc.send("updateChannel")
     }
     
 
