@@ -323,6 +323,7 @@ function downloadForge(channel: string) {
 function downloadModpack(channel: string, version: string) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
+        const versionLink = `${config.channelDetails}/${channel}/${version}`
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
         updateText('Vérification du modpack')
@@ -351,7 +352,7 @@ function launch(channel: string) {
 
     const javaPath = path.join(jre, 'bin', 'java');
     const channelConfig = config.getGameChannel(channel);
-    console.log(javaPath)
+
     let opts:any = {
         authorization: token.mclc(),
         root: config.getGamePath(channel),
@@ -365,7 +366,7 @@ function launch(channel: string) {
             max: `${gameConfig.ram}G`,
             min:'1G'
         },
-        features: ['has_custom_resolution'],
+        // features: ['has_custom_resolution'],
         window: {
             fullscreen: gameConfig.window.fullscreen,
             width: gameConfig.window.width,
@@ -380,7 +381,7 @@ function launch(channel: string) {
 
     launcher.launch(opts);
 
-    //launcher.on('debug', (e) => console.log('debug',e));
+    launcher.on('debug', (e) => console.log('debug',e));
     launcher.on('arguments', (e) => {
         mainWindow.hide()
     });
