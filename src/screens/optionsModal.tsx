@@ -94,8 +94,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedWidth = await window.store.get("windowWidth")
         const savedHeight = await window.store.get("windowHeight")
         const savedFullscreen = await window.store.get("fullscreen")
-        const savedChannel = await window.store.get("channel") || {value: "release", label: "Release"}
-        const channels = await window.ipc.sendSync("getChannels")
+        // const savedChannel = await window.store.get("channel") || {value: "release", label: "Release"}
+        // const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
         let options: any[] = []
         let versions: any[] = []
@@ -115,10 +115,9 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                 this.setState({options: options})
             }
 
-            if (defaultChannel) {
+            if (defaultChannel && versions.length === 0) {
                 for (const channel of res) {
-                    console.log(defaultChannel.value, channel.name)
-                    if (channel.name === defaultChannel.value) {
+                    if (channel.name === defaultChannel.channel.value) {
                         for (const version of channel.versions) {
                             versions.push({
                                 value: version.version,
@@ -127,10 +126,10 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                         }
                     }
                 }
-                this.setState({versions: versions})
+                this.setState({versions: versions, selectedVersion: versions[0]})
             }
 
-            this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version || versions[0]})
+            this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version[0] != null ? defaultChannel.version : versions[0]})
         })
 
         ramRange.value = savedRam || Math.round(maxRam/2)
@@ -257,25 +256,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     handleChannel = async (e: any) => {
-        // const channelsList = await window.store.get("channels")
-        // let versions: any[] = []
-        // for await (const channel of channelsList) {
-        //     if (channel.name === e.value) {
-        //         versions.push({value: channel.versions[0].version, label: "latest"})
-        //         for(const version of channel.versions) {
-        //             versions.push({
-        //                 value: version.version,
-        //                 label: version.version
-        //             })
-        //         }
-        //     }
-        // }
-        // console.log("handleChannel", e, versions)
-        // this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
-        // console.log("handleChannel", this.state.selectedChannel, this.state.selectedVersion)
-        // window.store.set('channel', {channel: e, version: this.state.selectedVersion})
-        // window.ipc.send("updateChannel")
-
         const channels = await window.store.get("channels")
         let versions: any[] = []
         
@@ -289,17 +269,16 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                     })
                 }
             }
-        }
+        })
 
-        this.setState({selectedChannel: e, selectedVersion: this.state.versions, versions: versions})
-        window.store.set('channel', {channel: e, version: this.state.selectedVersion})
+        this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
+        window.store.set('channel', {channel: e, version: versions[0]})
         window.ipc.send("updateChannel")
     }
 
     handleVersion = (e: any) => {
         this.setState({selectedChannel: this.state.selectedChannel, selectedVersion: e})
         window.store.set('channel', {channel: this.state.selectedChannel, version: e})
-        console.log('handleVersion', this.state.selectedChannel, this.state.selectedVersion)
     }
 
     handleReset = () => {
