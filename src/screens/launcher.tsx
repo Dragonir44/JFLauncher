@@ -2,12 +2,14 @@ import { Component } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Swal from "sweetalert2";
+import withReactContent from 'sweetalert2-react-content'
 import { WithTranslation, withTranslation } from "react-i18next";
 import "i18n"
 import OptionsModal from "./optionsModal";
-import { Dialog } from 'primereact/dialog';
 
 import 'scss/launcher.scss';
+
+const MySwal = withReactContent(Swal)
 
 type Props = {
     navigate?: NavigateFunction;
@@ -120,7 +122,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
             playbtn.disabled = false;
             reinstall.disabled = false;
             this.setState({updateText: "", progress: 0})
-            Swal.fire({
+            MySwal.fire({
                 title: "Une erreur est survenue",
                 showDenyButton: true,
                 text: err,
@@ -129,7 +131,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 confirmButtonText: "Fermer",
                 denyButtonText: "Réessayer",
                 background: "#1e1e1e",
-                confirmButtonColor: "#ff0000"
+                confirmButtonColor: "#ff0000",
+                color: "#fff"
             }).then((result) => {
                 if (result.isConfirmed) {
                     return
@@ -190,23 +193,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 </header>
                 <OptionsModal />
                 <div className="content">
-                    <Dialog 
-                        className="newsModal"
-                        id="newsModal"
-                        visible={this.state.modalVisible}
-                        modal={true} 
-                        onHide={() => this.setState({modalVisible: false})}
-                    >
-                        <div className="newsModalContent">
-                            <div id="newsContentBodyArticleContent" className="newsContentBodyArticleContent">
-                            <h4 className="title">{newsContent.title}</h4>
-                            <article className="articleContent">
-                                {window.html.parse(newsContent.content)}
-                            </article>
-                            </div>
-                        </div>
-                        <button className="newsModalClose" onClick={() => this.setState({modalVisible: false})}>X</button>
-                    </Dialog>
                     <div id="top" className="top">
                         <div className="socialBox">
                             <div id="github" className="social github">
@@ -233,9 +219,15 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                     return (
                                         <div className="newsContentBodyArticle" key={article.title} onClick={
                                             () => {
-                                                this.setState({
-                                                    modalVisible: true, 
-                                                    newsContent: article
+                                                MySwal.fire({
+                                                    title: article.title,
+                                                    html: article.content,
+                                                    icon: "info",
+                                                    iconColor: "#54c2f0",
+                                                    confirmButtonText: "Fermer",
+                                                    background: "#1e1e1e",
+                                                    confirmButtonColor: "#54c2f0",
+                                                    color: "#fff"
                                                 })
                                             }
                                         }>

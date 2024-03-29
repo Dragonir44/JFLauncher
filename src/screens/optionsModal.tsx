@@ -3,8 +3,12 @@ import { NavigateFunction } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next"
 import Select, { StylesConfig } from "react-select";
 import Swal from "sweetalert2";
+import withReactContent from 'sweetalert2-react-content'
 import "i18n"
 import { withRouter } from "utils/withRouter";
+
+
+const MySwal = withReactContent(Swal)
 
 const customStyles: StylesConfig = {
     dropdownIndicator: (provided:any, state:any) => ({
@@ -76,8 +80,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         versions: [],
         serverAddress: "",
         serverPort: "",
-        selectedChannel: {value: "release", label: "release"},
-        selectedVersion: {value: "latest", label: "Latest"}
+        selectedChannel: {value: "release", label: "Release"},
+        selectedVersion: {value: "latest", label: "Latest", changelogs: ""}
     }
 
     async componentDidMount() {
@@ -121,7 +125,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                         for (const version of channel.versions) {
                             versions.push({
                                 value: version.version,
-                                label: version.version
+                                label: version.version,
+                                changelogs: version.changelog
                             })
                         }
                     }
@@ -162,7 +167,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         }
 
         window.ipc.receive('reset-complete', () => {
-            Swal.fire({
+            MySwal.fire({
                 title: t("launcher.settings.reset-complete-title"),
                 text: t("launcher.settings.reset-complete-text"),
                 icon: "success",
@@ -259,13 +264,13 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const channels = await window.store.get("channels")
         let versions: any[] = []
         
-        versions[versions.length] = channels.map((channel: any) => {
+        versions[versions.length-1] = channels.map((channel: any) => {
             if (channel.name === e.value) {
-                versions.push({value: channel.versions[0].version, label: "latest"})
                 for(const version of channel.versions) {
                     versions.push({
                         value: version.version,
-                        label: version.version
+                        label: version.version,
+                        changelogs: version.changelog
                     })
                 }
             }
@@ -279,6 +284,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     handleVersion = (e: any) => {
         this.setState({selectedChannel: this.state.selectedChannel, selectedVersion: e})
         window.store.set('channel', {channel: this.state.selectedChannel, version: e})
+    }
+
+    handleChangelogs = () => {
+        const {t} = this.props
+        const changelogs = this.state.selectedVersion.changelogs
+        MySwal.fire({
+            title: t("launcher.settings.changelogs"),
+            html: changelogs,
+            confirmButtonText: "Fermer",
+            background: "#1e1e1e",
+            color: "#fff"
+        })
     }
 
     handleReset = () => {
@@ -364,6 +381,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             <hr />
                             <div className="block functionButtons">
                                 <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
+                                <button id="showChangelogs" className="functionButton" onClick={this.handleChangelogs}>{t("launcher.settings.changelogs")}</button>
                                 <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedVersion.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                             </div>

@@ -74,7 +74,8 @@
     "react-select": "^5.8.0",
     "shell": "^0.5.1",
     "store": "^2.0.12",
-    "sweetalert2": "^11.10.1"
+    "sweetalert2": "^11.10.1",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "build": {
     "appId": "fr.dragonir.jflauncher",

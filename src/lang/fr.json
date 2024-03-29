@@ -41,6 +41,7 @@
             "reset": "Réinitialiser le lanceur",
             "reset-complete-title": "Réinitialisation terminée",
             "reset-complete-text": "Le lanceur va maintenant redémarrer.",
+            "changelogs": "Notes de mise à jour",
             "versions": {
                 "channel": "Canal",
                 "version": "Versions",
