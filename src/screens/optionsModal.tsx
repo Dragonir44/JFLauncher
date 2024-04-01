@@ -122,19 +122,26 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             if (defaultChannel && versions.length === 0) {
                 for (const channel of res) {
                     if (channel.name === defaultChannel.channel.value) {
-                        for (const version of channel.versions) {
-                            versions.push({
+                        // sort versions in descending order but keep the latest version at the top
+                        versions = channel.versions.sort((a: any, b: any) => {
+                            if (a.version === "latest") return -1
+                            if (b.version === "latest") return 1
+                            return b.version.localeCompare(a.version)
+                        })
+
+                        versions = versions.map((version: any) => {
+                            return {
                                 value: version.version,
-                                label: version.version,
-                                changelogs: version.changelog
-                            })
-                        }
+                                label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                                changelogs: version.changelogs
+                            }
+                        })
                     }
                 }
                 this.setState({versions: versions, selectedVersion: versions[0]})
             }
 
-            this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version[0] != null ? defaultChannel.version : versions[0]})
+            this.setState({selectedChannel: defaultChannel.channel || {value: "release", label: "Release"}, selectedVersion: defaultChannel.version != undefined ? defaultChannel.version : versions[0]})
         })
 
         ramRange.value = savedRam || Math.round(maxRam/2)
@@ -261,21 +268,31 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     handleChannel = async (e: any) => {
-        const channels = await window.store.get("channels")
+        // const channels = await window.store.get("channels")
+        const {t} = this.props
         let versions: any[] = []
-        
-        versions[versions.length-1] = channels.map((channel: any) => {
-            if (channel.name === e.value) {
-                for(const version of channel.versions) {
-                    versions.push({
-                        value: version.version,
-                        label: version.version,
-                        changelogs: version.changelog
-                    })
+
+        window.ipc.send("getChannelVersions", e.value)
+
+        window.ipc.receive("getChannelVersions-complete", (res) => {
+            versions = res.sort((a: any, b: any) => {
+                if (a.version === "latest") return -1
+                if (b.version === "latest") return 1
+                return b.version.localeCompare(a.version)
+            })
+            versions = versions.map((version: any) => {
+                return {
+                    value: version.version,
+                    label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                    changelogs: version.changelogs
                 }
-            }
+            })
+            this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
+            window.store.set('channel', {channel: e, version: versions[0]})
+            window.ipc.send("updateChannel")
         })
 
+        console.log(versions)
         this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
         window.store.set('channel', {channel: e, version: versions[0]})
         window.ipc.send("updateChannel")

@@ -69,6 +69,16 @@ export const initIpc = () => {
             })
     })
 
+    ipcMain.on("getChannelVersions", (_, data) => {
+        axios.get(`${config.channelDetails}/${data}`, {headers: {"token": process.env.TOKEN},responseType: 'json'})
+            .then((res) => {
+                mainWindow?.webContents.send("getChannelVersions-complete", res.data);
+            })
+            .catch((err) => {
+                mainWindow?.webContents.send("getChannelVersions-failed", err);
+            })
+    })
+
     ipcMain.on('server-ping', () => {
         config.loadConfig()
         const serverData = store.get("config") as config.Config
