@@ -68,5 +68,5 @@ export const getGameChannel = (channel: string) => {
 }
 
 setInterval(() => {
-    loadConfig()
+    // loadConfig()
 }, refreshTime)

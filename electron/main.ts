@@ -50,7 +50,7 @@ function createWindow() {
         },
     });
     
-    config.loadConfig();
+    // config.loadConfig();
     initIpc()
     initGame()
     // store.delete('currentChannelVersion')

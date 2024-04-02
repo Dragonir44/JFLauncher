@@ -24,7 +24,7 @@ let gameConfig: any;
 type Progress = { type: string; task: number; total: number };
 
 export const initGame =  () => {
-    config.loadConfig();
+    // config.loadConfig();
     ipcMain.on('launch', (evt, d) => {
         const serverAddress = d.autoConnect ? d.serverAddress : ''
         const serverPort = d.autoConnect ? d.serverPort : ''
@@ -44,7 +44,7 @@ export const initGame =  () => {
             serverAddress: `${serverAddress}:${serverPort}`
         }
 
-        checkJavaInstall(d.channel)
+        checkJavaInstall()
             .then(() => updatePackAndLaunch(d.channel, d.version))
             .catch(() => {
                 const jrePath = config.jrePath
@@ -156,7 +156,7 @@ export function reinstall(channel: string, version: string) {
     })
 }
 
-function checkJavaInstall(channel: string) {
+function checkJavaInstall() {
     return new Promise<void>((resolve, reject) => {
         const jrePath = config.jrePath;
         let jreIntallFiles = path.join(jrePath, 'jdk-windows.zip');

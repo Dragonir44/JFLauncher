@@ -4,6 +4,7 @@ import axios from "axios";
 import * as config from './utils/config';
 import { getStatus } from 'minecraft-ping-server/lib'
 import dotenv from 'dotenv'
+import log from "electron-log";
 
 import { mainWindow, store } from "./main";
 import { reinstall } from "./game"
@@ -26,7 +27,7 @@ export const initIpc = () => {
             mainWindow?.webContents.send("auth-success");
         }
         catch(err) {
-            console.log(err);
+            log.error(err);
             mainWindow?.webContents.send("auth-failed", err);
             // mainWindow.loadURL(path.join(__dirname, "..", "index.html"));
         }
@@ -62,9 +63,11 @@ export const initIpc = () => {
     ipcMain.on("getChannelsFromServer", () => {
         axios.get(config.channelDetails, {headers: {"token": process.env.TOKEN},responseType: 'json'})
             .then((res) => {
+                log.info(res.data)
                 mainWindow?.webContents.send("getChannelsFromServer-complete", res.data);
             }
             ).catch((err) => {
+                log.error(err);
                 mainWindow?.webContents.send("getChannelsFromServer-failed", err);
             })
     })
@@ -72,21 +75,25 @@ export const initIpc = () => {
     ipcMain.on("getChannelVersions", (_, data) => {
         axios.get(`${config.channelDetails}/${data}`, {headers: {"token": process.env.TOKEN},responseType: 'json'})
             .then((res) => {
+                log.info(res.data)
                 mainWindow?.webContents.send("getChannelVersions-complete", res.data);
             })
             .catch((err) => {
+                log.error(err);
                 mainWindow?.webContents.send("getChannelVersions-failed", err);
             })
     })
 
     ipcMain.on('server-ping', () => {
-        config.loadConfig()
+        // config.loadConfig()
         const serverData = store.get("config") as config.Config
         getStatus(serverData.server.address, serverData.server.port)
             .then((res) => {
+                log.info(res);
                 mainWindow?.webContents.send("server-ping-response", res);
             })
             .catch((err) => {
+                log.error(err);
                 mainWindow?.webContents.send("server-ping-response", err);
             })
     })
@@ -99,15 +106,13 @@ export const initIpc = () => {
     ipcMain.on('reinstall', (_, data) => {
         reinstall(data.channel, data.version)
             .then(() => {
+                log.info("Reinstall complete");
                 mainWindow?.webContents.send("reinstall-complete");
             })
             .catch((err) => {
+                log.error(err);
                 mainWindow?.webContents.send("reinstall-failed", err);
             })
-    })
-
-    ipcMain.on('updateChannel', () => {
-        mainWindow?.webContents.send("updateChannel");
     })
     
     ipcMain.handle('getStore', (_, data) => {
@@ -119,6 +124,7 @@ export const initIpc = () => {
     })
 
     ipcMain.on("reset", () => {
+        log.info("Resetting app");
         mainWindow?.webContents.send("reset-complete");
     })
 
