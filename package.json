@@ -88,6 +88,12 @@
       "build/**/*",
       "node_modules/**/*"
     ],
+    "extraFiles": [
+      {
+        "from": ".env",
+        "to": "."
+      }
+    ],
     "directories": {
       "buildResources": "assets"
     },

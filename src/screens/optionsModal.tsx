@@ -98,8 +98,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedWidth = await window.store.get("windowWidth")
         const savedHeight = await window.store.get("windowHeight")
         const savedFullscreen = await window.store.get("fullscreen")
-        // const savedChannel = await window.store.get("channel") || {value: "release", label: "Release"}
-        // const channels = await window.ipc.sendSync("getChannels")
         const defaultChannel = await window.store.get("channel")
         let options: any[] = []
         let versions: any[] = []
@@ -133,7 +131,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             return {
                                 value: version.version,
                                 label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                                changelogs: version.changelogs
+                                changelogs: version.changelog
                             }
                         })
                     }
@@ -268,34 +266,31 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     handleChannel = async (e: any) => {
-        // const channels = await window.store.get("channels")
         const {t} = this.props
+        const channels = await window.store.get("channels")
         let versions: any[] = []
 
-        window.ipc.send("getChannelVersions", e.value)
+        for (const channel of channels) {
+            if (channel.name === e.value) {
+                versions = channel.versions.sort((a: any, b: any) => {
+                    if (a.version === "latest") return -1
+                    if (b.version === "latest") return 1
+                    return b.version.localeCompare(a.version)
+                })
 
-        window.ipc.receive("getChannelVersions-complete", (res) => {
-            versions = res.sort((a: any, b: any) => {
-                if (a.version === "latest") return -1
-                if (b.version === "latest") return 1
-                return b.version.localeCompare(a.version)
-            })
-            versions = versions.map((version: any) => {
-                return {
-                    value: version.version,
-                    label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                    changelogs: version.changelogs
-                }
-            })
-            this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
-            window.store.set('channel', {channel: e, version: versions[0]})
-            window.ipc.send("updateChannel")
-        })
+                versions = versions.map((version: any) => {
+                    console.log(version.changelog)
+                    return {
+                        value: version.version,
+                        label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                        changelogs: version.changelog
+                    }
+                })
+            }
+        }
 
-        console.log(versions)
         this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
         window.store.set('channel', {channel: e, version: versions[0]})
-        window.ipc.send("updateChannel")
     }
 
     handleVersion = (e: any) => {

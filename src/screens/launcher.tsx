@@ -95,7 +95,9 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
             container.appendChild(message);
         })
 
-        setInterval(() => window.ipc.send("server-ping"), refreshTime)
+        setInterval(() => {
+            window.ipc.send("server-ping")
+        }, refreshTime)
         window.ipc.receive('server-ping-response', (data) => {this.setState({serverStatus: data})})
 
         window.ipc.receive('reinstall-complete', () => {
