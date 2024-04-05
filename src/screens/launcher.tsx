@@ -167,11 +167,9 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         selectChannel.disabled = true;
         progressBar.style.display = 'block'
         playbtn.disabled = true;
-        
         let opts: any = {
             ram: ram.value,
-            channel: channel.channel.value,
-            version: channel.version.value,
+            selectedChannel: channel,
             width: width.value || 854,
             height: height.value || 480,
             fullscreen: fullscreen.checked,

@@ -24,13 +24,14 @@ let gameConfig: any;
 type Progress = { type: string; task: number; total: number };
 
 export const initGame =  () => {
-    // config.loadConfig();
-    ipcMain.on('launch', (evt, d) => {
+    ipcMain.on('launch', (_, d) => {
         const serverAddress = d.autoConnect ? d.serverAddress : ''
         const serverPort = d.autoConnect ? d.serverPort : ''
+        const channel = d.selectedChannel.channel.value;
+        const version = d.selectedChannel.version;
 
-        if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', d.channel))) {
-            fs.mkdirSync(path.join(sysRoot, '.JFLauncher', d.channel), { recursive: true });
+        if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', channel))) {
+            fs.mkdirSync(path.join(sysRoot, '.JFLauncher', channel), { recursive: true });
         }
     
         gameConfig = {
@@ -43,9 +44,9 @@ export const initGame =  () => {
             autoConnect: d.autoConnect,
             serverAddress: `${serverAddress}:${serverPort}`
         }
-
+        
         checkJavaInstall()
-            .then(() => updatePackAndLaunch(d.channel, d.version))
+            .then(() => updatePackAndLaunch(channel, version))
             .catch(() => {
                 const jrePath = config.jrePath
                 if (!fs.existsSync(jrePath)) {
@@ -54,7 +55,7 @@ export const initGame =  () => {
                 if (process.platform === 'linux') {
                     downloadJava(config.jreLinux, path.join(jrePath, 'jdk-linux.zip'), jrePath)
                         .then(() => {
-                            updatePackAndLaunch(d.channel, d.version)
+                            updatePackAndLaunch(channel, version)
                         })
                         .catch(() => {
                             console.error('Erreur lors du téléchargement de java');
@@ -63,7 +64,7 @@ export const initGame =  () => {
                 else {
                     downloadJava(config.jreWin, path.join(jrePath, 'jdk-windows.zip'), jrePath)
                         .then(() => {
-                            updatePackAndLaunch(d.channel, d.verison)
+                            updatePackAndLaunch(channel, version)
                         })
                         .catch(() => {
                             console.error('Erreur lors du téléchargement de java');
@@ -73,12 +74,12 @@ export const initGame =  () => {
     })
 }
 
-export function reinstall(channel: string, version: string) {
+export function reinstall(channel: string, version: any) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const downloadLink = `${config.channelDetails}/${channel}/${version}/download`
+        const downloadLink = `${config.channelDetails}/${channel}/versions/${version.value}/download`
         const lastChannels: any = store.get('currentChannelVersion')
-        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}-${version}.zip`);
+        const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}-${version.value}.zip`);
         const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu']
         updateText('Suppression de l\'ancien modpack')
         if (fs.existsSync(modpackPath)) {
@@ -92,7 +93,6 @@ export function reinstall(channel: string, version: string) {
         })
 
         updateText('Téléchargement du modpack')
-        
         axios.get(downloadLink, {headers: {'token': process.env.TOKEN}, responseType: 'stream'})
             .then((res) => {
 
@@ -248,8 +248,8 @@ function downloadJava(url: string, target: string, jrePath: string) {
     })
 }
 
-function updatePackAndLaunch(channel: string, version:string) {
-    downloadForge(channel)
+function updatePackAndLaunch(channel: string, version:any) {
+    downloadForge(channel, version)
         .then(() => {
             downloadModpack(channel, version)
                 .then(() => {
@@ -265,10 +265,10 @@ function updatePackAndLaunch(channel: string, version:string) {
         })
 }
 
-function downloadForge(channel: string) {
+function downloadForge(channel: string, version: any) {
     return new Promise<void>((resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const forgePath = path.join(config.forgePath, `forge-${data?.mc_version}-${data?.current_forge_version}-installer.jar`);
+        const forgePath = path.join(config.forgePath, `forge-${version.forgeVersion}-installer.jar`);
 
         updateText('Vérification de forge')
 
@@ -285,7 +285,7 @@ function downloadForge(channel: string) {
             }
             updateText('Téléchargement de forge')
 
-            const forgeLink = config.forgeBaseLink.replace(/%mc/g, data?.mc_version as string).replace(/%fo/g, data?.current_forge_version as string)
+            const forgeLink = config.forgeBaseLink.replace(/%foVer/g, version.forgeVersion as string)
 
             axios.get(forgeLink, {responseType: 'stream'})
                 .then((res) => {
@@ -320,14 +320,12 @@ function downloadForge(channel: string) {
 
 }
 
-function downloadModpack(channel: string, version: string) {
+function downloadModpack(channel: string, version: any) {
     return new Promise<void>(async (resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const versionLink = `${config.channelDetails}/${channel}/${version}`
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
         updateText('Vérification du modpack')
-
         if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
             for(let i = 0; i < lastChannels.length; i++) {
                 if (lastChannels[i].channel === channel) {
@@ -340,8 +338,8 @@ function downloadModpack(channel: string, version: string) {
                 .then(() => {
                     return resolve();
                 })
-                .catch(() => {
-                    return reject();
+                .catch((e) => {
+                    return reject(e);
                 })
         }
     })

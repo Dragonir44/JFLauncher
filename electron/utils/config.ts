@@ -12,7 +12,7 @@ export const channelDetails = "https://jfl.api.team-project.fr/channels"
 export const launcherName = "JFLauncher"
 export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv/JimmuFactory/jdk-windows.zip'
 export const jreLinux = 'https://nas.team-project.fr/api/public/dl/PpIWU3XD/JimmuFactory/jdk-linux.zip'
-export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%mc-%fo/forge-%mc-%fo-installer.jar'
+export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%foVer/forge-%foVer-installer.jar'
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
 const refreshTime = 5 * 1000

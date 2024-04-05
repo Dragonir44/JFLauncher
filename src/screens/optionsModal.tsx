@@ -131,7 +131,9 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                             return {
                                 value: version.version,
                                 label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                                changelogs: version.changelog
+                                changelogs: version.changelog,
+                                forgeVersion: version.forgeVersion,
+                                versionFile: version.path.split("/").pop().split(".zip")[0]
                             }
                         })
                     }
@@ -277,18 +279,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                     if (b.version === "latest") return 1
                     return b.version.localeCompare(a.version)
                 })
-
+                console.log(versions)
                 versions = versions.map((version: any) => {
-                    console.log(version.changelog)
                     return {
                         value: version.version,
                         label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                        changelogs: version.changelog
+                        changelogs: version.changelog,
+                        forgeVersion: version.forgeVersion,
+                        versionFile: version.path.split("/").pop().split(".zip")[0]
                     }
                 })
             }
         }
-
         this.setState({selectedChannel: e, selectedVersion: versions[0], versions: versions})
         window.store.set('channel', {channel: e, version: versions[0]})
     }
