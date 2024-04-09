@@ -253,7 +253,7 @@ function updatePackAndLaunch(channel: string, version:any) {
         .then(() => {
             downloadModpack(channel, version)
                 .then(() => {
-                    launch(channel)
+                    launch(channel, version)
                 })
                 .catch((err) => {
                     console.error('Erreur lors du téléchargement du modpack', err);
@@ -280,9 +280,9 @@ function downloadForge(channel: string, version: any) {
             return resolve();
         }
         else {
-            if (fs.existsSync(forgePath)) {
+            if (fs.existsSync(forgePath))
                 fs.unlinkSync(forgePath);
-            }
+                
             updateText('Téléchargement de forge')
 
             const forgeLink = config.forgeBaseLink.replace(/%foVer/g, version.forgeVersion as string)
@@ -325,13 +325,12 @@ function downloadModpack(channel: string, version: any) {
         const data = config.getGameChannel(channel)
         const lastChannels: any = store.get('currentChannelVersion')
         const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
+        const oldLatest = store.get('latestVersion') as any || null
+        const latestVersion = version.versionFile
+        console.log(oldLatest, latestVersion)
         updateText('Vérification du modpack')
-        if (lastChannelData && lastChannelData.version === data?.current_pack_version) {
-            for(let i = 0; i < lastChannels.length; i++) {
-                if (lastChannels[i].channel === channel) {
-                    return resolve();
-                }
-            }
+        if (oldLatest && latestVersion === oldLatest) {
+            return resolve();
         }
         else {
             reinstall(channel, version)
@@ -345,19 +344,19 @@ function downloadModpack(channel: string, version: any) {
     })
 }
 
-function launch(channel: string) {
+function launch(channel: string, version: any) {
     const launcher = new Client();
 
     const javaPath = path.join(jre, 'bin', 'java');
-    const channelConfig = config.getGameChannel(channel);
+    // const channelConfig = config.getGameChannel(channel);
 
     let opts:any = {
         authorization: token.mclc(),
         root: config.getGamePath(channel),
-        forge: path.join(config.forgePath, `forge-${channelConfig?.mc_version}-${channelConfig?.current_forge_version}-installer.jar`),
+        forge: path.join(config.forgePath, `forge-${version.forgeVersion}-installer.jar`),
         javaPath: javaPath,
         version: {
-            number: channelConfig?.mc_version as string,
+            number: version.forgeVersion.split('-')[0] as string,
             type: "release"
         },
         memory: {
@@ -381,6 +380,7 @@ function launch(channel: string) {
 
     launcher.on('debug', (e) => console.log('debug',e));
     launcher.on('arguments', (e) => {
+        store.set('latestVersion', version.versionFile)
         mainWindow.hide()
     });
 

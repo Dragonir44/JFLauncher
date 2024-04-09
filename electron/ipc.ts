@@ -60,6 +60,26 @@ export const initIpc = () => {
         evt.returnValue = config.getGameChannel(data);
     })
 
+    ipcMain.on("retrieveVersion", (evt, data) => {
+        axios.get(`${config.channelDetails}/${data.channel}/versions/${data.version}`, {headers: {"token": process.env.TOKEN},responseType: 'json'})
+            .then((res) => {
+                log.info(res.data, {
+                    value: res.data.version,
+                    forgeVersion: res.data.forgeVersion,
+                    versionFile: res.data.path.split("/").pop().split(".zip")[0]
+                })
+                evt.returnValue = {
+                    value: res.data.version,
+                    forgeVersion: res.data.forgeVersion,
+                    versionFile: res.data.path.split("/").pop().split(".zip")[0]
+                };
+            })
+            .catch((err) => {
+                log.error(err);
+                evt.returnValue = err;
+            })
+    })
+
     ipcMain.on("getChannelsFromServer", () => {
         axios.get(config.channelDetails, {headers: {"token": process.env.TOKEN},responseType: 'json'})
             .then((res) => {
