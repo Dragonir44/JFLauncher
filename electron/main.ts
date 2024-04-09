@@ -43,6 +43,9 @@ function createWindow() {
                 : path.join(__dirname, publicPath, "assets/logo.png"),
         width: 1280,
         height: 729,
+        minHeight: 560,
+        minWidth: 900,
+        frame: false,
         autoHideMenuBar: !isdev,
         webPreferences: {
             nodeIntegration: true,

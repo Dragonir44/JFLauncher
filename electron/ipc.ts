@@ -14,6 +14,10 @@ dotenv.config()
 export let token: any;
 
 export const initIpc = () => {
+    ipcMain.on("load", (evt) => {
+        evt.returnValue = app.getVersion();
+    })
+
     ipcMain.on("login", async () => {
         try {
             const authManager = new Auth("select_account")
@@ -152,6 +156,19 @@ export const initIpc = () => {
         store.clear();
         app.relaunch();
         app.quit();
+    })
+
+    ipcMain.on("minimize", () => {
+        mainWindow?.minimize();
+    })
+
+    ipcMain.on("maximize", () => {
+        if (mainWindow?.isMaximized()) {
+            mainWindow?.unmaximize();
+        }
+        else {
+            mainWindow?.maximize();
+        }
     })
 
     ipcMain.on("quit-app", () => {
