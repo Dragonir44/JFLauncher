@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
+import TitleBar from "utils/titlebar";
 import UpdateLauncher from "screens/updateLauncher";
 import Auth from "screens/auth";
 import Launcher from "screens/launcher";
@@ -36,7 +37,7 @@ const root = createRoot(container!);
 
 root.render(
     <React.StrictMode>
-        <div id="titlebarRegion" className="titlebarRegion"></div>
+        <TitleBar/>
         <HashRouter>
             <Routes>
                 <Route path="/" element={<UpdateLauncher/>} />
