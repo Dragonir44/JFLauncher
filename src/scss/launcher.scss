@@ -64,14 +64,10 @@ ul.masterList {
     .middle {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
-        justify-content: space-evenly;
-        height: 100%;
-        width: 100%;
-        text-align: center;
-        color: white;
-        border-radius: 10px;
-        padding: 5rem;
+        justify-content: center;
+        height: 100vh;
     
         .middle__card {
             width: 20.25rem;
@@ -85,6 +81,7 @@ ul.masterList {
             justify-content: space-evenly;
             align-items: center;
             color:#FFF;
+            margin: 0 1rem 1rem 1rem;
     
             &.userInfo {
                 flex-direction: column;

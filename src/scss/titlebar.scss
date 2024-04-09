@@ -1,0 +1,69 @@
+.titlebarRegion{
+    -webkit-user-select: none;
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    z-index: 1000;
+    background-color: #333;
+
+    .topbar {
+        .icon {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    
+        .titlebar-drag-region {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90%;
+            height: 30px;
+            -webkit-app-region: drag;
+        }
+    
+        .titlebar-title {
+            position: absolute;
+            top: 5px;
+            left: 30px;
+            font-size: 14px;
+            color: white;
+        }
+    }
+
+    .titlebar-buttons {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: flex;
+        gap: 5px;
+
+        .titlebar-button {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+
+            &.titlebar-minimize {
+                background-color: #FFD700;
+                border-radius: 50%;
+            }
+
+            &.titlebar-maximize {
+                background-color: #00FF00;
+                border-radius: 50%;
+            }
+
+            &.titlebar-close {
+                background-color: #FF0000;
+                border-radius: 50%;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+}
