@@ -193,8 +193,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 <header>
                     <div id="messages"></div>
                 </header>
-                <OptionsModal />
                 <div className="content">
+                    <OptionsModal />
                     <div id="top" className="top">
                         <div className="socialBox">
                             <div id="github" className="social github">

@@ -24,6 +24,7 @@ ul.masterList {
 }
 
 .content {
+    margin-top: 60px;
     .top {
         position: absolute;
         top: 10rem;
@@ -214,7 +215,7 @@ ul.masterList {
         justify-content: center;
         align-items: center;
         position: absolute;
-        top: .5rem;
+        top: calc(30px + .5rem);
         left: 2rem;
         width: 3rem;
         height: 3rem;
