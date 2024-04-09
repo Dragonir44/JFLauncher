@@ -377,7 +377,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                         onChange={this.handleChannel}
                                     />
                                 </div>
-                                <div className="version--block">
+                                <div className="versions--block">
                                     <label htmlFor="version">{t('launcher.settings.versions.version')}</label>
                                     <Select 
                                         name="version" 
