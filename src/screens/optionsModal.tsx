@@ -264,7 +264,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         progressBar.style.display = 'block'
 
         e.currentTarget.disabled = true;
-        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value, version: this.state.selectedVersion.value});
+        window.ipc.send("reinstall", {channel: this.state.selectedChannel.value, version: this.state.selectedVersion});
     }
 
     handleChannel = async (e: any) => {

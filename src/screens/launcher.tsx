@@ -162,7 +162,9 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const serverPort = document.getElementById("server-port") as HTMLInputElement
         const playbtn = document.getElementById("playbtn") as HTMLButtonElement
         const channel = await window.store.get('channel')
-
+        
+        if (channel.version.value === "latest")
+            channel.version = await window.ipc.sendSync("retrieveVersion", {channel: channel.channel.value, version: "latest"})
 
         selectChannel.disabled = true;
         progressBar.style.display = 'block'
