@@ -68,7 +68,7 @@ export const initGame =  () => {
                             updatePackAndLaunch(channel, version)
                         })
                         .catch(() => {
-                            console.error('Erreur lors du téléchargement de java');
+                            log.error('Erreur lors du téléchargement de java');
                         })
                 }
                 else {
@@ -77,7 +77,7 @@ export const initGame =  () => {
                             updatePackAndLaunch(channel, version)
                         })
                         .catch(() => {
-                            console.error('Erreur lors du téléchargement de java');
+                            log.error('Erreur lors du téléchargement de java');
                         })
                 }
             })
@@ -130,7 +130,7 @@ export function reinstall(channel: string, version: any) {
                         updateProgress(percent);
                     })
                     extract.on('error', (error: any) => {
-                        console.error(error);
+                        log.error(error);
                     });
                     
                     extract.on('end', () => {
@@ -155,12 +155,12 @@ export function reinstall(channel: string, version: any) {
                     });
                 })
                 writer.on('error', (err) => {
-                    console.error(err);
+                    log.error(err);
                     return reject(err);
                 })
             })
             .catch((err) => {
-                console.error(err);
+                log.error(err);
                 return reject(err);
             })
     })
@@ -220,14 +220,14 @@ function downloadJava(url: string, target: string, jrePath: string) {
                             updateProgress(percent);
                         })
                         extract.on('error', (error: any) => {
-                            console.error(error);
+                            log.error(error);
                         });
                         
                         extract.on('end', () => {
                             if (process.platform === 'linux') {
                                 exec(`chmod +x ${path.join(jrePath, 'bin/java')}`, (err, stdout, stderr) => {
                                     if (err) {
-                                        console.error(err);
+                                        log.error(err);
                                         return reject();
                                     }
                                     jre = jrePath;
@@ -241,17 +241,17 @@ function downloadJava(url: string, target: string, jrePath: string) {
                     })
     
                     writer.on('error', (err) => {
-                        console.error(err);
+                        log.error(err);
                         return reject();
                     })
                 })
                 .catch((err) => {
-                    console.error(err);
+                    log.error(err);
                     return reject();
                 })
         }
         catch (err) {
-            console.error(err);
+            log.error(err);
             return reject();
         }
     })
@@ -265,12 +265,12 @@ function updatePackAndLaunch(channel: string, version:any) {
                     launch(channel, version)
                 })
                 .catch((err) => {
-                    console.error('Erreur lors du téléchargement du modpack', err);
+                    log.error('Erreur lors du téléchargement du modpack', err);
                 })
         
         })
         .catch(() => {
-            console.error('Erreur lors du téléchargement de forge');
+            log.error('Erreur lors du téléchargement de forge');
         })
 }
 
@@ -316,12 +316,12 @@ function downloadForge(channel: string, version: any) {
                         return resolve();
                     })
                     writer.on('error', (err) => {
-                        console.error(err);
+                        log.error(err);
                         return reject();
                     })
                 })
                 .catch((err) => {
-                    console.error(err);
+                    log.error(err);
                     return reject();
                 })
         }
@@ -385,9 +385,10 @@ function launch(channel: string, version: any) {
         identifier: gameConfig.serverAddress,
     } : undefined
 
+    log.info('launch', opts);
     launcher.launch(opts);
 
-    launcher.on('debug', (e) => console.log('debug',e));
+    launcher.on('debug', (e) => log.info('debug',e));
     launcher.on('arguments', (e) => {
         store.set('latestVersion', version.versionFile)
         mainWindow.hide()
