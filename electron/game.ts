@@ -220,7 +220,6 @@ function downloadJava(url: string, target: string, jrePath: string) {
                                         console.error(err);
                                         return reject();
                                     }
-                                    fs.unlinkSync(target);
                                     jre = jrePath;
                                     return resolve()
                                 })

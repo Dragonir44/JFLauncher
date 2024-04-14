@@ -109,7 +109,7 @@ export const initIpc = () => {
     })
 
     ipcMain.on('server-ping', () => {
-        // config.loadConfig()
+        config.loadConfig()
         const serverData = store.get("config") as config.Config
         getStatus(serverData.server.address, serverData.server.port)
             .then((res) => {
