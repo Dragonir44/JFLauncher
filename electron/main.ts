@@ -1,6 +1,7 @@
 // Importation des modules
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "path";
+import fs from "fs-extra";
 import url from "url";
 import Store from "electron-store";
 import log from 'electron-log';
@@ -11,8 +12,7 @@ import { initGame } from "./game";
 
 import * as config from './utils/config';
 
-// change path for logs
-log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', 'log.log');
+log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
 
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false;
@@ -39,8 +39,8 @@ function createWindow() {
         title: `JFLauncher - ${app.getVersion()}`,
         icon: !isdev 
             ? process.platform == "win32"
-                ? path.join(__dirname, "../src/assets/logo.ico")
-                : path.join(__dirname, "../src/assets/logo.png")
+                ? path.join(__dirname, "..", "assets", "logo.ico")
+                : path.join(__dirname, "..", "assets", "logo.png")
             : process.platform == "win32"
                 ? path.join(__dirname, publicPath, "assets/logo.ico")
                 : path.join(__dirname, publicPath, "assets/logo.png"),

@@ -28,7 +28,7 @@
     "watch": "nodemon --watch \"electron/**/*\" -e ts --exec \"tsc -p electron && electron .\"",
     "elec:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"yarn watch\"",
     "elec:build": "yarn build && tsc -p electron && electron-builder",
-    "elec:release": "yarn build && tsc -p electron && electron-builder build --publish=always"
+    "elec:release": "yarn elec:build build --publish=always"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -86,13 +86,8 @@
     "extends": null,
     "files": [
       "build/**/*",
-      "node_modules/**/*"
-    ],
-    "extraFiles": [
-      {
-        "from": ".env",
-        "to": "."
-      }
+      "node_modules/**/*",
+      ".env"
     ],
     "directories": {
       "buildResources": "assets"

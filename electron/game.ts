@@ -1,5 +1,7 @@
 import { ipcMain } from 'electron';
+import log from 'electron-log';
 import { Client } from "minecraft-launcher-core";
+import isdev from 'electron-is-dev';
 import fs from 'fs-extra';
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -12,7 +14,15 @@ import {store} from './main'
 
 import * as config from './utils/config';
 
-dotenv.config()
+
+if (isdev) {
+    dotenv.config();
+}
+else {
+    dotenv.config({path: path.join(__dirname, '../..', '.env')});
+}
+
+log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
 
 const sysRoot = process.env.APPDATA || (process.platform == "darwin"
     ? process.env.HOME + "/Library/Application Support"

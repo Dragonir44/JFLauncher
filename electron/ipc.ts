@@ -1,4 +1,6 @@
 import { app, ipcMain, shell } from "electron";
+import isdev from "electron-is-dev";
+import path from "path";
 import {Auth} from 'msmc'
 import axios from "axios";
 import * as config from './utils/config';
@@ -9,7 +11,12 @@ import log from "electron-log";
 import { mainWindow, store } from "./main";
 import { reinstall } from "./game"
 
-dotenv.config()
+if (isdev) {
+    dotenv.config();
+}
+else {
+    dotenv.config({path: path.join(__dirname, '../..', '.env')});
+}
 
 export let token: any;
 
