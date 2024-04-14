@@ -11,6 +11,9 @@ import { initGame } from "./game";
 
 import * as config from './utils/config';
 
+// change path for logs
+log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', 'log.log');
+
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
