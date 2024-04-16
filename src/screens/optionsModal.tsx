@@ -9,6 +9,7 @@ import { withRouter } from "utils/withRouter";
 
 
 const MySwal = withReactContent(Swal)
+const navLang: string = navigator.language.split("-")[0]
 
 const customStyles: StylesConfig = {
     dropdownIndicator: (provided:any, state:any) => ({
@@ -81,7 +82,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         serverAddress: "",
         serverPort: "",
         selectedChannel: {value: "release", label: "Release"},
-        selectedVersion: {value: "latest", label: "Latest", changelogs: ""}
+        selectedVersion: {value: "latest", label: "Latest", changelogs: {en: "", fr: ""}}
     }
 
     async componentDidMount() {
@@ -302,10 +303,10 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
     handleChangelogs = () => {
         const {t} = this.props
-        const changelogs = this.state.selectedVersion.changelogs
+        const changelogs: { en: string; fr: string; } = this.state.selectedVersion.changelogs
         MySwal.fire({
             title: t("launcher.settings.changelogs"),
-            html: changelogs,
+            html: changelogs[navLang as keyof typeof changelogs],
             confirmButtonText: "Fermer",
             background: "#1e1e1e",
             color: "#fff"
