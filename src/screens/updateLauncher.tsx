@@ -60,7 +60,10 @@ class UpdateLauncher extends Component<Props & WithTranslation, State> {
                 cancelButtonColor: "#ff0000"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.ipc.send("install-update", `https://github.com/Dragonir44/JFLauncher/releases/download/${updateData.tag}/JFLauncher-setup-${updateData.version}.exe`);
+                    const downloadUrl = process.platform == "win32"
+                        ? `https://github.com/Dragonir44/JFLauncher/releases/download/${updateData.tag}/JFLauncher-setup-${updateData.version}.exe`
+                        : `https://github.com/Dragonir44/JFLauncher/releases/download/${updateData.tag}/JFLauncher-setup-${updateData.version}.AppImage`
+                    window.ipc.send("install-update", downloadUrl);
                 }
                 else {
                     this.props.navigate!(`/auth`);
