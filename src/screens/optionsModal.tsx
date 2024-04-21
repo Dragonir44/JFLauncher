@@ -282,7 +282,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                     if (b.Version === "latest") return 1
                     return b.Version.localeCompare(a.Version)
                 })
-                console.log(versions)
                 versions = versions.map((version: any) => {
                     return {
                         value: version.Version,

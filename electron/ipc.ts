@@ -75,18 +75,18 @@ export const initIpc = () => {
         axios.get(`${config.channelDetails}/${data.channel}/versions/${data.version}`, {headers: {"token": process.env.TOKEN},responseType: 'json'})
             .then((res) => {
                 log.info(res.data, {
-                    value: res.data.version,
-                    forgeVersion: res.data.forgeVersion,
-                    versionFile: res.data.path.split("/").pop().split(".zip")[0]
+                    value: res.data.Version,
+                    forgeVersion: res.data.ForgeVersion,
+                    versionFile: res.data.Path.split("/").pop().split(".zip")[0]
                 })
                 evt.returnValue = {
-                    value: res.data.version,
-                    forgeVersion: res.data.forgeVersion,
-                    versionFile: res.data.path.split("/").pop().split(".zip")[0]
+                    value: res.data.Version,
+                    forgeVersion: res.data.ForgeVersion,
+                    versionFile: res.data.Path.split("/").pop().split(".zip")[0]
                 };
             })
             .catch((err) => {
-                log.error(err);
+                // log.error(err);
                 evt.returnValue = err;
             })
     })

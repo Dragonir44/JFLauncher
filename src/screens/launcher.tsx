@@ -165,7 +165,6 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         
         if (channel.version.value === "latest")
             channel.version = await window.ipc.sendSync("retrieveVersion", {channel: channel.channel.value, version: "latest"})
-
         selectChannel.disabled = true;
         progressBar.style.display = 'block'
         playbtn.disabled = true;
