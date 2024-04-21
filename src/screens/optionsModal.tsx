@@ -123,18 +123,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                     if (channel.name === defaultChannel.channel.value) {
                         // sort versions in descending order but keep the latest version at the top
                         versions = channel.versions.sort((a: any, b: any) => {
-                            if (a.version === "latest") return -1
-                            if (b.version === "latest") return 1
-                            return b.version.localeCompare(a.version)
+                            if (a.Version === "latest") return -1
+                            if (b.Version === "latest") return 1
+                            return b.Version.localeCompare(a.version)
                         })
 
                         versions = versions.map((version: any) => {
                             return {
-                                value: version.version,
-                                label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                                changelogs: version.changelog,
-                                forgeVersion: version.forgeVersion,
-                                versionFile: version.path.split("/").pop().split(".zip")[0]
+                                value: version.Version,
+                                label: version.Version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                                changelogs: version.Changelog,
+                                forgeVersion: version.ForgeVersion,
+                                versionFile: version.Path.split("/").pop().split(".zip")[0]
                             }
                         })
                     }
@@ -275,19 +275,20 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         for (const channel of channels) {
             if (channel.name === e.value) {
+                console.log(channel.versions)
                 versions = channel.versions.sort((a: any, b: any) => {
-                    if (a.version === "latest") return -1
-                    if (b.version === "latest") return 1
-                    return b.version.localeCompare(a.version)
+                    if (a.Version === "latest") return -1
+                    if (b.Version === "latest") return 1
+                    return b.Version.localeCompare(a.Version)
                 })
                 console.log(versions)
                 versions = versions.map((version: any) => {
                     return {
-                        value: version.version,
-                        label: version.version === "latest" ? t("launcher.settings.versions.latest") : version.version,
-                        changelogs: version.changelog,
-                        forgeVersion: version.forgeVersion,
-                        versionFile: version.path.split("/").pop().split(".zip")[0]
+                        value: version.Version,
+                        label: version.Version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                        changelogs: version.Changelog,
+                        forgeVersion: version.ForgeVersion,
+                        versionFile: version.Path.split("/").pop().split(".zip")[0]
                     }
                 })
             }
