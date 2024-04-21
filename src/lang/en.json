@@ -26,6 +26,7 @@
         "server-status-title": "Status",
         "server-status-online": "Online",
         "server-status-offline": "Offline",
+        "server-status-maintenance": "Maintenance",
         "server-status-players": "Players",
         "settings-label": "Options",
         "settings": {

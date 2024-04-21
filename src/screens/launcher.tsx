@@ -40,7 +40,8 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
             online: false,
             version: "",
             onlinePlayers: '0',
-            maxPlayers: '20'
+            maxPlayers: '20',
+            motd : ""
         },
         modalVisible: false,
         newsContent: {
@@ -244,7 +245,13 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                 <article className="state">
                                     <strong>{t('launcher.server-status-title')}</strong>
                                     <div className="status">
-                                        {serverStatus.online ? t('launcher.server-status-online') : t('launcher.server-status-offline')} 
+                                        {
+                                            serverStatus.online 
+                                            ? t('launcher.server-status-online') 
+                                            : serverStatus.motd.includes("maintenance")
+                                                ? t('launcher.server-status-maintenance')
+                                                : t('launcher.server-status-offline')
+                                        } 
                                         <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
                                     </div>
                                 </article>
