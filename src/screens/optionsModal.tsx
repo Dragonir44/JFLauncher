@@ -286,7 +286,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                 versions = versions.map((version: any) => {
                     return {
                         value: version.Version,
-                        label: version.Version === "latest" ? t("launcher.settings.versions.latest") : version.version,
+                        label: version.Version === "latest" ? t("launcher.settings.versions.latest") : version.Version,
                         changelogs: version.Changelog,
                         forgeVersion: version.ForgeVersion,
                         versionFile: version.Path.split("/").pop().split(".zip")[0]
