@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld("ipc", {
 contextBridge.exposeInMainWorld("os", {
     totalmem: () => {
         return os.totalmem();
+    },
+    type: () => {
+        return os.type()
     }
 });
 
