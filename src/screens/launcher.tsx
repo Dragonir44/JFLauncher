@@ -248,9 +248,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                         {
                                             serverStatus.online 
                                             ? t('launcher.server-status-online') 
-                                            : serverStatus.motd.includes("maintenance")
-                                                ? t('launcher.server-status-maintenance')
-                                                : t('launcher.server-status-offline')
+                                            : t('launcher.server-status-offline')
                                         } 
                                         <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
                                     </div>
