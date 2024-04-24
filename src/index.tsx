@@ -22,6 +22,7 @@ declare global {
         },
         os: {
             totalmem: () => number;
+            type: () => string;
         },
         shell: {
             openExternal: (url: string) => void;
