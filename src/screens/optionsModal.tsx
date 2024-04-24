@@ -103,7 +103,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         let options: any[] = []
         let versions: any[] = []
 
-
         window.ipc.send("getChannelsFromServer")
 
         window.ipc.receive('getChannelsFromServer-complete', (res) => {
@@ -125,7 +124,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                         versions = channel.versions.sort((a: any, b: any) => {
                             if (a.Version === "latest") return -1
                             if (b.Version === "latest") return 1
-                            return b.Version.localeCompare(a.version)
+                            return b.Version.localeCompare(a.Version)
                         })
 
                         versions = versions.map((version: any) => {
@@ -137,7 +136,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                 versionFile: version.Path.split("/").pop().split(".zip")[0]
                             }
                         })
-                        console.log(versions)
                     }
                 }
                 this.setState({versions: versions, selectedVersion: versions[0]})
@@ -276,7 +274,6 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         for (const channel of channels) {
             if (channel.name === e.value) {
-                console.log(channel.versions)
                 versions = channel.versions.sort((a: any, b: any) => {
                     if (a.Version === "latest") return -1
                     if (b.Version === "latest") return 1
