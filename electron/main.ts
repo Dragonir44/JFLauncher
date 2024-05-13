@@ -48,7 +48,7 @@ function createWindow() {
         height: 729,
         minHeight: 560,
         minWidth: 900,
-        frame: false,
+        frame: isdev,
         autoHideMenuBar: !isdev,
         webPreferences: {
             nodeIntegration: true,

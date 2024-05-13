@@ -115,6 +115,19 @@ export const initIpc = () => {
             })
     })
 
+    ipcMain.on("getNews", (evt) => {
+        axios.get(config.news, {headers: {"token": process.env.TOKEN}, responseType: 'json'})
+            .then((res) => {
+                log.info(res.data)
+                evt.returnValue = res.data;
+            })
+            .catch((err) => {
+                log.error(err);
+                evt.returnValue = err;
+            })
+    
+    })
+
     ipcMain.on('server-ping', () => {
         config.loadConfig()
         const serverData = store.get("config") as config.Config
