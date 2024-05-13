@@ -70,6 +70,15 @@ class UpdateLauncher extends Component<Props & WithTranslation, State> {
                 }
             })
         })
+
+        window.ipc.receive('download-progress', (progress) => {
+            this.setState({progress: progress});
+            
+            if (progress == 100) {
+                window.ipc.send("install-update");
+            }
+        })
+
         window.ipc.receive('no-update', () => {
             this.props.navigate!(`/auth`);
         })

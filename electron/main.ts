@@ -113,6 +113,14 @@ ipcMain.on('check-update', () => {
     }
 })
 
+ipcMain.on('download-progress', (_, progress) => {
+    mainWindow?.webContents.send('download-progress', progress);
+})
+
+ipcMain.on('install-update', () => {
+    autoUpdater.quitAndInstall()
+})
+
 // Quand l'application est chargée, afficher la fenêtre
 app.whenReady().then(() => {
     store.delete("token");
