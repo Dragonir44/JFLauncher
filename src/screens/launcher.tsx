@@ -10,6 +10,8 @@ import OptionsModal from "./optionsModal";
 import 'scss/launcher.scss';
 
 const MySwal = withReactContent(Swal)
+let navLang: string = navigator.language.split("-")[0]
+navLang = (navLang).charAt(0).toUpperCase() + (navLang).slice(1)
 
 type Props = {
     navigate?: NavigateFunction;
@@ -44,10 +46,21 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
             motd : ""
         },
         modalVisible: false,
-        newsContent: {
-            title: "",
-            content: ""
-        }
+        newsContent: [
+            {
+                date: "",
+                lang: {
+                    fr: {
+                        title: "",
+                        content: ""
+                    },
+                    en: {
+                        title: "",
+                        content: ""
+                    }
+                }
+            }
+        ]
     }
     
     async componentDidMount() {
@@ -56,6 +69,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const skin = document.getElementById("skin") as HTMLImageElement
         const refreshTime = await window.store.get("refreshTime")
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
+        const rawNews: any = await window.ipc.sendSync("getNews")
 
         selectChannel.disabled = false;
         selectChannel.style.display = 'block';
@@ -70,7 +84,18 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
         pseudo.innerHTML = selectedAccount.token.profile.name
         skin.src = `https://mc-heads.net/avatar/${selectedAccount.token.profile.name}`
+
+        const newsContent = rawNews.reverse().map((article: any) => {
+            if (article.lang[navLang] !== undefined) {
+                return {date: article.date, lang: article.lang[navLang]}
+            }
+            if (article.lang[navLang.toLowerCase()] !== undefined) {
+                return {date: article.date, lang: article.lang[navLang.toLowerCase()]}
+            }
+            return false
+        })
         
+        this.setState({newsContent: newsContent})
 
         this.setState({updateText: "Recherche de maj..."})
 
@@ -217,13 +242,13 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                         <div className="middle__card news">
                             <h3>{t('launcher.news')}</h3>
                             <div className="newsContent">
-                                {news.length > 0 ? news.map((article: any) => {
+                                {newsContent.length > 0 ? newsContent.map((article: any) => {
                                     return (
-                                        <div className="newsContentBodyArticle" key={article.title} onClick={
+                                        <div className="newsContentBodyArticle" key={article.lang.title} onClick={
                                             () => {
                                                 MySwal.fire({
-                                                    title: article.title,
-                                                    html: article.content,
+                                                    title: article.lang.title,
+                                                    html: article.lang.content,
                                                     icon: "info",
                                                     iconColor: "#54c2f0",
                                                     confirmButtonText: "Fermer",
@@ -233,7 +258,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                                 })
                                             }
                                         }>
-                                            <h4 className="title">{article.title}</h4>
+                                            <h4 className="title">{article.lang.title}</h4>
                                         </div>
                                     )
                                 }) : t("launcher.no-news")}
