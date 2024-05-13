@@ -76,7 +76,7 @@ function createWindow() {
 ipcMain.on("install-update", (_, link) => {
     if (process.platform === 'linux') {
         autoUpdater.downloadUpdate()
-
+        autoUpdater.quitAndInstall()
     }
     else {
         shell.openExternal(link)
@@ -115,10 +115,6 @@ ipcMain.on('check-update', () => {
 
 ipcMain.on('download-progress', (_, progress) => {
     mainWindow?.webContents.send('download-progress', progress);
-})
-
-ipcMain.on('install-update', () => {
-    autoUpdater.quitAndInstall()
 })
 
 // Quand l'application est chargée, afficher la fenêtre
