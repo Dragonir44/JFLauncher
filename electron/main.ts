@@ -74,10 +74,16 @@ function createWindow() {
 }
 
 ipcMain.on("install-update", (_, link) => {
-    shell.openExternal(link)
+    if (process.platform === 'linux') {
+        autoUpdater.downloadUpdate()
+
+    }
+    else {
+        shell.openExternal(link)
         .then(() => {
             app.quit()
         })
+    }
 })
 
 ipcMain.on('open-external-link', (_, link) => {
