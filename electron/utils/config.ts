@@ -9,6 +9,7 @@ const store = new Store();
 
 const launcherConfig = "https://nas.team-project.fr/api/public/dl/44b-BPCs/JimmuFactory/version-manifest.json"
 export const channelDetails = "https://jfl.api.team-project.fr/channels"
+export const news = "https://jfl.api.team-project.fr/news"
 export const launcherName = "JFLauncher"
 export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv/JimmuFactory/jdk-windows.zip'
 export const jreLinux = 'https://nas.team-project.fr/api/public/dl/PpIWU3XD/JimmuFactory/jdk-linux.zip'
