@@ -303,7 +303,12 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     handleChangelogs = () => {
         const {t} = this.props
         const changelogs: { en: string; fr: string; } = this.state.selectedVersion.changelogs
-        const changelogsContent = changelogs[navLang as keyof typeof changelogs] != undefined ? changelogs[navLang.toLocaleLowerCase() as keyof typeof changelogs] : t('launcher.settings.no-changelogs')
+        const changelogsContent = changelogs[navLang as keyof typeof changelogs] != undefined 
+        ? changelogs[navLang as keyof typeof changelogs]
+        : changelogs[navLang.toLocaleLowerCase() as keyof typeof changelogs] != undefined 
+            ? changelogs[navLang.toLocaleLowerCase() as keyof typeof changelogs] 
+            : t('launcher.settings.no-changelogs')
+        console.log(navLang, changelogs, changelogsContent)
         MySwal.fire({
             title: t("launcher.settings.changelogs"),
             html: changelogsContent,
