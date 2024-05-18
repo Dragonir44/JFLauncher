@@ -15,11 +15,10 @@ export const jreWin = 'https://nas.team-project.fr/api/public/dl/sMMcaiwv/JimmuF
 export const jreLinux = 'https://nas.team-project.fr/api/public/dl/PpIWU3XD/JimmuFactory/jdk-linux.zip'
 export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforge/forge/%foVer/forge-%foVer-installer.jar'
 
-const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Application Support' : process.env.HOME) as string;
+export let sysRoot = store.get('gamePath') as string || path.join(process.env.APPDATA as string || (process.platform == "darwin" ? process.env.HOME + "/Library/Application Support" : process.env.HOME as string), '.JFLauncher');
 const refreshTime = 5 * 1000
-export const gamePath = path.join(sysRoot, `.${launcherName}`)
-export const forgePath = path.join(gamePath, "forge")
-export const jrePath = path.join(gamePath, "jre")
+export const forgePath = path.join(sysRoot, "forge")
+export const jrePath = path.join(sysRoot, "jre")
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
 
 store.set("refreshTime", refreshTime)
@@ -42,11 +41,20 @@ export type Config = {
     news:any
 }
 
+export const updateSystemRoot = (path: string) => {
+    sysRoot = path;
+    store.set('gamePath', path);
+}
+
+export const getSystemRoot = () => {
+    return sysRoot;
+}
+
 export const getGamePath = (channel: string) => {
-    if (!fs.existsSync(path.join(gamePath, channel))) {
-        fs.mkdirSync(path.join(gamePath, channel), { recursive: true })
+    if (!fs.existsSync(path.join(sysRoot, channel))) {
+        fs.mkdirSync(path.join(sysRoot, channel), { recursive: true })
     }
-    return path.join(gamePath, channel)
+    return path.join(sysRoot, channel)
 }
 
 export const loadConfig = () => {
