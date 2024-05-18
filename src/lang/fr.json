@@ -44,6 +44,8 @@
             "reset-complete-text": "Le lanceur va maintenant redémarrer.",
             "changelogs": "Notes de mise à jour",
             "no-changelogs": "changelogs non trouvés",
+            "location": "Emplacement du jeu",
+            "change-location": "Changer",
             "versions": {
                 "channel": "Canal",
                 "version": "Versions",

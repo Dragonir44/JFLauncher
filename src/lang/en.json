@@ -44,6 +44,8 @@
             "reset-complete-text": "The launcher will now restart.",
             "changelogs": "Changelogs",
             "no-changelogs": "No changelogs available",
+            "location": "Location",
+            "change-location": "Change",
             "versions": {
                 "channel": "Channel",
                 "version": "Versions",
