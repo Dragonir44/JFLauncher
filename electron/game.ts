@@ -11,6 +11,7 @@ import {exec} from 'child_process';
 import {token} from './ipc'
 import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
+import {sysRoot} from './utils/config'
 
 import * as config from './utils/config';
 
@@ -22,16 +23,17 @@ else {
     dotenv.config({path: path.join(__dirname, '../..', '.env')});
 }
 
-log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
+log.transports.file.resolvePathFn = () => path.join(config.sysRoot, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
 
-const sysRoot = process.env.APPDATA || (process.platform == "darwin"
-    ? process.env.HOME + "/Library/Application Support"
-    : process.env.HOME) as string;
+// const sysRoot = process.env.APPDATA || (process.platform == "darwin"
+//     ? process.env.HOME + "/Library/Application Support"
+//     : process.env.HOME) as string;
 
 let jre = 'default'
 let gameConfig: any;
 
 type Progress = { type: string; task: number; total: number };
+
 
 export const initGame =  () => {
     ipcMain.on('launch', (_, d) => {
@@ -40,8 +42,12 @@ export const initGame =  () => {
         const channel = d.selectedChannel.channel.value;
         const version = d.selectedChannel.version;
 
-        if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', channel))) {
-            fs.mkdirSync(path.join(sysRoot, '.JFLauncher', channel), { recursive: true });
+        // if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', channel))) {
+        //     fs.mkdirSync(path.join(sysRoot, '.JFLauncher', channel), { recursive: true });
+        // }
+
+        if (sysRoot.split("/").find((d) => d === 'AppData') && !fs.existsSync(sysRoot)) {
+            fs.mkdirSync(sysRoot, { recursive: true });
         }
     
         gameConfig = {

@@ -12,7 +12,7 @@ import { initGame } from "./game";
 
 import * as config from './utils/config';
 
-log.transports.file.resolvePathFn = () => path.join(config.gamePath, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
+log.transports.file.resolvePathFn = () => path.join(config.sysRoot, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
 
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false;

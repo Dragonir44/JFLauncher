@@ -1,6 +1,7 @@
-import { app, ipcMain, shell } from "electron";
+import { app, ipcMain, shell, dialog } from "electron";
 import isdev from "electron-is-dev";
 import path from "path";
+import fs from "fs-extra";
 import {Auth} from 'msmc'
 import axios from "axios";
 import * as config from './utils/config';
@@ -8,7 +9,7 @@ import { getStatus } from 'minecraft-ping-server/lib'
 import dotenv from 'dotenv'
 import log from "electron-log";
 
-import { mainWindow, store } from "./main";
+import { mainWindow, store, updateText, updateProgress } from "./main";
 import { reinstall } from "./game"
 
 if (isdev) {
@@ -143,8 +144,7 @@ export const initIpc = () => {
     })
 
     ipcMain.on("showFolder", () => {
-        shell.openPath(config.gamePath);
-    
+        shell.openPath(config.sysRoot);
     })
     
     ipcMain.on('reinstall', (_, data) => {
@@ -157,6 +157,43 @@ export const initIpc = () => {
                 log.error(err);
                 mainWindow?.webContents.send("reinstall-failed", err);
             })
+    })
+
+    ipcMain.on("getDefaultGamePath", (evt) => {
+        evt.returnValue = config.sysRoot;
+    })
+
+    ipcMain.on('changeLocation', async (evt) => {
+        console.log("Changing location")
+        mainWindow.webContents.send('changeLocation-progress')
+        // open dialog to select folder
+        const result = await dialog.showOpenDialog({properties: ['openDirectory']})
+        if (result.filePaths.length > 0) {
+
+            // move game files to new location
+            const oldPath = config.sysRoot;
+            const newPath = result.filePaths[0];
+
+            const oldTree = fs.readdirSync(oldPath);
+            const totalFiles = oldTree.length;
+            let filesMoved = 0;
+
+            oldTree.forEach((file) => {
+                fs.moveSync(path.join(oldPath, file), path.join(newPath, file), {overwrite: true});
+                filesMoved++;
+                const progress = Math.floor((filesMoved / totalFiles) * 100);
+                updateText(`Moving files... ${progress}%`);
+                updateProgress(progress);
+                console.log(`Moving files... ${progress}%`)
+            });
+
+            // update config file
+            config.updateSystemRoot(newPath);
+            evt.returnValue = newPath;
+        }
+        else {
+            evt.returnValue = null;
+        }
     })
     
     ipcMain.handle('getStore', (_, data) => {
