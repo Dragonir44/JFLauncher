@@ -67,6 +67,7 @@ interface InputChange {
     selectedVersion?: any;
     options?: any[];
     versions?: any[];
+    gamePath?: string;
 }
 
 const maxRam = window.os.totalmem() / 1024 / 1024 / 1024;
@@ -83,7 +84,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         serverAddress: "",
         serverPort: "",
         selectedChannel: {value: "release", label: "Release"},
-        selectedVersion: {value: "latest", label: "Latest", changelogs: {en: "", fr: ""}}
+        selectedVersion: {value: "latest", label: "Latest", changelogs: {en: "", fr: ""}},
+        gamePath: ""
     }
 
     async componentDidMount() {
@@ -101,6 +103,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const savedHeight = await window.store.get("windowHeight")
         const savedFullscreen = await window.store.get("fullscreen")
         const defaultChannel = await window.store.get("channel")
+        const gamePath: string = await window.store.get("gamePath") || await window.ipc.sendSync("getDefaultGamePath")
         let options: any[] = []
         let versions: any[] = []
 
@@ -147,27 +150,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
 
         ramRange.value = savedRam || Math.round(maxRam/2)
         ramValue.value = savedRam || Math.round(maxRam/2)
-        this.setState({currentRam: Number(savedRam || Math.round(maxRam/2))})
 
         width.value = savedWidth || 800
-        this.setState({windowWidth: Number(savedWidth || 800)})
 
         height.value = savedHeight || 600
-        this.setState({windowHeight: Number(savedHeight || 600)})
 
         fullscreen.checked = savedFullscreen != 'undefined' ? savedFullscreen : false
-        this.setState({fullscreen: savedFullscreen != 'undefined' ? savedFullscreen : false})
 
         autoConnect.checked = await window.store.get("autoConnect") || false
-        this.setState({autoConnect: await window.store.get("autoConnect") || false})
 
         serverAddress.value = await window.store.get("serverAddress") || "0.0.0.0"
-        this.setState({serverAddress: await window.store.get("serverAddress") || "0.0.0.0"})
 
         serverPort.value = await window.store.get("serverPort") || 25565
-        this.setState({serverPort: await window.store.get("serverPort") || 25565})
-
-        this.setState({options: options})
 
         if (!autoConnect.checked) {
             serverAddress.disabled = true
@@ -189,6 +183,23 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                 }
             })
         
+        })
+
+        window.ipc.receive('changeLocation-progress', () => {
+            console.log("change location progress")
+            this.displayModal()
+        })
+
+        this.setState({
+            gamePath: gamePath,
+            currentRam: Number(savedRam || Math.round(maxRam/2)),
+            windowWidth: Number(savedWidth || 800),
+            windowHeight: Number(savedHeight || 600),
+            fullscreen: savedFullscreen != 'undefined' ? savedFullscreen : false,
+            autoConnect: await window.store.get("autoConnect") || false,
+            serverAddress: await window.store.get("serverAddress") || "0.0.0.0",
+            serverPort: await window.store.get("serverPort") || 25565,
+            options: options
         })
     }
 
@@ -317,6 +328,14 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         })
     }
 
+    handleChangeLocation = async () => {
+        console.log("change location")
+        const newPath: string = await window.ipc.sendSync("changeLocation")
+        if (newPath) {
+            this.setState({gamePath: newPath})
+        }
+    }
+
     handleReset = () => {
         window.ipc.send("reset")
     }
@@ -327,7 +346,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     render() {
-        const {currentRam, selectedChannel, selectedVersion, options, versions} = this.state
+        const {currentRam, selectedChannel, selectedVersion, options, versions, gamePath} = this.state
         const {t} = this.props
         return (
             <div id="options" className="options">
@@ -398,8 +417,21 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                 </div>
                             </div>
                             <hr />
+                            <div className="block location">
+                                <div className="location--block">
+                                    <label htmlFor="location">{t('launcher.settings.location')}</label> <br />
+                                    <input type="text" name="location" id="location" value={gamePath} readOnly/> <br />
+                                    <button id="changeLocaiton" className="functionButton" onClick={async () => {
+                                        const newPath: string = await window.ipc.sendSync("changeLocation")
+                                        if (newPath) {
+                                            this.setState({gamePath: newPath})
+                                        }
+                                    }}>{t("launcher.settings.change-location")}</button>
+                                    <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
+                                </div>
+                            </div>
+                            <hr />
                             <div className="block functionButtons">
-                                <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
                                 <button id="showChangelogs" className="functionButton" onClick={this.handleChangelogs}>{t("launcher.settings.changelogs")}</button>
                                 <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedVersion.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
