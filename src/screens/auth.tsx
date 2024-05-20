@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, ErrorInfo } from "react";
 import { withRouter } from "utils/withRouter";
 import { NavigateFunction } from "react-router-dom";
 import Footer from "screens/footer";
@@ -27,14 +27,17 @@ class Auth extends Component<Props & WithTranslation, State> {
         const { t } = this.props
         try {
             const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]") 
-            if (registeredAccounts && this.state.accounts.length === 0) {
-                this.setState({ accounts: registeredAccounts });
-            }
+            
+            this.setState({ accounts: registeredAccounts });
+
             window.ipc.receive("auth-success", async () => {
                 const registeredAccounts = JSON.parse(await window.store.get("registeredAccounts") || "[]")
-                if (registeredAccounts && this.state.accounts.length === 0) {
-                    this.setState({ accounts: registeredAccounts });
-                }
+                const addButton = document.getElementById("addAccount") as HTMLButtonElement;
+
+                this.setState({ accounts: registeredAccounts });
+
+                if (registeredAccounts < 2 && addButton!.disabled)
+                    addButton!.disabled = false;
             })
             window.ipc.receive("auth-failed", (err) => {
                 const addButton = document.getElementById("addAccount") as HTMLButtonElement;
@@ -84,7 +87,7 @@ class Auth extends Component<Props & WithTranslation, State> {
                                             </button>
                                             <button className="accountButton delete" onClick={async () => {
                                                 const accounts = JSON.parse(await window.store.get("registeredAccounts") as string || "{}");
-                                                const updatedAccounts = accounts.filter((account: any) => account.id !== data.id);
+                                                const updatedAccounts = accounts.filter((account: any) => account.token.mcToken !== data.token.mcToken);
                                                 await window.store.set("registeredAccounts", JSON.stringify(updatedAccounts));
                                                 this.setState({ accounts: updatedAccounts });
                                             }}>
