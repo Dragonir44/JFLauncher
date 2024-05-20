@@ -279,14 +279,18 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                         <div className={`serverStatusContentStatusIcon ${serverStatus.online ? 'online' : 'offline'}`}></div>
                                     </div>
                                 </article>
-                                <div className="serverStatusContentPlayers">
-                                    <div className="serverStatusContentPlayersText">
-                                        <strong>{t('launcher.server-status-players')}</strong>
-                                        <div className="player">
-                                            {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}
+                                {
+                                    serverStatus.online
+                                    ? <div className="serverStatusContentPlayers">
+                                        <div className="serverStatusContentPlayersText">
+                                            <strong>{t('launcher.server-status-players')}</strong>
+                                            <div className="player">
+                                                {serverStatus.onlinePlayers}/{serverStatus.maxPlayers}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    : ""
+                                }
                             </div>
                         </div>
                     </div>
