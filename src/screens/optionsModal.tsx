@@ -7,6 +7,7 @@ import withReactContent from 'sweetalert2-react-content'
 import "i18n"
 import { withRouter } from "utils/withRouter";
 
+import 'scss/optionsModal.scss';
 
 const MySwal = withReactContent(Swal)
 let navLang: string = navigator.language.split("-")[0]
@@ -415,12 +416,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                         onChange={this.handleVersion}
                                     />
                                 </div>
+                                <div className="versions--function">
+                                    <button id="showChangelogs" className="functionButton" onClick={this.handleChangelogs}>{t("launcher.settings.changelogs")}</button>
+                                    <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedVersion.label})}</button>
+                                </div>
                             </div>
                             <hr />
                             <div className="block location">
                                 <div className="location--block">
-                                    <label htmlFor="location">{t('launcher.settings.location')}</label> <br />
-                                    <input type="text" name="location" id="location" value={gamePath} readOnly/> <br />
+                                    <label htmlFor="location">{t('launcher.settings.location')}</label>
+                                    <input type="text" name="location" id="location" value={gamePath} readOnly/>
+                                </div>
+                                <div className="location--function">
                                     <button id="changeLocaiton" className="functionButton" onClick={async () => {
                                         const newPath: string = await window.ipc.sendSync("changeLocation")
                                         if (newPath) {
@@ -428,12 +435,11 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                         }
                                     }}>{t("launcher.settings.change-location")}</button>
                                     <button id="showFolder" className="functionButton" onClick={() => window.ipc.send("showFolder", {})}>{t('launcher.settings.open-folder')}</button>
+
                                 </div>
                             </div>
                             <hr />
                             <div className="block functionButtons">
-                                <button id="showChangelogs" className="functionButton" onClick={this.handleChangelogs}>{t("launcher.settings.changelogs")}</button>
-                                <button id="reinstall" className="functionButton" onClick={this.handleReinstall}>{t("launcher.settings.reinstall-channel", {channel: selectedVersion.label})}</button>
                                 <button id="deco" className="functionButton" onClick={this.handleDisconnect}>{t('launcher.settings.change-account')}</button>
                             </div>
                             <div className="block danger">
