@@ -15,10 +15,12 @@
 ul.masterList {
     text-align: left;
     li {
-        list-style: inside "- ";
+        list-style: inside "• ";
         padding-left: 1rem;
         ul {
-            list-style: inside "- ";
+            li {
+                list-style: inside "○ ";
+            }
         }
     }
 }

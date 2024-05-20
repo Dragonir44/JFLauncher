@@ -87,10 +87,10 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
         const newsContent = rawNews.reverse().map((article: any) => {
             if (article.lang[navLang] !== undefined) {
-                return {date: article.date, lang: article.lang[navLang]}
+                return {id: article._id ,date: article.date, lang: article.lang[navLang]}
             }
             if (article.lang[navLang.toLowerCase()] !== undefined) {
-                return {date: article.date, lang: article.lang[navLang.toLowerCase()]}
+                return {id: article._id, date: article.date, lang: article.lang[navLang.toLowerCase()]}
             }
             return false
         })
@@ -243,24 +243,25 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                             <h3>{t('launcher.news')}</h3>
                             <div className="newsContent">
                                 {newsContent.length > 0 ? newsContent.map((article: any) => {
-                                    return (
-                                        <div className="newsContentBodyArticle" key={article.lang.title} onClick={
-                                            () => {
-                                                MySwal.fire({
-                                                    title: article.lang.title,
-                                                    html: article.lang.content,
-                                                    icon: "info",
-                                                    iconColor: "#54c2f0",
-                                                    confirmButtonText: "Fermer",
-                                                    background: "#1e1e1e",
-                                                    confirmButtonColor: "#54c2f0",
-                                                    color: "#fff"
-                                                })
-                                            }
-                                        }>
-                                            <h4 className="title">{article.lang.title}</h4>
-                                        </div>
-                                    )
+                                    if (article.lang.title != "" || article.lang.title != undefined)
+                                        return (
+                                            <div className="newsContentBodyArticle" key={article.id} onClick={
+                                                () => {
+                                                    MySwal.fire({
+                                                        title: article.lang.title,
+                                                        html: article.lang.content,
+                                                        icon: "info",
+                                                        iconColor: "#54c2f0",
+                                                        confirmButtonText: "Fermer",
+                                                        background: "#1e1e1e",
+                                                        confirmButtonColor: "#54c2f0",
+                                                        color: "#fff"
+                                                    })
+                                                }
+                                            }>
+                                                <h4 className="title">{article.lang.title}</h4>
+                                            </div>
+                                        )
                                 }) : t("launcher.no-news")}
                             </div>
                         </div>
