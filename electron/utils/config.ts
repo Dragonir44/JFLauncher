@@ -17,8 +17,6 @@ export const forgeBaseLink = 'https://maven.minecraftforge.net/net/minecraftforg
 
 export let sysRoot = store.get('gamePath') as string || path.join(process.env.APPDATA as string || (process.platform == "darwin" ? process.env.HOME + "/Library/Application Support" : process.env.HOME as string), '.JFLauncher');
 const refreshTime = 5 * 1000
-export const forgePath = path.join(sysRoot, "forge")
-export const jrePath = path.join(sysRoot, "jre")
 const launcherDir = process.env.CONFIG_DIRECT_PATH || app.getPath("userData");
 
 store.set("refreshTime", refreshTime)

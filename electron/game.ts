@@ -64,7 +64,7 @@ export const initGame =  () => {
         checkJavaInstall()
             .then(() => updatePackAndLaunch(channel, version))
             .catch(() => {
-                const jrePath = config.jrePath
+                const jrePath = path.join(config.getSystemRoot(), 'jre');
                 if (!fs.existsSync(jrePath)) {
                     fs.mkdirSync(jrePath, { recursive: true });
                 }
@@ -174,7 +174,7 @@ export function reinstall(channel: string, version: any) {
 
 function checkJavaInstall() {
     return new Promise<void>((resolve, reject) => {
-        const jrePath = config.jrePath;
+        const jrePath = path.join(config.getSystemRoot(), 'jre');
         let jreIntallFiles = path.join(jrePath, 'jdk-windows.zip');
 
         updateText('Vérification de Java');
@@ -283,12 +283,13 @@ function updatePackAndLaunch(channel: string, version:any) {
 function downloadForge(channel: string, version: any) {
     return new Promise<void>((resolve, reject) => {
         const data = config.getGameChannel(channel)
-        const forgePath = path.join(config.forgePath, `forge-${version.forgeVersion}-installer.jar`);
+        const forgeDir = path.join(config.getSystemRoot(), 'forge');
+        const forgePath = path.join(forgeDir, `forge-${version.forgeVersion}-installer.jar`);
 
         updateText('Vérification de forge')
 
-        if (!fs.existsSync(config.forgePath)) {
-            fs.mkdirSync(config.forgePath, { recursive: true });
+        if (!fs.existsSync(forgeDir)) {
+            fs.mkdirSync(forgeDir, { recursive: true });
         }
 
         if (fs.existsSync(forgePath) && data?.current_forge_version) {
@@ -368,7 +369,7 @@ function launch(channel: string, version: any) {
     let opts:any = {
         authorization: token.mclc(),
         root: config.getGamePath(channel),
-        forge: path.join(config.forgePath, `forge-${version.forgeVersion}-installer.jar`),
+        forge: path.join(config.getSystemRoot(), 'forge', `forge-${version.forgeVersion}-installer.jar`),
         javaPath: javaPath,
         version: {
             number: version.forgeVersion.split('-')[0] as string,
