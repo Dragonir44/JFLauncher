@@ -60,6 +60,7 @@ function createWindow() {
     initIpc()
     initGame()
     // store.delete('currentChannelVersion')
+    // store.delete('registeredAccounts')
     if (!isdev) {
         mainWindow.loadURL(url.format({
             protocol: "file",
