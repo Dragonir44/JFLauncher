@@ -64,25 +64,16 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
 
 ## TODO
 
-- [x] Add a way to change the channel of the modpack
-- [x] Add java managment
-- [x] Create a manifest with news and update infos
-  - [x] Add news panel
-  - [x] Make news panel dynamic
-- [x] Change the way the modpack is installed
-  - [x] Change the way the modpack is downloaded
-    - [x] Download modpack folder from link
-    - [x] Unzip and move in the root folder of the game
 - [ ] Add a way to change the version of the modpack
-  - [ ] Add a version selector update via manifest
-  - [ ] Add a "latest" option to always get the latest version
+  - [x] Add a version selector update via manifest
+  - [x] Add a "latest" option to always get the latest version
+  - [ ] Use a better method to save current downloaded versions
+    - [ ] Add selector to keep multiple versions
+- [ ] Add check box to keep the launcher open if the game is launched
+- [ ] Add shared folder to keep the same on other versions (like journey map, shaders, ressourcespack, ...)
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
-- [x] Add a way to change the language of the launcher
-- [x] Add a ping check to the server
-- [x] Add a progress bar
-- [x] Hide window when game launched
-- [x] Show window when game closed
+- [ ] Cleanup the code
 
 
 ## Credits
