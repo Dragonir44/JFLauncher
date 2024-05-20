@@ -1,7 +1,7 @@
 {
   "name": "jflauncher",
   "displayName": "JFLauncher",
-  "version": "v1.0.12",
+  "version": "v1.1.0",
   "description": "Basic Launcher for Jimmu's Factory modpack",
   "main": "build/electron/main.js",
   "author": {
