@@ -70,6 +70,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
         const refreshTime = await window.store.get("refreshTime")
         const selectChannel = document.getElementById("channel") as HTMLSelectElement
         const rawNews: any = await window.ipc.sendSync("getNews")
+        const {t} = this.props
 
         selectChannel.disabled = false;
         selectChannel.style.display = 'block';
@@ -99,7 +100,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
 
         this.setState({updateText: "Recherche de maj..."})
 
-        window.ipc.receive('updateText', (data) => {this.setState({updateText:`${data} : ${this.state.progress}%`})})
+        window.ipc.receive('updateText', (data) => {this.setState({updateText: t(data, {progress: this.state.progress})})})
 
         window.ipc.receive('updateProgress', (data) => {this.setState({progress: data})})
 

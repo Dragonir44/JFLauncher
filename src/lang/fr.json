@@ -51,6 +51,23 @@
                 "version": "Versions",
                 "latest": "Dernière version"
             }
+        },
+        "progress": {
+            "launching": "Lancement du jeu ... : {{progress}}%",
+            "loading-assets": "Chargement des ressources ... : {{progress}}%",
+            "loading-textures": "Chargement des textures ... : {{progress}}%",
+            "downloading-assets": "Téléchargement des ressources ... : {{progress}}%",
+            "downloading-natives": "Téléchargement des natives ... : {{progress}}%",
+            "downloading-classes": "Téléchargement des classes ... : {{progress}}%",
+            "checking-java": "Vérification de Java ... : {{progress}}%",
+            "downloading-java": "Téléchargement de Java ... : {{progress}}%",
+            "extracting-java": "Extraction de Java ... : {{progress}}%",
+            "checking-forge": "Vérification de Forge ... : {{progress}}%",
+            "downloading-forge": "Téléchargement de Forge ... : {{progress}}%",
+            "checking-modpack": "Vérification du modpack ... : {{progress}}%",
+            "downloading-modpack": "Téléchargement du modpack ... : {{progress}}%",
+            "extracting-modpack": "Extraction du modpack ...",
+            "delete-files": "Suppression des fichiers obsolètes ... : {{progress}}%"
         }
     }
 }

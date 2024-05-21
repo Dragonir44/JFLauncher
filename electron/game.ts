@@ -97,7 +97,7 @@ export function reinstall(channel: string, version: any) {
         const lastChannels: any = store.get('currentChannelVersion')
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}-${version.value}.zip`);
         const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu']
-        updateText('Suppression de l\'ancien modpack')
+        updateText('launcher.progress.delete-files')
         if (fs.existsSync(modpackPath)) {
             fs.unlinkSync(modpackPath);
         }
@@ -108,7 +108,7 @@ export function reinstall(channel: string, version: any) {
             }
         })
 
-        updateText('Téléchargement du modpack')
+        updateText('launcher.progress.downloading-modpack')
         axios.get(downloadLink, {headers: {'token': process.env.TOKEN}, responseType: 'stream'})
             .then((res) => {
 
@@ -119,7 +119,7 @@ export function reinstall(channel: string, version: any) {
                 res.data.on('data', (chunk: any) => {
                     downloadedSize += chunk.length;
                     const progress = Math.round((downloadedSize / totalSize) * 100)
-                    updateText(`Téléchargement du modpack`);
+                    updateText(`launcher.progress.downloading-modpack`);
                     updateProgress(progress);
                 })
 
@@ -129,10 +129,10 @@ export function reinstall(channel: string, version: any) {
 
                     const extract = onezip.extract(modpackPath, config.getGamePath(channel))
                     extract.on('start', ()=> {
-                        updateText('Extraction du modpack')
+                        updateText('launcher.progress.extracting-modpack')
                     })
                     extract.on('progress', (percent: any) => {
-                        updateText('Extraction du modpack')
+                        updateText('launcher.progress.extracting-modpack')
                         updateProgress(percent);
                     })
                     extract.on('error', (error: any) => {
@@ -141,19 +141,23 @@ export function reinstall(channel: string, version: any) {
                     
                     extract.on('end', () => {
                         fs.unlinkSync(modpackPath);
+
                         if (lastChannels && lastChannels.length > 0) {
-                            for(let i = 0; i < lastChannels.length; i++) {
-                                if (lastChannels[i].channel === channel) {
-                                    lastChannels[i].version = data?.current_pack_version
-                                }
-                                else {
-                                    lastChannels.push({channel: channel, version: data?.current_pack_version})
-                                }
+                            if (lastChannels.some((c: any) => c.channel === channel)) {
+                                lastChannels.forEach((c: any) => {
+                                    if (c.channel === channel) {
+                                        c.version = version.value
+                                    }
+                                })
                             }
+                            else {
+                                lastChannels.push({channel: channel, version: version.value})
+                            }
+                            
                             store.set('currentChannelVersion', lastChannels)
                         }
                         else {
-                            store.set('currentChannelVersion', [{channel: channel, version: data?.current_pack_version}])
+                            store.set('currentChannelVersion', [{channel: channel, version: version.value}])
                         }
 
 
@@ -177,7 +181,7 @@ function checkJavaInstall() {
         const jrePath = path.join(config.getSystemRoot(), 'jre');
         let jreIntallFiles = path.join(jrePath, 'jdk-windows.zip');
 
-        updateText('Vérification de Java');
+        updateText('launcher.progress.checking-java');
         
         if (process.platform === 'linux') {
             jreIntallFiles = path.join(jrePath, 'jdk-linux.zip');
@@ -201,7 +205,7 @@ function checkJavaInstall() {
 function downloadJava(url: string, target: string, jrePath: string) {
     return new Promise<void>(async (resolve, reject) => {
         try {
-            updateText('Téléchargement de Java')
+            updateText('launcher.progress.downloading-java')
             axios.get(url, {responseType: 'stream'})
                 .then(async (res) => {
                     const writer = fs.createWriteStream(target);
@@ -211,7 +215,7 @@ function downloadJava(url: string, target: string, jrePath: string) {
                     res.data.on('data', (chunk: any) => {
                         downloadedSize += chunk.length;
                         const progress = Math.round((downloadedSize / totalSize) * 100)
-                        updateText(`Téléchargement de java`);
+                        updateText(`launcher.progress.downloading-java`);
                         updateProgress(progress);
                     })
 
@@ -219,10 +223,10 @@ function downloadJava(url: string, target: string, jrePath: string) {
                     writer.on('finish', () => {
                         const extract = onezip.extract(target, jrePath)
                         extract.on('start', ()=> {
-                            updateText(`Extraction de java`);
+                            updateText(`launcher.progress.extracting-java`);
                         })
                         extract.on('progress', (percent: any) => {
-                            updateText(`Extraction de java`);
+                            updateText(`launcher.progress.extracting-java`);
                             updateProgress(percent);
                         })
                         extract.on('error', (error: any) => {
@@ -286,7 +290,7 @@ function downloadForge(channel: string, version: any) {
         const forgeDir = path.join(config.getSystemRoot(), 'forge');
         const forgePath = path.join(forgeDir, `forge-${version.forgeVersion}-installer.jar`);
 
-        updateText('Vérification de forge')
+        updateText('launcher.progress.checking-forge')
 
         if (!fs.existsSync(forgeDir)) {
             fs.mkdirSync(forgeDir, { recursive: true });
@@ -299,7 +303,7 @@ function downloadForge(channel: string, version: any) {
             if (fs.existsSync(forgePath))
                 fs.unlinkSync(forgePath);
                 
-            updateText('Téléchargement de forge')
+            updateText('launcher.progress.downloading-forge')
 
             const forgeLink = config.forgeBaseLink.replace(/%foVer/g, version.forgeVersion as string)
 
@@ -313,7 +317,7 @@ function downloadForge(channel: string, version: any) {
                     res.data.on('data', (chunk: any) => {
                         downloadedSize += chunk.length;
                         const progress = Math.round((downloadedSize / totalSize) * 100)
-                        updateText(`Téléchargement de forge`);
+                        updateText(`launcher.progress.downloading-forge`);
                         updateProgress(progress);
                     })
 
@@ -338,13 +342,10 @@ function downloadForge(channel: string, version: any) {
 
 function downloadModpack(channel: string, version: any) {
     return new Promise<void>(async (resolve, reject) => {
-        const data = config.getGameChannel(channel)
-        const lastChannels: any = store.get('currentChannelVersion')
-        const lastChannelData = lastChannels?.find((c: any) => c.channel === channel)
         const oldLatest = store.get('latestVersion') as any || null
         const latestVersion = version.versionFile
-        console.log(oldLatest, latestVersion)
-        updateText('Vérification du modpack')
+
+        updateText('launcher.progress.checking-modpack')
         if (oldLatest && latestVersion === oldLatest) {
             return resolve();
         }
@@ -364,7 +365,6 @@ function launch(channel: string, version: any) {
     const launcher = new Client();
 
     const javaPath = path.join(jre, 'bin', 'java');
-    // const channelConfig = config.getGameChannel(channel);
 
     let opts:any = {
         authorization: token.mclc(),
@@ -379,7 +379,6 @@ function launch(channel: string, version: any) {
             max: `${gameConfig.ram}G`,
             min:'1G'
         },
-        // features: ['has_custom_resolution'],
         window: {
             fullscreen: gameConfig.window.fullscreen,
             width: gameConfig.window.width,
@@ -397,6 +396,7 @@ function launch(channel: string, version: any) {
 
     launcher.on('debug', (e) => log.info('debug',e));
     launcher.on('arguments', (e) => {
+        updateText('launcher.progress.launching')
         store.set('latestVersion', version.versionFile)
         mainWindow.hide()
     });
@@ -404,13 +404,13 @@ function launch(channel: string, version: any) {
     launcher.on('progress', (progress: Progress) => {
         switch (progress.type) {
             case "assets":
-                updateText("Téléchargement des assets");
+                updateText("launcher.progress.downloading-assets");
                 updateProgress(
                     parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
                 );
               break;
             case "natives":
-                updateText("Téléchargement des natives");
+                updateText("launcher.progress.downloading-natives");
                 updateProgress(
                   parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
                 );
@@ -418,12 +418,12 @@ function launch(channel: string, version: any) {
   
             default:
                 if (progress.type.includes("classes")) {
-                    updateText("Installation de forge");
+                    updateText("launcher.progress.downloading-classes");
                     updateProgress(
                         parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
                     );
                 } else if (progress.type.includes("assets")) {
-                    updateText("Téléchargement des assets");
+                    updateText("launcher.progress.downloading-assets");
                     updateProgress(
                         parseInt(((100.0 * progress.task) / progress.total).toFixed(0))
                     );
