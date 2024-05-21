@@ -16,7 +16,7 @@ log.transports.file.resolvePathFn = () => path.join(config.sysRoot, 'logs', `log
 
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false;
-autoUpdater.allowPrerelease = true
+// autoUpdater.allowPrerelease = true
 autoUpdater.autoInstallOnAppQuit = true;
 
 log.info('App starting...');
@@ -77,16 +77,16 @@ function createWindow() {
 }
 
 ipcMain.on("install-update", (_, link) => {
-    // if (process.platform === 'linux') {
+    if (process.platform === 'linux') {
         autoUpdater.downloadUpdate()
         autoUpdater.quitAndInstall()
-    // }
-    // else {
-        // shell.openExternal(link)
-        // .then(() => {
-            // app.quit()
-        // })
-    // }
+    }
+    else {
+        shell.openExternal(link)
+        .then(() => {
+            app.quit()
+        })
+    }
 })
 
 ipcMain.on('open-external-link', (_, link) => {
