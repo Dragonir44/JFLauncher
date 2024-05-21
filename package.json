@@ -9,7 +9,8 @@
     "email": "dragonir44@gmail.com",
     "url": "https://github.com/dragonir44"
   },
-  "license": "MIT",
+  "private": true,
+  "license": "UNLICENSED",
   "homepage": ".",
   "repository": {
     "type": "git",
