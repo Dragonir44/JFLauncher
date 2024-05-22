@@ -1,11 +1,10 @@
 // Importation des modules
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "path";
-import fs from "fs-extra";
 import url from "url";
 import Store from "electron-store";
 import log from 'electron-log';
-import { autoUpdater, AppUpdater } from "electron-updater"
+import { autoUpdater } from "electron-updater"
 import isdev from 'electron-is-dev';
 import { initIpc } from "./ipc";
 import { initGame } from "./game";

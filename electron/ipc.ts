@@ -41,7 +41,6 @@ export const initIpc = () => {
         catch(err) {
             log.error(err);
             mainWindow?.webContents.send("auth-failed", err);
-            // mainWindow.loadURL(path.join(__dirname, "..", "index.html"));
         }
     });
     
@@ -87,7 +86,6 @@ export const initIpc = () => {
                 };
             })
             .catch((err) => {
-                // log.error(err);
                 evt.returnValue = err;
             })
     })

@@ -25,10 +25,6 @@ else {
 
 log.transports.file.resolvePathFn = () => path.join(config.sysRoot, 'logs', `log-${new Date().toISOString().slice(0, 10)}.log`);
 
-// const sysRoot = process.env.APPDATA || (process.platform == "darwin"
-//     ? process.env.HOME + "/Library/Application Support"
-//     : process.env.HOME) as string;
-
 let jre = 'default'
 let gameConfig: any;
 
@@ -41,10 +37,6 @@ export const initGame =  () => {
         const serverPort = d.autoConnect ? d.serverPort : ''
         const channel = d.selectedChannel.channel.value;
         const version = d.selectedChannel.version;
-
-        // if (!fs.existsSync(path.join(sysRoot, '.JFLauncher', channel))) {
-        //     fs.mkdirSync(path.join(sysRoot, '.JFLauncher', channel), { recursive: true });
-        // }
 
         if (sysRoot.split("/").find((d) => d === 'AppData') && !fs.existsSync(sysRoot)) {
             fs.mkdirSync(sysRoot, { recursive: true });
@@ -129,7 +121,7 @@ export function reinstall(channel: string, version: any) {
                 writer.on('finish', () => {
 
                     const extract = onezip.extract(modpackPath, config.getGamePath(channel))
-                    
+
                     extract.on('start', ()=> {
                         updateText('launcher.progress.extracting-modpack')
                     })
@@ -437,7 +429,6 @@ function launch(channel: string, version: any) {
     launcher.on('download-status', (progress: Progress) => {
         // updateText(`Téléchargement de ${e.type}`);
         // updateProgress(Math.round(e.current/e.total*100));
-        
     });
 
     launcher.on('close', (e) => {
