@@ -92,12 +92,13 @@ export const initGame =  () => {
 
 export function reinstall(channel: string, version: any) {
     return new Promise<void>(async (resolve, reject) => {
-        const data = config.getGameChannel(channel)
         const downloadLink = `${config.channelDetails}/${channel}/versions/${version.value}/download`
         const lastChannels: any = store.get('currentChannelVersion')
         const modpackPath = path.join(config.getGamePath(channel), `JF-${channel}-${version.value}.zip`);
         const dirToRemove = ['config', 'mods', 'scripts', 'defaultconfigs', 'cache', 'forge', 'kubejs', 'packmenu']
+
         updateText('launcher.progress.delete-files')
+
         if (fs.existsSync(modpackPath)) {
             fs.unlinkSync(modpackPath);
         }
@@ -128,6 +129,7 @@ export function reinstall(channel: string, version: any) {
                 writer.on('finish', () => {
 
                     const extract = onezip.extract(modpackPath, config.getGamePath(channel))
+                    
                     extract.on('start', ()=> {
                         updateText('launcher.progress.extracting-modpack')
                     })
