@@ -7,7 +7,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 const onezip = require('onezip');
-import {exec} from 'child_process';
+import {exec, spawn} from 'child_process';
 import {token} from './ipc'
 import {updateText, updateProgress, mainWindow} from './main'
 import {store} from './main'
@@ -388,11 +388,19 @@ function launch(channel: string, version: any) {
     log.info('launch', opts);
     launcher.launch(opts);
 
+    if (store.get('detachProcess') == true)
+        spawn(javaPath).unref()
+
     launcher.on('debug', (e) => log.info('debug',e));
     launcher.on('arguments', (e) => {
         updateText('launcher.progress.launching')
         store.set('latestVersion', version.versionFile)
-        mainWindow.hide()
+        if (store.get('keepOpen') == true) {
+            mainWindow.minimize()
+        }
+        else {
+            mainWindow.hide()
+        }
     });
 
     launcher.on('progress', (progress: Progress) => {

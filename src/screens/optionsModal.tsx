@@ -62,6 +62,8 @@ interface InputChange {
     windowHeight?: number;
     fullscreen?: boolean;
     autoConnect?: boolean;
+    keepOpen?: boolean;
+    detachProcess?: boolean;
     serverAddress?: string;
     serverPort?: string;
     selectedChannel?: any;
@@ -80,6 +82,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         windowHeight: 600,
         fullscreen: false,
         autoConnect: false,
+        keepOpen: false,
+        detachProcess: false,
         options: [],
         versions: [],
         serverAddress: "",
@@ -198,6 +202,8 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
             windowHeight: Number(savedHeight || 600),
             fullscreen: savedFullscreen != 'undefined' ? savedFullscreen : false,
             autoConnect: await window.store.get("autoConnect") || false,
+            keepOpen: await window.store.get("keepOpen") || false,
+            detachProcess: await window.store.get("detachProcess") || false,
             serverAddress: await window.store.get("serverAddress") || "0.0.0.0",
             serverPort: await window.store.get("serverPort") || 25565,
             options: options
@@ -247,6 +253,18 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
         const serverPort = document.getElementById("server-port") as HTMLInputElement
         serverAddress.disabled = !autoConnect.checked
         serverPort.disabled = !autoConnect.checked
+    }
+
+    handleKeepOpen = (e: any) => {
+        const keepOpen = e.currentTarget as HTMLInputElement
+        this.setState({keepOpen: keepOpen.checked})
+        window.store.set("keepOpen", keepOpen.checked)
+    }
+
+    handleDetachProcess = (e: any) => {
+        const detachProcess = e.currentTarget as HTMLInputElement
+        this.setState({detachProcess: detachProcess.checked})
+        window.store.set("detachProcess", detachProcess.checked)
     }
 
     handleUpdateServerAddress = (e: any) => {
@@ -347,7 +365,7 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
     }
 
     render() {
-        const {currentRam, selectedChannel, selectedVersion, options, versions, gamePath} = this.state
+        const {currentRam, selectedChannel, selectedVersion, keepOpen, detachProcess, options, versions, gamePath} = this.state
         const {t} = this.props
         return (
             <div id="options" className="options">
@@ -385,6 +403,16 @@ class OptionsModal extends Component<Props & WithTranslation, InputChange> {
                                     <input type="text" name="server-address" id="server-address" placeholder={t('launcher.settings.server-ip')} onChange={this.handleUpdateServerAddress}/>:
                                     <input type="number" name="server-port" id="server-port" placeholder={t('launcher.settings.server-port')} onChange={this.handleUpdateServerPort}/>
                                 </div>
+                            </div>
+                            <hr />
+                            <div className="block closeatlaunch">
+                                <label htmlFor="auto">{t('launcher.settings.keep-open')}</label>
+                                <input type="checkbox" name="auto" id="auto" checked={keepOpen} onClick={this.handleKeepOpen}/>
+                            </div>
+                            <hr />
+                            <div className="block detachProcess">
+                                <label htmlFor="detachProcess">{t('launcher.settings.detach-process')}</label>
+                                <input type="checkbox" name="detachProcess" id="detachProcess" checked={detachProcess} onClick={this.handleDetachProcess} />
                             </div>
                             <hr />
                             <div className="block versions">

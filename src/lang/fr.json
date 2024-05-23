@@ -34,6 +34,8 @@
             "window-size": "Taille de la fenêtre",
             "window-fullscreen": "Plein écran",
             "auto-connect": "Connexion automatique au serveur",
+            "keep-open": "Garder le lanceur ouvert",
+            "detach-process": "Détacher le processus du lanceur",
             "server-ip": "Adresse IP du serveur",
             "server-port": "Port du serveur",
             "open-folder": "Ouvrir le dossier",

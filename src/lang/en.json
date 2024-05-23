@@ -34,6 +34,8 @@
             "window-size": "Window size",
             "window-fullscreen": "Fullscreen",
             "auto-connect": "Auto connect to server",
+            "keep-open": "Keep launcher open",
+            "detach-process": "Detach process",
             "server-ip": "Server IP",
             "server-port": "Server port",
             "open-folder": "Open folder",
