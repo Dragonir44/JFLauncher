@@ -378,6 +378,9 @@ function launch(channel: string, version: any) {
             width: gameConfig.window.width,
             height: gameConfig.window.height,
         },
+        overrides: {
+            detached: store.get('detachProcess') || false
+        }
     };
 
     opts.quickPlay = gameConfig.autoConnect ? {
@@ -388,9 +391,7 @@ function launch(channel: string, version: any) {
     log.info('launch', opts);
     launcher.launch(opts);
 
-    if (store.get('detachProcess') == true)
-        spawn(javaPath).unref()
-
+    
     launcher.on('debug', (e) => log.info('debug',e));
     launcher.on('arguments', (e) => {
         updateText('launcher.progress.launching')
