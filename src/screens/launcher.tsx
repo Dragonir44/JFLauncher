@@ -221,7 +221,7 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                 </header>
                 <div className="content">
                     <OptionsModal />
-                    <div id="top" className="top">
+                    {/* <div id="top" className="top">
                         <div className="socialBox">
                             <div id="github" className="social github">
                                 <img id="githubLink" src='assets/github.png' onClick={() => window.ipc.send('open-external-link', "https://github.com/Dragonir44/JFLauncher")}/>
@@ -232,9 +232,9 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                 <span className="label">Curseforge</span>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     
-                    <div id="middle" className="middle">
+                    {/* <div id="middle" className="middle">
                         <div className="middle__card userInfo">
                             <img src="https://mc-heads.net/avatar/MHF_Steve" id="skin" className="skin" />
                             <b id="pseudo" className="pseudo"></b>
@@ -292,6 +292,45 @@ class Launcher extends Component<Props & WithTranslation, InputChange> {
                                     </div>
                                     : ""
                                 }
+                            </div>
+                        </div>
+                    </div> */}
+                    <div id="top" className="top">
+                        <div id="top__left" className="top__left">
+                            <div id="top__left--top" className="top__left--top">
+                                <img src="assets/ours_detente.png" alt="" />
+                            </div>
+                            <div id="top__left--bottom" className="top__left--bottom">
+                                <div id="accounts" className="accounts">
+                                    <img id="skin" className="skin" src="https://mc-heads.net/avatar/MHF_Steve" alt="" />
+                                    <span id="pseudo" className="pseudo">Steve</span>
+                                </div>
+                                <div id="profile" className="profile">
+                                    <img src="assets/profile.png" alt="" />
+                                    <span id="profile--text" className="profile--text">Profil</span>
+                                </div>
+                                <div id="disconnect" className="disconnect">
+                                    <img src="assets/logout.png" alt="" />
+                                    <span id="disconnect--text" className="disconnect--text">Déconnexion</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="top__right" className="top__right">
+                            <button id="playbtn" className="block play playbtn" onClick={this.handlePlay}>{t('launcher.play').toUpperCase()}</button>
+                            <div id="gamemode" className="block gamemode">
+                                <div id="gamemode--toggle" className="gamemode--toggle">
+                                    <span className="gamemode--text">Solo</span>
+                                    <span className="gamemode--text">Multi</span>
+                                </div>
+                                {/* si mode multi */}
+                                <div id="serverstate" className="serverstate">
+                                    <div id="serverstate--icon" className="serverstate--icon">
+                                        <img src="assets/server.png" alt="" />
+                                        <span>Offline</span>
+                                    </div>
+                                    <span id="serverstate--text" className="serverstate--text">Serveur</span>
+                                    <span id="serverstate--player" className="serverstate--player">0/20</span>
+                                </div>
                             </div>
                         </div>
                     </div>
