@@ -67,10 +67,12 @@ Yes, If you have the knowledge to do it, you can fork the project and change the
 - [ ] Add a way to change the version of the modpack
   - [x] Add a version selector update via manifest
   - [x] Add a "latest" option to always get the latest version
-  - [ ] Use a better method to save current downloaded versions
-    - [ ] Add selector to keep multiple versions
-- [ ] Add check box to keep the launcher open if the game is launched
+  - [x] Use a better method to save current downloaded versions
+  - [ ] Add selector to keep multiple versions
+- [x] Add check box to keep the launcher open if the game is launched
+- [x] Add check box to keep the game open if the launcher is closed
 - [ ] Add shared folder to keep the same on other versions (like journey map, shaders, ressourcespack, ...)
+  - [ ] Add options configurator
 - [ ] Change the style of the launcher
 - [ ] Add a way to manage skins
 - [ ] Cleanup the code
